@@ -54,19 +54,12 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-
+    console.log(inputs);
     // var newEmailAddress = inputs.emailAddress.toLowerCase();
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    var newRecord = await Glass.create(Object.assign({
-      Name: 'Plumm Glass Flute (Handmade)',
-      TotalQuantityInSystem: '555',
-      ImgSrc: 'http://plumm-glasses.jp/media/catalog/product/cache/5/image/600x450/9df78eab33525d08d6e5fb8d27136e95/f/l/flute-handmade.jpg',
-      Sku: '167'
-    },{}))
-    .intercept({name: 'UsageError'}, 'invalid')
-    .fetch();
+    var newRecord = await Glass.create(inputs).fetch();
 
     // Since everything went ok, send our 200 response.
     return exits.success();
