@@ -16,6 +16,7 @@
           <ul id="example-1">
             <li v-for="glass in glasses">
               {{ glass.Name }}
+              <img :src="glass.ImgSrc" />
             </li>
           </ul>
         </div>
