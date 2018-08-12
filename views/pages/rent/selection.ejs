@@ -12,6 +12,13 @@
         <button class="btn btn-sm btn-outline-info account-settings-button" @click="getGlasses">
           Get Glass
         </button>
+        <div>
+          <ul id="example-1">
+            <li v-for="glass in glasses">
+              {{ glass.Name }}
+            </li>
+          </ul>
+        </div>
     </div>
   </div>
 </div>
