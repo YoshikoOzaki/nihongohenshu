@@ -4,21 +4,69 @@
     <hr/>
     <p>Select items you would like to rent</p>
     <div>
-        <div class="col-3">Name:</div>
-        <div class="col"><strong>{{me.fullName}}</strong></div>
         <button class="btn btn-sm btn-outline-info account-settings-button" @click="createGlass">
           Create Glass
         </button>
         <button class="btn btn-sm btn-outline-info account-settings-button" @click="getGlasses">
-          Get Glass
+          Get Glasses
         </button>
+        <hr />
         <div>
-          <ul id="example-1">
-            <li v-for="glass in glasses">
-              {{ glass.Name }}
-              <img :src="glass.ImgSrc" />
-            </li>
-          </ul>
+          <div class="row">
+            <div class="col-sm-6">
+              <div v-for="glass in glasses" style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 row">
+                <div class="col-sm-6">
+                  <img width="200" :src="glass.ImgSrc" />
+                </div>
+                <div class="col-sm-6">
+                  <div>{{ glass.Name }}</div>
+                  <small>Total Count: {{ glass.TotalQuantityInSystem }}</small>
+                  <br />
+                  <small>Sku: {{ glass.Sku }}</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 ml-3 row">
+                <ajax-form action="createOrder" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-parsing="handleParsingForm">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label for="full-name">Glass Type</label>
+                        <input class="form-control" id="glass-type" name="glass-type" type="text"  :class="[formErrors.glassType ? 'is-invalid' : '']" v-model.trim="formData.glassType" placeholder="" autocomplete="type" focus-first>
+                        <div class="invalid-feedback" v-if="formErrors.glassType">Please enter a quantity.</div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label for="full-name">Quantity</label>
+                        <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrors.quantity ? 'is-invalid' : '']" v-model.trim="formData.quantity" placeholder="0" autocomplete="quantity" focus-first>
+                        <div class="invalid-feedback" v-if="formErrors.quantity">Please enter a quantity.</div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label for="full-name">Quantity</label>
+                        <input class="form-control" id="date" name="date" type="datetime-local"  :class="[formErrors.date ? 'is-invalid' : '']" v-model.trim="formData.date" placeholder="0" autocomplete="date" focus-first>
+                        <div class="invalid-feedback" v-if="formErrors.date">Please enter a date.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
+                      <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group text-right">
+                        <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Submit order</ajax-button>
+                      </div>
+                    </div>
+                  </div>
+                </ajax-form>
+              </div>
+            </div>
+          </div>
         </div>
     </div>
   </div>
