@@ -63,7 +63,6 @@ module.exports = {
 
     // Since everything went ok, send our 200 response.
     return exits.success();
-
   }
 
 };

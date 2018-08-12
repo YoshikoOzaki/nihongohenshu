@@ -6,6 +6,7 @@ parasails.registerPage('selection', {
     // Form data
     formData: {
     },
+    glasses: [],
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -25,14 +26,21 @@ parasails.registerPage('selection', {
   methods: {
 
     createGlass: async function() {
-      console.log(Cloud);
+      // console.log(Cloud);
       result = await Cloud.createGlass(
         'Plumm Glass Flute (Handmade)',
         '555',
         'http://plumm-glasses.jp/media/catalog/product/cache/5/image/600x450/9df78eab33525d08d6e5fb8d27136e95/f/l/flute-handmade.jpg',
         '167',
       );
-      console.log(result);
+      // console.log(result);
+    },
+
+    getGlasses: async function() {
+      // result = await io.socket.get('/glass?sort=createdAt DESC');
+      result = await Cloud.getGlasses();
+      this.glasses = result;
+      console.log(this.glasses);
     }
   }
 });
