@@ -1,0 +1,15 @@
+<div id="selection">
+  <div class="container">
+    <h1>Select Items</h1>
+    <hr/>
+    <p>Select items you would like to rent</p>
+    <div>
+        <div class="col-3">Name:</div>
+        <div class="col"><strong>{{me.fullName}}</strong></div>
+        <button class="btn btn-sm btn-outline-info account-settings-button" action="createGlass" @click="createGlass">
+          Create Glass
+        </button>
+    </div>
+  </div>
+</div>
+<%- /* Expose locals as `window.SAILS_LOCALS` :: */ exposeLocalsToBrowser() %>
