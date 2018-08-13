@@ -23,6 +23,9 @@ parasails.registerPage('selection', {
     cart: [],
 
     selected: '',
+
+    startDate: '2017-09-05',
+    endDate: '2017-09-15'
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗

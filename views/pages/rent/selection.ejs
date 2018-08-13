@@ -61,9 +61,23 @@
                     </div>
                     <div class="col-sm-12">
                       <div class="form-group">
-                        <label for="full-name">Date</label>
+                        <label for="full-name">Start Date</label>
                         <input class="form-control" id="date" name="date" type="date"  :class="[formErrors.Date ? 'is-invalid' : '']" v-model.trim="formData.Date" placeholder="0" autocomplete="date" >
                         <div class="invalid-feedback" v-if="formErrors.Date">Please enter a date.</div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label for="full-name">End Date</label>
+                        <input class="form-control" id="date" name="date" type="date"  :class="[formErrors.Date ? 'is-invalid' : '']" v-model.trim="formData.Date" placeholder="0" autocomplete="date" >
+                        <div class="invalid-feedback" v-if="formErrors.Date">Please enter a date.</div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label for="full-name">Days of Usage</label>
+                        <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrors.Quantity ? 'is-invalid' : '']" v-model.trim="formData.Quantity" placeholder="0" autocomplete="quantity">
+                        <div class="invalid-feedback" v-if="formErrors.Quantity">Please enter a quantity.</div>
                       </div>
                     </div>
                   </div>
