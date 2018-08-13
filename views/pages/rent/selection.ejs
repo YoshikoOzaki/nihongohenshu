@@ -28,27 +28,27 @@
             </div>
             <div class="col-sm-6">
               <div style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 ml-3 row">
-                <ajax-form action="createOrder" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-parsing="handleParsingForm">
+                <ajax-form action="checkCartItemValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-parsing="handleParsingForm">
                   <div class="row">
                     <div class="col-sm-12">
                       <div class="form-group">
-                        <label for="full-name">Glass Type</label>
-                        <input class="form-control" id="glass-type" name="glass-type" type="text"  :class="[formErrors.glassType ? 'is-invalid' : '']" v-model.trim="formData.glassType" placeholder="" autocomplete="type" focus-first>
-                        <div class="invalid-feedback" v-if="formErrors.glassType">Please enter a quantity.</div>
+                        <label for="full-name">Id</label>
+                        <input class="form-control" id="id" name="id" type="number"  :class="[formErrors.Id ? 'is-invalid' : '']" v-model.trim="formData.Id" placeholder="" autocomplete="id" focus-first>
+                        <div class="invalid-feedback" v-if="formErrors.Id">Please enter an id.</div>
                       </div>
                     </div>
                     <div class="col-sm-12">
                       <div class="form-group">
                         <label for="full-name">Quantity</label>
-                        <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrors.quantity ? 'is-invalid' : '']" v-model.trim="formData.quantity" placeholder="0" autocomplete="quantity" focus-first>
-                        <div class="invalid-feedback" v-if="formErrors.quantity">Please enter a quantity.</div>
+                        <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrors.Quantity ? 'is-invalid' : '']" v-model.trim="formData.Quantity" placeholder="0" autocomplete="quantity">
+                        <div class="invalid-feedback" v-if="formErrors.Quantity">Please enter a quantity.</div>
                       </div>
                     </div>
                     <div class="col-sm-12">
                       <div class="form-group">
-                        <label for="full-name">Quantity</label>
-                        <input class="form-control" id="date" name="date" type="datetime-local"  :class="[formErrors.date ? 'is-invalid' : '']" v-model.trim="formData.date" placeholder="0" autocomplete="date" focus-first>
-                        <div class="invalid-feedback" v-if="formErrors.date">Please enter a date.</div>
+                        <label for="full-name">Date</label>
+                        <input class="form-control" id="date" name="date" type="date"  :class="[formErrors.Date ? 'is-invalid' : '']" v-model.trim="formData.Date" placeholder="0" autocomplete="date" >
+                        <div class="invalid-feedback" v-if="formErrors.Date">Please enter a date.</div>
                       </div>
                     </div>
                   </div>

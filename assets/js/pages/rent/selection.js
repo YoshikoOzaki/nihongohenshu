@@ -61,8 +61,9 @@ parasails.registerPage('selection', {
       // Redirect to the account page on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--
       // > to make sure the spinner stays there until the page navigation finishes.)
-      this.syncing = true;
-      window.location = '/account';
+      // this.syncing = true;
+      // window.location = '/rent/selection';
+      // should add the returned item to the cart
     },
 
     handleParsingForm: function() {
@@ -70,15 +71,11 @@ parasails.registerPage('selection', {
       this.formErrors = {};
 
       var argins = this.formData;
+      console.log(argins);
 
-      // Validate name:
-      if(!argins.fullName) {
-        this.formErrors.password = true;
-      }
-
-      // Validate email:
-      if(!argins.emailAddress) {
-        this.formErrors.emailAddress = true;
+      // Validate id:
+      if(!argins.Id) {
+        this.formErrors.Id = true;
       }
 
       // If there were any issues, they've already now been communicated to the user,
