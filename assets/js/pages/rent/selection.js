@@ -18,13 +18,22 @@ parasails.registerPage('selection', {
 
     // empty glasses data on load
     glasses: [],
+
+    // empty cart data before load
+    cart: {},
+
+    selected: '',
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
   //  ║  ║╠╣ ║╣ ║  ╚╦╝║  ║  ║╣
   //  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
-  beforeMount: function (){
+  beforeMount: async function (){
     _.extend(this, window.SAILS_LOCALS);
+
+    this.cart = await parasails.util.getCart();
+
+    this.glasses = await Cloud.getGlasses();
   },
 
   mounted: async function() {
@@ -64,6 +73,15 @@ parasails.registerPage('selection', {
       // this.syncing = true;
       // window.location = '/rent/selection';
       // should add the returned item to the cart
+      this.cart = await parasails.util.getCart();
+    },
+
+    handleSubmitting: async function(data) {
+      result = await Cloud.checkCartItemValid(..._.values(data));
+      if (result) {
+        localStorage.setItem('cart', JSON.stringify(result));
+        console.log(localStorage);
+      }
     },
 
     handleParsingForm: function() {
@@ -71,7 +89,6 @@ parasails.registerPage('selection', {
       this.formErrors = {};
 
       var argins = this.formData;
-      console.log(argins);
 
       // Validate id:
       if(!argins.Id) {

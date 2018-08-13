@@ -4,6 +4,15 @@
     <hr/>
     <p>Select items you would like to rent</p>
     <div>
+        <div>
+          current cart
+          <div>{{cart}}</div>
+        </div>
+        <div>
+          form data
+          <div>{{formData}}</div>
+        </div>
+        </div>
         <button class="btn btn-sm btn-outline-info account-settings-button" @click="createGlass">
           Create Glass
         </button>
@@ -23,20 +32,26 @@
                   <small>Total Count: {{ glass.TotalQuantityInSystem }}</small>
                   <br />
                   <small>Sku: {{ glass.Sku }}</small>
+                  <br />
+                  <small>Id: {{ glass.id }}</small>
                 </div>
               </div>
             </div>
             <div class="col-sm-6">
               <div style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 ml-3 row">
-                <ajax-form action="checkCartItemValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-parsing="handleParsingForm">
+                <ajax-form action="checkCartItemValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleSubmitting" :handle-parsing="handleParsingForm">
                   <div class="row">
-                    <div class="col-sm-12">
-                      <div class="form-group">
-                        <label for="full-name">Id</label>
-                        <input class="form-control" id="id" name="id" type="number"  :class="[formErrors.Id ? 'is-invalid' : '']" v-model.trim="formData.Id" placeholder="" autocomplete="id" focus-first>
-                        <div class="invalid-feedback" v-if="formErrors.Id">Please enter an id.</div>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="form-group">
+                          <label for="full-name">Choose a glass type</label>
+                          <select class="form-control" v-model.trim="formData.Id" id="id" name="id" :class="[formErrors.Id ? 'is-invalid' : '']">
+                            <option disabled value="">Please select one</option>
+                            <option v-for="glass in glasses" :value="glass.id">{{glass.Name}}</option>
+                          </select>
+                          <div class="invalid-feedback" v-if="formErrors.Id">Please enter an id.</div>
+                        </div>
                       </div>
-                    </div>
                     <div class="col-sm-12">
                       <div class="form-group">
                         <label for="full-name">Quantity</label>
