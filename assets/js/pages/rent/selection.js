@@ -20,7 +20,7 @@ parasails.registerPage('selection', {
     glasses: [],
 
     // empty cart data before load
-    cart: {},
+    cart: [],
 
     selected: '',
   },
@@ -78,8 +78,15 @@ parasails.registerPage('selection', {
 
     handleSubmitting: async function(data) {
       result = await Cloud.checkCartItemValid(..._.values(data));
+      oldCart = await parasails.util.getCart();
+
+      const newCart = [
+        ...oldCart,
+        result,
+      ];
+
       if (result) {
-        localStorage.setItem('cart', JSON.stringify(result));
+        localStorage.setItem('cart', JSON.stringify(newCart));
         console.log(localStorage);
       }
     },
