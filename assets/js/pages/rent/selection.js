@@ -21,11 +21,6 @@ parasails.registerPage('selection', {
 
     // empty cart data before load
     cart: [],
-
-    selected: '',
-
-    startDate: '2017-09-05',
-    endDate: '2017-09-15'
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -66,7 +61,6 @@ parasails.registerPage('selection', {
       // result = await io.socket.get('/glass?sort=createdAt DESC');
       result = await Cloud.getGlasses();
       this.glasses = result;
-      console.log(this.glasses);
     },
 
     submittedForm: async function() {
@@ -80,13 +74,16 @@ parasails.registerPage('selection', {
     },
 
     handleSubmitting: async function(data) {
+      console.log(..._.values(data));
       result = await Cloud.checkCartItemValid(..._.values(data));
-      oldCart = await parasails.util.getCart();
 
+      // console.log(result);
+      oldCart = await parasails.util.getCart();
       const newCart = [
         ...oldCart,
         result,
       ];
+      console.log(result, oldCart);
 
       if (result) {
         localStorage.setItem('cart', JSON.stringify(newCart));
@@ -104,7 +101,18 @@ parasails.registerPage('selection', {
       if(!argins.Id) {
         this.formErrors.Id = true;
       }
-
+      if(!argins.Quantity) {
+        this.formErrors.Quantity = true;
+      }
+      if(!argins.DateStart) {
+        this.formErrors.DateStart = true;
+      }
+      if(!argins.DateEnd) {
+        this.formErrors.DateEnd = true;
+      }
+      if(!argins.DaysOfUse) {
+        this.formErrors.DaysOfUse = true;
+      }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be
       // cancelled.)

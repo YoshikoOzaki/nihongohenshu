@@ -19,18 +19,32 @@ module.exports = {
     },
 
     Quantity: {
-      type: 'number',
-      required: true,
-      description: 'Total count of glasses of this type for the order',
-      example: 555
-    },
-
-    Date: {
       type: 'string',
       required: true,
-      description: 'The date that needs to be checked',
+      description: 'Total count of glasses of this type for the order',
+      example: "555"
+    },
+
+    DateStart: {
+      type: 'string',
+      required: true,
+      description: 'The date start that needs to be checked',
       example: '2018-08-08T14:00:00.000Z'
     },
+
+    DateEnd: {
+      type: 'string',
+      required: true,
+      description: 'The date end that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
+    },
+
+    DaysOfUse: {
+      type: 'string',
+      required: true,
+      description: 'Total number of days the glasses will be used',
+      example: "555"
+    }
     // should be able to change this to a date range picker with startdate enddate
   },
 
@@ -44,7 +58,7 @@ module.exports = {
 
     invalid: {
       responseType: 'badRequest',
-      description: 'The provided Item Id or Date are invalid.',
+      description: 'The provided Item Id or Dates are invalid.',
       extendedDescription: 'If this request was sent from a graphical user interface, the request '+
       'parameters should have been validated/coerced _before_ they were sent.'
     },
@@ -53,20 +67,15 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-
-    var newDate = inputs.Date;
+    console.log(inputs);
     // add logic to check against other dates already taken and their quantities
-    if (newDate === "2018-08-16") {
-      throw 'dateTaken';
-    }
-
-    // localStorage.setItem('storedData', inputs)
+    // if (inputs.DateStart === "2018-08-16") {
+    //   throw 'dateTaken';
+    // }
 
     // if all the validation passes - check the dates and item ids/skus
     // then just send back the validated item/order to add to the cart
 
-    console.log('inputs');
-    console.log(inputs);
     // Since everything went ok, send our 200 response.
     return exits.success(inputs);
   }
