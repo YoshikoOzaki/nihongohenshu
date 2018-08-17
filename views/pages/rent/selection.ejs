@@ -40,7 +40,7 @@
         </div>
         <div class="col-sm-6">
           <div style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 ml-3 row">
-            <ajax-form action="checkCartItemValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleSubmitting" :handle-parsing="handleParsingForm">
+            <ajax-form action="checkCartTimePeriodValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
@@ -78,7 +78,7 @@
             </ajax-form>
           </div>
           <div style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 ml-3 row">
-            <ajax-form action="checkCartItemValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleSubmitting" :handle-parsing="handleParsingForm">
+            <ajax-form action="checkCartItemValid" @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError" :handle-submitting="handleItemSubmitting" :handle-parsing="handleParsingItemForm">
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">

@@ -73,7 +73,7 @@ parasails.registerPage('selection', {
       this.cart = await parasails.util.getCart();
     },
 
-    handleSubmitting: async function(data) {
+    handleTimeSubmitting: async function(data) {
       console.log(..._.values(data));
       result = await Cloud.checkCartItemValid(..._.values(data));
 
@@ -91,7 +91,57 @@ parasails.registerPage('selection', {
       }
     },
 
-    handleParsingForm: function() {
+    handleItemSubmitting: async function(data) {
+      console.log(..._.values(data));
+      result = await Cloud.checkCartItemValid(..._.values(data));
+
+      // console.log(result);
+      oldCart = await parasails.util.getCart();
+      const newCart = [
+        ...oldCart,
+        result,
+      ];
+      console.log(result, oldCart);
+
+      if (result) {
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        console.log(localStorage);
+      }
+    },
+
+    handleParsingTimeForm: function() {
+      // Clear out any pre-existing error messages.
+      this.formErrors = {};
+
+      var argins = this.formData;
+
+      // Validate id:
+      if(!argins.Id) {
+        this.formErrors.Id = true;
+      }
+      if(!argins.Quantity) {
+        this.formErrors.Quantity = true;
+      }
+      if(!argins.DateStart) {
+        this.formErrors.DateStart = true;
+      }
+      if(!argins.DateEnd) {
+        this.formErrors.DateEnd = true;
+      }
+      if(!argins.DaysOfUse) {
+        this.formErrors.DaysOfUse = true;
+      }
+      // If there were any issues, they've already now been communicated to the user,
+      // so simply return undefined.  (This signifies that the submission should be
+      // cancelled.)
+      if (Object.keys(this.formErrors).length > 0) {
+        return;
+      }
+
+      return argins;
+    },
+
+    handleParsingItemForm: function() {
       // Clear out any pre-existing error messages.
       this.formErrors = {};
 

@@ -1,40 +1,39 @@
 module.exports = {
 
-  friendlyName: 'Check rental cart item',
+  friendlyName: 'Check rental cart time',
 
 
-  description: 'Check if a rental item is valid to be placed in the cart.',
+  description: 'Check if a rental time period is valid to be applied the cart.',
 
 
   extendedDescription:
-  `Check if an item is valid for the cart, if so return the item to the front end with up to date data`,
+  `Check if an item is valid for the cart, if so return the time to the front end`,
 
   inputs: {
-
-    Id:  {
-      type: 'number',
-      required: true,
-      example: 1,
-      description: 'The id of the item to be checked',
-    },
-
-    Quantity: {
+    DateStart: {
       type: 'string',
       required: true,
-      description: 'Total count of glasses of this type for the order',
-      example: "555"
+      description: 'The date start that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
     },
 
+    DateEnd: {
+      type: 'string',
+      required: true,
+      description: 'The date end that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
+    },
+
+    DaysOfUse: {
+      type: 'string',
+      required: true,
+      description: 'Total number of days the glasses will be used',
+      example: "555"
+    }
     // should be able to change this to a date range picker with startdate enddate
   },
 
   exits: {
-
-    dateTaken: {
-      responseType: 'badRequest',
-      description: 'The provided Date is already taken.',
-      extendedDescription: 'Test'
-    },
 
     invalid: {
       responseType: 'badRequest',
