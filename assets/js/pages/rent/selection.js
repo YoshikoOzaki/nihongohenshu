@@ -82,10 +82,11 @@ parasails.registerPage('selection', {
       console.log('result');
       console.log(result);
       oldCart = await parasails.util.getCart();
-      const newCart = [
+
+      const newCart = {
         ...oldCart,
-        result,
-      ];
+        timePeriod: {...result},
+      };
       console.log('oldCart');
       console.log(oldCart);
 
@@ -102,10 +103,13 @@ parasails.registerPage('selection', {
 
       // console.log(result);
       oldCart = await parasails.util.getCart();
-      const newCart = [
+      const newCart = {
         ...oldCart,
-        result,
-      ];
+        items: [
+          ...oldCart.items,
+          result
+        ],
+      };
       console.log(result, oldCart);
 
       if (result) {
