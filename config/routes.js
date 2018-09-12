@@ -55,6 +55,7 @@ module.exports.routes = {
   'GET  /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
+  'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },
 
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗

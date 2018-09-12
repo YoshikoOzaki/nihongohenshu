@@ -9,8 +9,10 @@
         <div>{{cart}}</div>
       </div>
       <div>
-        form data
-        <div>{{formData}}</div>
+        time form data
+        <div>{{formDataTime}}</div>
+        item form data
+        <div>{{formDataItem}}</div>
       </div>
     </div>
     <button class="btn btn-sm btn-outline-info account-settings-button" @click="createGlass">
@@ -25,8 +27,8 @@
         <div class="col-sm-6">
           <div v-for="glass in glasses" style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 row">
             <div class="col-sm-6">
-              <!--<img width="200" :src="glass.ImgSrc" />-->
-              <img width="200" src="" />
+              <img width="200" :src="glass.ImgSrc" />
+              <!--<img width="200" src="" />-->
             </div>
             <div class="col-sm-6">
               <div>{{ glass.Name }}</div>
@@ -45,22 +47,22 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Start Date</label>
-                    <input class="form-control" id="date-start" name="date-start" type="date"  :class="[formErrors.DateStart ? 'is-invalid' : '']" v-model.trim="formData.DateStart" placeholder="0" autocomplete="date-end" >
-                    <div class="invalid-feedback" v-if="formErrors.DateStart">Please enter a start date.</div>
+                    <input class="form-control" id="date-start" name="date-start" type="date"  :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart" placeholder="0" autocomplete="date-end" >
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
                   </div>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">End Date</label>
-                    <input class="form-control" id="date-end" name="date-end" type="date"  :class="[formErrors.DateEnd ? 'is-invalid' : '']" v-model.trim="formData.DateEnd" placeholder="0" autocomplete="date-end" >
-                    <div class="invalid-feedback" v-if="formErrors.DateEnd">Please enter a end date.</div>
+                    <input class="form-control" id="date-end" name="date-end" type="date"  :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd" placeholder="0" autocomplete="date-end" >
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
                   </div>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Days of Usage</label>
-                    <input class="form-control" id="days-of-use" name="days-of-use" type="number"  :class="[formErrors.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formData.DaysOfUse" placeholder="0" autocomplete="days-of-use">
-                    <div class="invalid-feedback" v-if="formErrors.DaysOfUse">Please enter days of use.</div>
+                    <input class="form-control" id="days-of-use" name="days-of-use" type="number"  :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse" placeholder="0" autocomplete="days-of-use">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
                   </div>
                 </div>
               </div>
@@ -83,18 +85,18 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Choose a glass type</label>
-                    <select class="form-control" v-model.trim="formData.Id" id="id" name="id" :class="[formErrors.Id ? 'is-invalid' : '']">
+                    <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id" :class="[formErrorsItems.Id ? 'is-invalid' : '']">
                       <option disabled value="">Please select one</option>
                       <option v-for="glass in glasses" :value="glass.id">{{glass.Name}}</option>
                     </select>
-                    <div class="invalid-feedback" v-if="formErrors.Id">Please enter an id.</div>
+                    <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
                   </div>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Quantity</label>
-                    <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrors.Quantity ? 'is-invalid' : '']" v-model.trim="formData.Quantity" placeholder="0" autocomplete="quantity">
-                    <div class="invalid-feedback" v-if="formErrors.Quantity">Please enter a quantity.</div>
+                    <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
+                    <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
                   </div>
                 </div>
               </div>

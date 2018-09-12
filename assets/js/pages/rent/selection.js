@@ -7,11 +7,13 @@ parasails.registerPage('selection', {
     syncing: false,
 
     // Form data
-    formData: { /* … */ },
+    formDataTime: { /* … */ },
+    formDataItem: { /* … */ },
 
     // For tracking client-side validation errors in our form.
     // > Has property set to `true` for each invalid property in `formData`.
-    formErrors: { /* … */ },
+    formErrorsTime: { /* … */ },
+    formErrorsItems: { /* … */ },
 
     // Server error state for the form
     cloudError: '',
@@ -75,18 +77,21 @@ parasails.registerPage('selection', {
 
     handleTimeSubmitting: async function(data) {
       console.log(..._.values(data));
-      result = await Cloud.checkCartItemValid(..._.values(data));
+      result = await Cloud.checkCartTimeValid(..._.values(data));
 
-      // console.log(result);
+      console.log('result');
+      console.log(result);
       oldCart = await parasails.util.getCart();
       const newCart = [
         ...oldCart,
         result,
       ];
-      console.log(result, oldCart);
+      console.log('oldCart');
+      console.log(oldCart);
 
       if (result) {
         localStorage.setItem('cart', JSON.stringify(newCart));
+        console.log('localStorage');
         console.log(localStorage);
       }
     },
@@ -111,30 +116,23 @@ parasails.registerPage('selection', {
 
     handleParsingTimeForm: function() {
       // Clear out any pre-existing error messages.
-      this.formErrors = {};
+      this.formErrorsTime = {};
 
-      var argins = this.formData;
+      var argins = this.formDataTime;
 
-      // Validate id:
-      if(!argins.Id) {
-        this.formErrors.Id = true;
-      }
-      if(!argins.Quantity) {
-        this.formErrors.Quantity = true;
-      }
       if(!argins.DateStart) {
-        this.formErrors.DateStart = true;
+        this.formErrorsTime.DateStart = true;
       }
       if(!argins.DateEnd) {
-        this.formErrors.DateEnd = true;
+        this.formErrorsTime.DateEnd = true;
       }
       if(!argins.DaysOfUse) {
-        this.formErrors.DaysOfUse = true;
+        this.formErrorsTime.DaysOfUse = true;
       }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be
       // cancelled.)
-      if (Object.keys(this.formErrors).length > 0) {
+      if (Object.keys(this.formErrorsTime).length > 0) {
         return;
       }
 
@@ -143,30 +141,21 @@ parasails.registerPage('selection', {
 
     handleParsingItemForm: function() {
       // Clear out any pre-existing error messages.
-      this.formErrors = {};
+      this.formErrorsItems = {};
 
-      var argins = this.formData;
+      var argins = this.formDataItem;
 
       // Validate id:
       if(!argins.Id) {
-        this.formErrors.Id = true;
+        this.formErrorsItems.Id = true;
       }
       if(!argins.Quantity) {
-        this.formErrors.Quantity = true;
-      }
-      if(!argins.DateStart) {
-        this.formErrors.DateStart = true;
-      }
-      if(!argins.DateEnd) {
-        this.formErrors.DateEnd = true;
-      }
-      if(!argins.DaysOfUse) {
-        this.formErrors.DaysOfUse = true;
+        this.formErrorsItems.Quantity = true;
       }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be
       // cancelled.)
-      if (Object.keys(this.formErrors).length > 0) {
+      if (Object.keys(this.formErrorsItems).length > 0) {
         return;
       }
 

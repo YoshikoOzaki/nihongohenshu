@@ -12,9 +12,9 @@ module.exports = {
   inputs: {
 
     Id:  {
-      type: 'number',
+      type: 'string',
       required: true,
-      example: 1,
+      example: '1',
       description: 'The id of the item to be checked',
     },
 
