@@ -65,6 +65,23 @@ parasails.registerPage('selection', {
       this.glasses = result;
     },
 
+    createOrderFromCart: async function() {
+      const cart = await parasails.util.getCart();
+
+      console.log(cart);
+
+      const payload = {
+        DateStart: cart.timePeriod.DateStart,
+        DateEnd: cart.timePeriod.DateEnd,
+        DaysOfUse: cart.timePeriod.DaysOfUse,
+      }
+      console.log(payload);
+
+      order = await Cloud.createOrder(..._.values(payload));
+
+      console.log(order);
+    },
+
     submittedForm: async function() {
       // Redirect to the account page on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--
@@ -76,32 +93,25 @@ parasails.registerPage('selection', {
     },
 
     handleTimeSubmitting: async function(data) {
-      console.log(..._.values(data));
+      // check all the logic for order time & update cart
       result = await Cloud.checkCartTimeValid(..._.values(data));
 
-      console.log('result');
-      console.log(result);
       oldCart = await parasails.util.getCart();
 
       const newCart = {
         ...oldCart,
         timePeriod: {...result},
       };
-      console.log('oldCart');
-      console.log(oldCart);
 
       if (result) {
         localStorage.setItem('cart', JSON.stringify(newCart));
-        console.log('localStorage');
-        console.log(localStorage);
       }
     },
 
     handleItemSubmitting: async function(data) {
-      console.log(..._.values(data));
+      // check all the logic for order items & update cart
       result = await Cloud.checkCartItemValid(..._.values(data));
 
-      // console.log(result);
       oldCart = await parasails.util.getCart();
       const newCart = {
         ...oldCart,
@@ -110,11 +120,9 @@ parasails.registerPage('selection', {
           result
         ],
       };
-      console.log(result, oldCart);
 
       if (result) {
         localStorage.setItem('cart', JSON.stringify(newCart));
-        console.log(localStorage);
       }
     },
 

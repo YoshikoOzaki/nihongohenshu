@@ -1,7 +1,7 @@
 /**
- * Order.js
+ * OrderLineNumbers.js
  *
- * An order.
+ * The lines in an order, ie a type of glass with it's quantity.
  */
 
 module.exports = {
@@ -11,31 +11,17 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    DateStart: {
-      type: 'string',
-      required: true,
-      description: 'The date start that needs to be checked',
-      example: '2018-08-08T14:00:00.000Z'
+    Quantity: {
+      type: 'number',
     },
 
-    DateEnd: {
-      type: 'string',
-      required: true,
-      description: 'The date end that needs to be checked',
-      example: '2018-08-08T14:00:00.000Z'
+    Order: {
+      model: 'Order',
     },
 
-    DaysOfUse: {
-      type: 'string',
-      required: true,
-      description: 'Total number of days the glasses will be used',
-      example: "555"
+    Product: {
+      model: 'Glass',
     },
-
-    OrderLineNumbers: {
-      collection: 'OrderLineNumber',
-      via: 'Order',
-    }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

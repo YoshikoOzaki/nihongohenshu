@@ -12,36 +12,35 @@ module.exports = {
 
   inputs: {
 
-    GlassType:  {
+    DateStart: {
       type: 'string',
       required: true,
-      example: 'Plumm Glass Flute (Handmade)',
-      description: 'The glass\'es full name.',
-    },
-
-    Quantity: {
-      type: 'number',
-      required: true,
-      description: 'Total count of glasses of this type for the order',
-      example: 555
-    },
-
-    Date: {
-      type: 'string',
-      required: true,
-      description: 'Date for order',
+      description: 'The date start that needs to be checked',
       example: '2018-08-08T14:00:00.000Z'
     },
-    // should be able to change this to a date range picker with startdate enddate
+
+    DateEnd: {
+      type: 'string',
+      required: true,
+      description: 'The date end that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
+    },
+
+    DaysOfUse: {
+      type: 'string',
+      required: true,
+      description: 'Total number of days the glasses will be used',
+      example: "555"
+    },
+
   },
 
   exits: {
 
     invalid: {
       responseType: 'badRequest',
-      description: 'The provided Name, TotalQuantityInSystem and/or date are invalid.',
-      extendedDescription: 'If this request was sent from a graphical user interface, the request '+
-      'parameters should have been validated/coerced _before_ they were sent.'
+      description: '',
+      extendedDescription: ''
     },
 
   },

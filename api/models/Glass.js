@@ -37,6 +37,11 @@ module.exports = {
       required: true,
       description: 'Glass sku code',
       example: '167'
+    },
+
+    OrderLineNumbers: {
+      collection: 'OrderLineNumber',
+      via: 'Product',
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
