@@ -41,7 +41,7 @@ module.exports = {
 
     OrderLineNumbers: {
       collection: 'OrderLineNumber',
-      via: 'Product',
+      via: 'Glass',
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

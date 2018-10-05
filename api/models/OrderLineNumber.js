@@ -15,12 +15,12 @@ module.exports = {
       type: 'number',
     },
 
-    Order: {
-      model: 'Order',
+    Glass: {
+      model: 'Glass',
     },
 
-    Product: {
-      model: 'Glass',
+    Order: {
+      model: 'Order',
     },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

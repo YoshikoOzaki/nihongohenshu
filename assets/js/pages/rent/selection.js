@@ -67,19 +67,15 @@ parasails.registerPage('selection', {
 
     createOrderFromCart: async function() {
       const cart = await parasails.util.getCart();
-
       console.log(cart);
-
       const payload = {
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
         DaysOfUse: cart.timePeriod.DaysOfUse,
+        Items: cart.items,
       }
-      console.log(payload);
 
       order = await Cloud.createOrder(..._.values(payload));
-
-      console.log(order);
     },
 
     submittedForm: async function() {

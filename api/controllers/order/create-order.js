@@ -33,6 +33,10 @@ module.exports = {
       example: "555"
     },
 
+    Items: {
+      type: [{Id: "string", Quantity: "string"}]
+    }
+
   },
 
   exits: {
@@ -51,14 +55,35 @@ module.exports = {
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    var newRecord = await Order.create(inputs).fetch();
-    // localStorage.setItem('storedData', inputs)
+    orderInputs = {
+      DateStart: inputs.DateStart,
+      DateEnd: inputs.DateEnd,
+      DaysOfUse: inputs.DaysOfUse,
+    }
 
+    var newRecord = await Order.create(orderInputs).fetch();
+
+    let itemResults = [];
+
+    _.forEach(inputs.Items, async (item, i) => {
+      const itemInputs = {
+        Quantity: item.Quantity,
+        Glass: Number(item.Id),
+        Order: Number(newRecord.id),
+      }
+      console.log(itemInputs);
+
+      itemResults[i] = await OrderLineNumber.create(itemInputs).fetch();
+    });
+
+    // after we have the line numers, need to add their ids in a collection to the order
+
+    // localStorage.setItem('storedData', inputs)
     // if all the validation passes - check the dates and item ids/skus
     // then just send back the validated item/order to add to the cart
 
     // Since everything went ok, send our 200 response.
-    return exits.success();
+    return exits.success(newRecord);
   }
 
 };
