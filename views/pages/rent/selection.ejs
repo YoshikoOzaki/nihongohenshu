@@ -7,12 +7,15 @@
       <div>
         current cart
         <div>{{cart}}</div>
+        <br/>
       </div>
       <div>
         time form data
         <div>{{formDataTime}}</div>
+        <br/>
         item form data
         <div>{{formDataItem}}</div>
+        <br/>
       </div>
     </div>
     <button class="btn btn-sm btn-outline-info account-settings-button" @click="createGlass">
@@ -40,6 +43,8 @@
               <small>Sku: {{ glass.Sku }}</small>
               <br />
               <small>Id: {{ glass.id }}</small>
+              <br />
+              <small>Product Code: {{ glass.ProductCode }}</small>
             </div>
           </div>
         </div>

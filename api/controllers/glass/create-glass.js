@@ -8,7 +8,7 @@ module.exports = {
 
 
   extendedDescription:
-`Adds a glass type to the database`,
+`Adds a glass type to the database for testing`,
 
   inputs: {
 
@@ -38,7 +38,14 @@ module.exports = {
       required: true,
       description: 'Glass sku code',
       example: '167'
-    }
+    },
+
+    UnitPrice:  {
+      required: true,
+      type: 'number',
+      description: 'Price in yen',
+      example: 120,
+    },
   },
 
   exits: {

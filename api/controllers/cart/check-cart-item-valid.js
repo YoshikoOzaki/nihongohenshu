@@ -57,7 +57,19 @@ module.exports = {
     // then just send back the validated item/order to add to the cart
 
     // Since everything went ok, send our 200 response.
-    return exits.success(inputs);
+
+    var itemData = await Glass.findOne({ id: inputs.Id });
+
+    discountedInputs = {
+      Id: inputs.Id,
+      Quantity: '100',
+      UnitPrice: itemData.UnitPrice,
+      DiscountedUnitPrice: itemData.UnitPrice * 0.5,
+      Discount: 0.5,
+    }
+    console.log(discountedInputs);
+
+    return exits.success(discountedInputs);
   }
 
 };

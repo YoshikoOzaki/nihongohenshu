@@ -39,6 +39,13 @@ module.exports = {
       example: '167'
     },
 
+    UnitPrice: {
+      type: 'number',
+      required: true,
+      description: 'Product rental price',
+      example: '120'
+    },
+
     OrderLineNumbers: {
       collection: 'OrderLineNumber',
       via: 'Glass',
