@@ -46,6 +46,13 @@ module.exports = {
       example: '120'
     },
 
+    RackCapacity: {
+      type: 'number',
+      required: true,
+      description: 'How many of this item can fit into their rack',
+      example: '36'
+    },
+
     OrderLineNumbers: {
       collection: 'OrderLineNumber',
       via: 'Glass',

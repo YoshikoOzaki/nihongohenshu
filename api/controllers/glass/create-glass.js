@@ -46,6 +46,13 @@ module.exports = {
       description: 'Price in yen',
       example: 120,
     },
+
+    RackCapacity: {
+      required: true,
+      type: 'number',
+      description: 'How many can fit into their rack',
+      example: 36,
+    }
   },
 
   exits: {
