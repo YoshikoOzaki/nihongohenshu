@@ -12,11 +12,18 @@ module.exports = {
 
   inputs: {
 
-    Name:  {
+    NameEng:  {
       required: true,
       type: 'string',
       example: 'Plumm Glass Flute (Handmade)',
-      description: 'The glass\'es full name.',
+      description: 'The glass\'es full name in English.',
+    },
+
+    NameJap:  {
+      required: true,
+      type: 'string',
+      example: 'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ',
+      description: 'The glass\'es full name in Japanese.',
     },
 
     TotalQuantityInSystem: {

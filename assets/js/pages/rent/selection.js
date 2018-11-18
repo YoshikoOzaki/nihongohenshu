@@ -51,7 +51,8 @@ parasails.registerPage('selection', {
     createGlass: async function() {
       // console.log(Cloud);
       result = await Cloud.createGlass(
-        'Plumm Glass Flute (Handmade)',
+        'Rental Plumm Glass Flute',
+        'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ',
         '555',
         'http://plumm-glasses.jp/media/catalog/product/cache/5/image/600x450/9df78eab33525d08d6e5fb8d27136e95/f/l/flute-handmade.jpg',
         '167',
@@ -109,7 +110,7 @@ parasails.registerPage('selection', {
     handleItemSubmitting: async function(data) {
       // check all the logic for order items & update cart
       result = await Cloud.checkCartItemValid(..._.values(data));
-
+      console.log(result);
       oldCart = await parasails.util.getCart();
       const newCart = {
         ...oldCart,

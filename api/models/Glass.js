@@ -10,12 +10,20 @@ module.exports = {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
-    Name: {
+    NameEng: {
       type: 'string',
       required: true,
-      description: 'Full representation of the glass\'es name',
+      description: 'Full representation of the glass\'es name in english',
       maxLength: 120,
       example: 'Plumm Glass Flute (Handmade)'
+    },
+
+    NameJap: {
+      type: 'string',
+      required: true,
+      description: 'Full representation of the glass\'es name in japanese',
+      maxLength: 120,
+      example: 'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ'
     },
 
     TotalQuantityInSystem: {

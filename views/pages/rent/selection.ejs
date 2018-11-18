@@ -4,10 +4,20 @@
     <hr/>
     <p>Select items you would like to rent</p>
     <div>
-      <div>
-        current cart
-        <div>{{cart}}</div>
-        <br/>
+      <div className="col-md-1 p-3" style="border: 1px lightgray solid">
+        <div><label>Order Cart</label></div>
+        <div>Time Period</div>
+        <div>Pick up date: {{cart.timePeriod && cart.timePeriod.DateStart}}</div>
+        <div>Return date: {{cart.timePeriod && cart.timePeriod.DateEnd}}</div>
+        <div>Days of use: {{cart.timePeriod && cart.timePeriod.DaysOfUse}}</div>
+        <hr />
+        <div>Items</div>
+        <div v-for="item in cart.items">
+          <div>{{item.Id}}</div>
+          <div>{{item.Quantity}}</div>
+          <div>{{item.UnitPrice}}</div>
+          <div>{{item.Name}}</div>
+        </div>
       </div>
       <div>
         time form data
@@ -37,7 +47,8 @@
               <!--<img width="200" src="" />-->
             </div>
             <div class="col-sm-6">
-              <div>{{ glass.Name }}</div>
+              <div>{{ glass.NameEng }}</div>
+              <div>{{ glass.NameJap }}</div>
               <small>Total Count: {{ glass.TotalQuantityInSystem }}</small>
               <br />
               <small>Sku: {{ glass.Sku }}</small>
@@ -95,7 +106,7 @@
                     <label for="full-name">Choose a glass type</label>
                     <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id" :class="[formErrorsItems.Id ? 'is-invalid' : '']">
                       <option disabled value="">Please select one</option>
-                      <option v-for="glass in glasses" :value="glass.id">{{glass.Name}}</option>
+                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameEng}} {{glass.NameJap}}</option>
                     </select>
                     <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
                   </div>

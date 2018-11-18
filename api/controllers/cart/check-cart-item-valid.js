@@ -47,7 +47,7 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-    console.log(inputs);
+    // console.log(inputs);
     // add logic to check against other dates already taken and their quantities
     // if (inputs.DateStart === "2018-08-16") {
     //   throw 'dateTaken';
@@ -103,6 +103,7 @@ module.exports = {
 
     discountedInputs = {
       Id: inputs.Id,
+      Name: item.NameEng,
       Quantity: inputs.Quantity,
       UnitPrice: item.UnitPrice,
       TotalPrice: totalPrice,
