@@ -103,7 +103,7 @@ module.exports = {
 
     discountedInputs = {
       Id: inputs.Id,
-      Name: item.NameEng,
+      NameEng: item.NameEng,
       Quantity: inputs.Quantity,
       UnitPrice: item.UnitPrice,
       TotalPrice: totalPrice,

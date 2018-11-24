@@ -3,47 +3,15 @@
     <h1>Select Items</h1>
     <hr/>
     <p>Select items you would like to rent</p>
-    <div>
-      <div className="col-md-1 p-3" style="border: 1px lightgray solid">
-        <div><label>Order Cart</label></div>
-        <div>Time Period</div>
-        <div>Pick up date: {{cart.timePeriod && cart.timePeriod.DateStart}}</div>
-        <div>Return date: {{cart.timePeriod && cart.timePeriod.DateEnd}}</div>
-        <div>Days of use: {{cart.timePeriod && cart.timePeriod.DaysOfUse}}</div>
-        <hr />
-        <div>Items</div>
-        <div v-for="item in cart.items">
-          <div>{{item.Id}}</div>
-          <div>{{item.Quantity}}</div>
-          <div>{{item.UnitPrice}}</div>
-          <div>{{item.Name}}</div>
-        </div>
-      </div>
-      <div>
-        time form data
-        <div>{{formDataTime}}</div>
-        <br/>
-        item form data
-        <div>{{formDataItem}}</div>
-        <br/>
-      </div>
+    <div class="row">
+
     </div>
-    <button class="btn btn-sm btn-outline-info account-settings-button" @click="createGlass">
-      Create Glass
-    </button>
-    <button class="btn btn-sm btn-outline-info account-settings-button" @click="getGlasses">
-      Get Glasses
-    </button>
-    <button class="btn btn-sm btn-outline-success account-settings-button" @click="createOrderFromCart">
-      Create Order From Cart
-    </button>
-    <hr />
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <div v-for="glass in glasses" style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 row">
+          <div v-for="glass in glasses" style="border: 1px lightgray solid" class="mb-3 p-3 row">
             <div class="col-sm-6">
-              <img width="200" :src="glass.ImgSrc" />
+              <img width="230" :src="glass.ImgSrc" />
               <!--<img width="200" src="" />-->
             </div>
             <div class="col-sm-6">
@@ -56,11 +24,48 @@
               <small>Id: {{ glass.id }}</small>
               <br />
               <small>Product Code: {{ glass.ProductCode }}</small>
+              <div>
+                  <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
+                  <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
+                  <div class="form-group mt-1">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Add to Cart</ajax-button>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                </div>
             </div>
           </div>
         </div>
         <div class="col-sm-6">
-          <div style="border: 1px lightgray solid" class="mb-3 mt-3 p-3 ml-3 row">
+          <div class="p-3 ml-3 row mb-3" style="border: 1px lightgray solid; background: rgb(36, 144, 194); color: white;">
+            <div class="col-sm-12 m-0 p-0" style="display: flex; justify-content: space-between">
+              <div style="font-size: 1.4rem">Order Cart</div>
+              <div>Edit</div>
+            </div>
+            <div class="col-sm-12 m-0 p-0 mb-3">
+              <div>Pick up date: {{cart.timePeriod && cart.timePeriod.DateStart}}</div>
+              <div>Return date: {{cart.timePeriod && cart.timePeriod.DateEnd}}</div>
+              <div>Days of use: {{cart.timePeriod && cart.timePeriod.DaysOfUse}}</div>
+            </div>
+            <div class="col-sm-12 m-0 p-0">
+              <div v-for="item in cart.items" class="mb-3">
+                <div>Name: {{item.NameEng}}</input></div>
+                <div>Quantity: {{item.Quantity}}</div>
+                <div>Price: ${{item.UnitPrice}}</div>
+              </div>
+            </div>
+            <div class="col-sm-12 m-0 p-0" style="display: flex; justify-content: space-between">
+              <button class="btn btn-outline-light account-settings-button" @click="createOrderFromCart">
+                Reserve Order
+              </button>
+              <button class="btn btn-success account-settings-button" @click="createOrderFromCart">
+                Create Order
+              </button>
+            </div>
+          </div>
+          <div style="border: 1px lightgray solid" class="mb-3 p-3 ml-3 row">
             <ajax-form action="checkCartTimePeriodValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
               <div class="row">
                 <div class="col-sm-12">
@@ -131,6 +136,22 @@
                 </div>
               </div>
             </ajax-form>
+            <div>
+              time form data
+              <div>{{formDataTime}}</div>
+              <br/>
+              item form data
+              <div>{{formDataItem}}</div>
+              <br/>
+            </div>
+            <div class="col-sm-12 mb-3">
+              <button class="btn btn-sm btn-outline-info account-settings-button" @click="createGlass">
+                Create Glass
+              </button>
+              <button class="btn btn-sm btn-outline-info account-settings-button" @click="getGlasses">
+                Get Glasses
+              </button>
+            </div>
           </div>
         </div>
       </div>
