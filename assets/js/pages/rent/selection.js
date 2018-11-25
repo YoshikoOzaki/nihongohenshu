@@ -110,8 +110,9 @@ parasails.registerPage('selection', {
     handleItemSubmitting: async function(data) {
       // check all the logic for order items & update cart
       result = await Cloud.checkCartItemValid(..._.values(data));
-      console.log(result);
+
       oldCart = await parasails.util.getCart();
+
       const newCart = {
         ...oldCart,
         items: [
@@ -119,10 +120,19 @@ parasails.registerPage('selection', {
           result
         ],
       };
+      console.log(newCart);
 
       if (result) {
         localStorage.setItem('cart', JSON.stringify(newCart));
       }
+    },
+
+    removeItemFromCart: async function(data) {
+      oldCart = await parasails.util.getCart();
+
+      oldCartWithItemRemoved = _.without(oldCart, data.Id);
+
+      localStorage.setItem('cart', JSON.stringify(oldCartWithItemRemoved));
     },
 
     handleParsingTimeForm: function() {
