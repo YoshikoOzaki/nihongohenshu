@@ -130,9 +130,20 @@ parasails.registerPage('selection', {
     removeItemFromCart: async function(data) {
       oldCart = await parasails.util.getCart();
 
-      oldCartWithItemRemoved = _.without(oldCart, data.Id);
+      oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item) => {
+        console.log(item.Id, data.Id);
+        return item.Id !== data.Id;
+      });
 
-      localStorage.setItem('cart', JSON.stringify(oldCartWithItemRemoved));
+      const newCart = {
+        ...oldCart,
+        items: oldCartItemsWithItemRemoved,
+      };
+
+      if (oldCart) {
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        this.cart = await parasails.util.getCart();
+      }
     },
 
     handleParsingTimeForm: function() {

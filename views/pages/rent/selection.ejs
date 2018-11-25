@@ -49,10 +49,12 @@
               <div>Days of use: {{cart.timePeriod && cart.timePeriod.DaysOfUse}}</div>
             </div>
             <div class="col-sm-12 m-0 p-0">
-              <div v-for="item in cart.items" class="mb-3">
+              <div v-for="item in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
                 <div>Name: {{item.NameEng}}</input></div>
                 <div>Quantity: {{item.Quantity}}</div>
-                <div>Price: ${{item.UnitPrice}}</div>
+                <div>Discount: {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%</div>
+                <div>Price: ${{item.TotalPrice}}</div>
+                <div @click="removeItemFromCart({Id: item.Id})" style="cursor: pointer"><i><small>Remove</small></i></div>
               </div>
             </div>
             <div class="col-sm-12 m-0 p-0" style="display: flex; justify-content: space-between">
