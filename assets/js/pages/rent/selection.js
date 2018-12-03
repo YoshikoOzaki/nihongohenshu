@@ -131,7 +131,6 @@ parasails.registerPage('selection', {
       oldCart = await parasails.util.getCart();
 
       oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item) => {
-        console.log(item.Id, data.Id);
         return item.Id !== data.Id;
       });
 
