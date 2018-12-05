@@ -67,6 +67,30 @@
             </div>
           </div>
           <div style="border: 1px lightgray solid" class="mb-3 p-3 ml-3 row">
+            <ajax-form action="checkCartShippingValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingShippingForm">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Postcode</label>
+                    <input class="form-control" id="postcode" name="postcode" type="number"  :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']" v-model.trim="formDataShipping.Postcode" autocomplete="postcode">
+                    <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter days a postcode.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Check Shipping Cost</ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
+          </div>
+          <div style="border: 1px lightgray solid" class="mb-3 p-3 ml-3 row">
             <ajax-form action="checkCartTimePeriodValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
               <div class="row">
                 <div class="col-sm-12">

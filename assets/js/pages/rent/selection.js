@@ -91,6 +91,23 @@ parasails.registerPage('selection', {
       this.cart = await parasails.util.getCart();
     },
 
+    handleShippingSubmitting: async function(data) {
+      // check all the logic for order time & update cart
+      oldCart = await parasails.util.getCart();
+
+      // push in shipping code and current cart to check shipping function
+      result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
+
+      const newCart = {
+        ...oldCart,
+        shipping: {...result},
+      };
+
+      if (result) {
+        localStorage.setItem('cart', JSON.stringify(newCart));
+      }
+    },
+
     handleTimeSubmitting: async function(data) {
       // check all the logic for order time & update cart
       result = await Cloud.checkCartTimeValid(..._.values(data));
@@ -143,6 +160,25 @@ parasails.registerPage('selection', {
         localStorage.setItem('cart', JSON.stringify(newCart));
         this.cart = await parasails.util.getCart();
       }
+    },
+
+    handleParsingShippingForm: function() {
+      // Clear out any pre-existing error messages.
+      this.formErrorsShipping = {};
+
+      var argins = this.formDataShipping;
+
+      if(!argins.DateStart) {
+        this.formErrorsTime.Postcode = true;
+      }
+      // If there were any issues, they've already now been communicated to the user,
+      // so simply return undefined.  (This signifies that the submission should be
+      // cancelled.)
+      if (Object.keys(this.formErrorsShipping).length > 0) {
+        return;
+      }
+
+      return argins;
     },
 
     handleParsingTimeForm: function() {
