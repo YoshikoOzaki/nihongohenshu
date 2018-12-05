@@ -65,7 +65,7 @@ module.exports = {
     const washAndPolishConstant = 32;
     const daysOfUseDiscountFactor = 1;
 
-    const basePrice = UnitPrice - washAndPolishConstant;
+    const basePrice = UnitPrice;
     const fullRacks = Quantity / RackCapacity;
     const fullRacksRoundedDown = Math.floor(fullRacks);
     const quantityInFullRacks = RackCapacity * fullRacksRoundedDown;
@@ -80,8 +80,30 @@ module.exports = {
     const totalPrice = Quantity * UnitPrice;
 
     // Remove washing cost, calculate for full and partial racks the discount as a lump sum
-    const discountedBasePrice =
-      ((
+    // const DiscountedBasePrice =
+    //   ((
+    //     basePrice *
+    //     daysOfUseDiscountFactor *
+    //     quantityFactorForFullRack *
+    //     quantityInFullRacks
+    //   )
+    //   +
+    //   (
+    //     basePrice *
+    //     daysOfUseDiscountFactor *
+    //     quantityFactorForPartialRack *
+    //     quantityInPartiallyFullRack
+    //   ));
+
+    async function getDiscountedBasePrice (
+      basePrice,
+      daysOfUseDiscountFactor,
+      quantityFactorForFullRack,
+      quantityInFullRacks,
+      quantityFactorForPartialRack,
+      quantityInPartiallyFullRack,
+    ) {
+      return (
         basePrice *
         daysOfUseDiscountFactor *
         quantityFactorForFullRack *
@@ -93,24 +115,48 @@ module.exports = {
         daysOfUseDiscountFactor *
         quantityFactorForPartialRack *
         quantityInPartiallyFullRack
-      ));
+      );
+    }
 
     // Divide it by the total quantity and add was cost back on to get discounted unit price
-    const discountedUnitPrice = discountedBasePrice / Quantity + washAndPolishConstant;
+    discountedBasePrice = await getDiscountedBasePrice(
+      basePrice,
+      daysOfUseDiscountFactor,
+      quantityFactorForFullRack,
+      quantityInFullRacks,
+      quantityFactorForPartialRack,
+      quantityInPartiallyFullRack,
+    );
+
+    console.log(
+      basePrice,
+      daysOfUseDiscountFactor,
+      quantityFactorForFullRack,
+      quantityInFullRacks,
+      quantityFactorForPartialRack,
+      quantityInPartiallyFullRack
+    );
+
+    const discountedUnitPrice = discountedBasePrice / Quantity;
+    const discountedUnitPriceWithWash = ( discountedBasePrice / Quantity ) + washAndPolishConstant;
 
     // Use the new discounted unit price to calculate the discounted total cost
-    const discountedTotalPrice = discountedUnitPrice * Quantity;
+    const discountedTotalPrice = discountedUnitPriceWithWash * Quantity;
+    const totalPriceWithWash = (basePrice +  washAndPolishConstant) * Quantity;
 
     discountedInputs = {
       Id: inputs.Id,
       NameEng: item.NameEng,
       Quantity: inputs.Quantity,
       UnitPrice: item.UnitPrice,
+      WashAndPolish: washAndPolishConstant,
       TotalPrice: totalPrice,
-      DiscountedUnitPrice: Math.round(discountedUnitPrice),
-      DiscountedTotalPrice: Math.round(discountedTotalPrice),
+      TotalPriceWithWash: totalPriceWithWash,
+      DiscountedBasePrice: discountedBasePrice,
+      DiscountedUnitPrice: discountedUnitPrice,
+      DiscountedUnitPriceWithWash: discountedUnitPriceWithWash,
+      DiscountedTotalPrice: discountedTotalPrice,
     }
-    console.log(discountedInputs);
 
     return exits.success(discountedInputs);
   }

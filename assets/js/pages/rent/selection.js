@@ -9,11 +9,12 @@ parasails.registerPage('selection', {
     // Form data
     formDataTime: { /* … */ },
     formDataItem: { /* … */ },
-
+    formDataShipping: {  /* … */  },
     // For tracking client-side validation errors in our form.
     // > Has property set to `true` for each invalid property in `formData`.
     formErrorsTime: { /* … */ },
     formErrorsItems: { /* … */ },
+    formErrorsShipping: { /* … */ },
 
     // Server error state for the form
     cloudError: '',

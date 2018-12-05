@@ -22,6 +22,8 @@
               <br />
               <small>Id: {{ glass.id }}</small>
               <br />
+              <small>Regular Price: {{ glass.UnitPrice }}</small>
+              <br />
               <small>Product Code: {{ glass.ProductCode }}</small>
               <div>
                   <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
@@ -53,6 +55,8 @@
                 <div>Name: {{item.NameEng}}</input></div>
                 <div>Quantity: {{item.Quantity}}</div>
                 <div>Discount: {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%</div>
+                <div>Dunit$: {{item.DiscountedUnitPrice}}</div>
+                <div>unit$: {{item.UnitPrice}}</div>
                 <div>Price: ${{item.TotalPrice}}</div>
                 <div @click="removeItemFromCart({Id: item.Id})" style="cursor: pointer"><i><small>Remove</small></i></div>
               </div>
@@ -67,7 +71,14 @@
             </div>
           </div>
           <div style="border: 1px lightgray solid" class="mb-3 p-3 ml-3 row">
-            <ajax-form action="checkCartShippingValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingShippingForm">
+            <ajax-form style="width: 100%"
+              action="checkCartShippingValid"
+              :syncing.sync="syncing"
+              :cloud-error.sync="cloudError"
+              @submitted="submittedForm()"
+              :handle-submitting="handleShippingSubmitting"
+              :handle-parsing="handleParsingShippingForm"
+            >
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
