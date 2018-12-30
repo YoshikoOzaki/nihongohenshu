@@ -56,6 +56,7 @@ module.exports.routes = {
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
   'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },
+  'POST  /api/v1/cart/check-shipping-price':          { action: 'cart/check-shipping-price' },
 
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗

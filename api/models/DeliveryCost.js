@@ -40,9 +40,8 @@ module.exports = {
 
     Truck_Distance_Factor: {
       type: 'number',
-      required: true,
       description: 'Glass sku code',
-      example: 167
+      example: 156,
     },
 
     Takuhai_Factor: {

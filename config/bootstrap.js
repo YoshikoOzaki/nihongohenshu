@@ -60,7 +60,60 @@ module.exports.bootstrap = async function(done) {
 
   // By convention, this is a good place to set up fake data during development.
   await User.createEach([
-    { emailAddress: 'admin@example.com', fullName: 'Ryan Dahl', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123') },
+    { emailAddress: 'jarodccrowe@gmail.com', fullName: 'Jarod Crowe', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123') },
+  ]);
+
+  await Glass.createEach([
+    {
+      NameEng: 'Handmade Vintage WHITE',
+      NameJap: '北海道札幌市',
+      TotalQuantityInSystem: 10000,
+      ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-listing/pluh3320a_1_plumm-listing.jpg',
+      Sku: 160,
+      UnitPrice: 12,
+      RackCapacity: 10,
+    },
+    {
+      NameEng: 'Handmade Glass WHITE',
+      NameJap: '東京都新島村',
+      TotalQuantityInSystem: 20000,
+      ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_4_plumm-large.jpg',
+      Sku: 160,
+      UnitPrice: 12,
+      RackCapacity: 10,
+    },
+    {
+      NameEng: 'Handmade Glass WHITE',
+      NameJap: '東京都新島村',
+      TotalQuantityInSystem: 20000,
+      ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_4_plumm-large.jpg',
+      Sku: 160,
+      UnitPrice: 12,
+      RackCapacity: 10,
+    },
+  ]);
+
+  await DeliveryCost.createEach([
+    {
+      LowZip: '0010010',
+      HighZip: '0070895',
+      Place: '北海道札幌市',
+      Truck_OK: 0,
+      Takuhai_Factor: '4',
+      OFFSET: 1,
+      ZIP_VALUE: 10010,
+      OFFSET_CALC: 0,
+    },
+    {
+      LowZip: '0100000',
+      HighZip: '0185422',
+      Place: '秋田県鹿角市',
+      Truck_OK: 0,
+      Takuhai_Factor: '1',
+      OFFSET: 2,
+      ZIP_VALUE: 100000,
+      OFFSET_CALC: 1,
+    },
   ]);
 
   // Save new bootstrap version

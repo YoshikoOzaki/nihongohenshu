@@ -22,6 +22,8 @@
               <br />
               <small>Id: {{ glass.id }}</small>
               <br />
+              <small>Regular Price: {{ glass.UnitPrice }}</small>
+              <br />
               <small>Product Code: {{ glass.ProductCode }}</small>
               <div>
                   <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
@@ -53,6 +55,8 @@
                 <div>Name: {{item.NameEng}}</input></div>
                 <div>Quantity: {{item.Quantity}}</div>
                 <div>Discount: {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%</div>
+                <div>Dunit$: {{item.DiscountedUnitPrice}}</div>
+                <div>unit$: {{item.UnitPrice}}</div>
                 <div>Price: ${{item.TotalPrice}}</div>
                 <div @click="removeItemFromCart({Id: item.Id})" style="cursor: pointer"><i><small>Remove</small></i></div>
               </div>
@@ -65,6 +69,37 @@
                 Create Order
               </button>
             </div>
+          </div>
+          <div style="border: 1px lightgray solid" class="mb-3 p-3 ml-3 row">
+            <ajax-form style="width: 100%"
+              action="checkCartShippingValid"
+              :syncing.sync="syncing"
+              :cloud-error.sync="cloudError"
+              @submitted="submittedForm()"
+              :handle-submitting="handleShippingSubmitting"
+              :handle-parsing="handleParsingShippingForm"
+            >
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Postcode</label>
+                    <input class="form-control" id="postcode" name="postcode" type="number"  :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']" v-model.trim="formDataShipping.Postcode" autocomplete="postcode">
+                    <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter days a postcode.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Check Shipping Cost</ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
           </div>
           <div style="border: 1px lightgray solid" class="mb-3 p-3 ml-3 row">
             <ajax-form action="checkCartTimePeriodValid" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
