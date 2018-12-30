@@ -54,7 +54,7 @@ parasails.registerPage('selection', {
         'Rental Plumm Glass Flute',
         'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ',
         '555',
-        'http://plumm-glasses.jp/media/catalog/product/cache/5/image/600x450/9df78eab33525d08d6e5fb8d27136e95/f/l/flute-handmade.jpg',
+        'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-listing/pluh3320a_1_plumm-listing.jpg',
         '167',
         '120',
         '36',
