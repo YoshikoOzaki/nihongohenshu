@@ -50,6 +50,10 @@
               <div>Return date: {{cart.timePeriod && cart.timePeriod.DateEnd}}</div>
               <div>Days of use: {{cart.timePeriod && cart.timePeriod.DaysOfUse}}</div>
             </div>
+            <div class="col-sm-12 m-0 p-0 mb-3">
+              <div>Shipping Postcode: {{cart.shipping && cart.shipping.postcode}}</div>
+              <div>Shipping Postcode: {{cart.shipping && cart.shipping.price}}</div>
+            </div>
             <div class="col-sm-12 m-0 p-0">
               <div v-for="item in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
                 <div>Name: {{item.NameEng}}</input></div>
@@ -83,7 +87,15 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Postcode</label>
-                    <input class="form-control" id="postcode" name="postcode" type="number"  :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']" v-model.trim="formDataShipping.Postcode" autocomplete="postcode">
+                    <input 
+                      class="form-control" 
+                      id="postcode" 
+                      name="postcode" 
+                      type="number"  
+                      :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']" 
+                      v-model.trim="formDataShipping.Postcode" 
+                      autocomplete="postcode"
+                    >
                     <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter days a postcode.</div>
                   </div>
                 </div>

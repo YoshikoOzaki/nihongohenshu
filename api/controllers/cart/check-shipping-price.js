@@ -44,9 +44,22 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-   // from the cart items and the post code, return the shipping cost
-    console.log(inputs);
-    return exits.success(inputs);
+    // from the cart items and the post code, return the shipping cost
+
+    var ShippingFactorRecord = await DeliveryCost.find({
+      LowZip: { '<=': inputs.Postcode },
+      HighZip: { '>=': inputs.Postcode }
+    });
+
+    // calculate price based on factor record and cart contents
+
+    returnPayload = {
+      postcode: inputs.Postcode,
+      price: "$100",
+      shippingPossible: ShippingFactorRecord.length !== 0,
+    };
+
+    return exits.success(returnPayload);
   }
 
 };

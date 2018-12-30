@@ -101,12 +101,16 @@ parasails.registerPage('selection', {
 
       const newCart = {
         ...oldCart,
-        shipping: {...result},
+        shipping: { 
+          ...result
+        },
       };
 
       if (result) {
         localStorage.setItem('cart', JSON.stringify(newCart));
+        console.log(result);
       }
+      console.log('test1');
     },
 
     handleTimeSubmitting: async function(data) {
