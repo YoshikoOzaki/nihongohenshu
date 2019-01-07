@@ -55,7 +55,7 @@ module.exports = {
 
     // if all the validation passes - check the dates and item ids/skus
     // then just send back the validated item/order to add to the cart
-
+    console.log(inputs.id);
     var item = await Glass.findOne({ id: inputs.Id });
     // get the days of use from the cart value
 

@@ -17,5 +17,9 @@ module.exports.policies = {
   'account/logout': true,
   'view-homepage-or-redirect': true,
   'deliver-contact-form-message': true,
-
+  'cart/check-cart-item-valid': true,
+  'cart/check-cart-time-valid': true,
+  'cart/check-shipping-price': true,
+  'glass/get-glasses': true,
+  'rent/view-selection': true,
 };

@@ -46,12 +46,85 @@ module.exports = {
   fn: async function (inputs, exits) {
     // from the cart items and the post code, return the shipping cost
 
-    var ShippingFactorRecord = await DeliveryCost.find({
+    // some japanese will have a '-' in them that needs to be cleared probably before here though
+    const ShippingFactorRecord = await DeliveryCost.find({
       LowZip: { '<=': inputs.Postcode },
       HighZip: { '>=': inputs.Postcode }
     });
 
     // calculate price based on factor record and cart contents
+    // from shipping factor get tak factor & truck factor
+    // is truck or tak ? ->
+    const vehicleTypeRequired = ShippingFactorRecord.Truck_Ok === 1 ? 'truck' : 'takuhai';
+
+    if (vehicleTypeRequired === 'takuhai') {
+      const takuhaiFactor = ShippingFactorRecord.Takuhai_Factor;
+      const cartItems = inputs.Cart.items;
+
+      const cartItemsCalculation = [];
+      // get these from the db in case they change
+      let partialRackCalulation = {
+        36: 0,
+        25: 0,
+        16: 0,
+        9: 0,
+        10: 0,
+      };
+
+      async function calcRackRequirementsArray() {
+        _.forEach(cartItems, async (cartItem, i) => {
+          var product = await Glass.find({ id: inputs.Id }).limit(1);;
+          console.log('product \n\n', product[0], '\n\n');
+          console.log('old cart item \n\n', cartItem, '\n\n');
+
+          const fullRacksRequired = Math.floor(cartItem.Quantity / product[0].RackCapacity);
+          const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product[0].RackCapacity);
+
+          const newCartItem = {
+            productCode: cartItem.Id,
+            quantityOfItems: cartItem.Quantity,
+            rackCapactity: product[0].RackCapacity,
+            fullRacksRequired,
+            quantityInPartialRacks,
+          };
+
+          if (i === 0) { console.log('newCartItem \n\n', newCartItem, '\n\n') };
+          cartItemsCalculation.push(newCartItem);
+        });
+      }
+
+      async function calcPartialRacksRequired() {
+        await _.forEach(cartItemsCalculation, async (item) => {
+          const newValue = _.sum(partialRackCalulation[item.rackCapactity], item.quantityInPartialRacks);
+          const newPartialRackCalulation = {
+            ...partialRackCalulation,
+            [item.rackCapactity]: newValue,
+          }
+          partialRackCalulation = newPartialRackCalulation;
+        });
+      }
+
+      async function calcFullRacksRequired() {
+        
+      }
+
+
+      await calcRackRequirementsArray();
+      await calcPartialRacksRequired();
+
+      console.log('partialRackCalulation \n\n', partialRackCalulation, '\n\n');
+    }
+
+    // calc tak
+      // get rack requirements
+        // calc full racks
+        // calc partial racks
+        // combine both rack amounts
+        // bothRack / 2 (package can hold 2) (ceiling)
+        // package * tak factor = price of tak delivery
+
+    // calc truck
+
 
     returnPayload = {
       postcode: inputs.Postcode,
