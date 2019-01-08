@@ -61,21 +61,11 @@ module.exports = {
       const takuhaiFactor = ShippingFactorRecord.Takuhai_Factor;
       const cartItems = inputs.Cart.items;
 
-      const cartItemsCalculation = [];
-      // get these from the db in case they change
-      let partialRackCalulation = {
-        36: 0,
-        25: 0,
-        16: 0,
-        9: 0,
-        10: 0,
-      };
+      const buildRackRequirementArray = async function(){
+        let cartItemsCalculation = [];
 
-      async function calcRackRequirementsArray() {
-        _.forEach(cartItems, async (cartItem, i) => {
-          var product = await Glass.find({ id: inputs.Id }).limit(1);;
-          console.log('product \n\n', product[0], '\n\n');
-          console.log('old cart item \n\n', cartItem, '\n\n');
+        for (const cartItem of cartItems) {
+          var product = await Glass.find({ id: inputs.Id }).limit(1);
 
           const fullRacksRequired = Math.floor(cartItem.Quantity / product[0].RackCapacity);
           const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product[0].RackCapacity);
@@ -88,31 +78,55 @@ module.exports = {
             quantityInPartialRacks,
           };
 
-          if (i === 0) { console.log('newCartItem \n\n', newCartItem, '\n\n') };
           cartItemsCalculation.push(newCartItem);
-        });
-      }
+        };
 
-      async function calcPartialRacksRequired() {
-        await _.forEach(cartItemsCalculation, async (item) => {
-          const newValue = _.sum(partialRackCalulation[item.rackCapactity], item.quantityInPartialRacks);
+        return cartItemsCalculation;
+      };
+
+      const buildPartialRackRequiredObject = async function(rackRequirementsArray){
+        // get these from the db in case they change
+        let partialRackCalulationObject = {
+          36: 0,
+          25: 0,
+          16: 0,
+          9: 0,
+          10: 0,
+        };
+
+        for (const item of rackRequirementsArray) {
+          const newValue = partialRackCalulationObject[item.rackCapactity] + item.quantityInPartialRacks;
           const newPartialRackCalulation = {
-            ...partialRackCalulation,
+            ...partialRackCalulationObject,
             [item.rackCapactity]: newValue,
           }
-          partialRackCalulation = newPartialRackCalulation;
-        });
-      }
+          partialRackCalulationObject = newPartialRackCalulation;
+          console.log(partialRackCalulationObject[item.rackCapactity]);
+          console.log(newPartialRackCalulation);
+          console.log(newValue);
+        };
 
-      async function calcFullRacksRequired() {
+        return partialRackCalulationObject;
+      };
+
+      buildRackRequirementArray().then(
+        result => {
+          console.log(result);
+          buildPartialRackRequiredObject(result).then(result2 => {
+            console.log(result2);
+            const returnPayload = {
+              postcode: inputs.Postcode,
+              price: "$100",
+              shippingPossible: ShippingFactorRecord.length !== 0,
+              result2,
+            };
         
-      }
+            return exits.success(returnPayload);
+          });
+        }
+      );
 
 
-      await calcRackRequirementsArray();
-      await calcPartialRacksRequired();
-
-      console.log('partialRackCalulation \n\n', partialRackCalulation, '\n\n');
     }
 
     // calc tak
@@ -125,14 +139,6 @@ module.exports = {
 
     // calc truck
 
-
-    returnPayload = {
-      postcode: inputs.Postcode,
-      price: "$100",
-      shippingPossible: ShippingFactorRecord.length !== 0,
-    };
-
-    return exits.success(returnPayload);
   }
 
 };
