@@ -101,28 +101,58 @@ module.exports = {
             [item.rackCapactity]: newValue,
           }
           partialRackCalulationObject = newPartialRackCalulation;
-          console.log(partialRackCalulationObject[item.rackCapactity]);
-          console.log(newPartialRackCalulation);
-          console.log(newValue);
         };
 
         return partialRackCalulationObject;
       };
 
+      const fullRacksRequiredFromPartialRacks = async function(partialRackRequiredObject) {
+        const requiredRacks = Math.ceil(partialRackRequiredObject[36]/36) +
+        Math.ceil(partialRackRequiredObject[25]/25) +
+        Math.ceil(partialRackRequiredObject[16]/16) +
+        Math.ceil(partialRackRequiredObject[9]/9) +
+        Math.ceil(partialRackRequiredObject[10]/10);
+
+        return requiredRacks;
+      }
+
+      const combinePartialRacksRequiredAndFullRacksRequired = async function(rackRequirementArray, requiredPartialRacks) {
+        let totalRequiredFullRacks = 0;
+        for (const item of rackRequirementArray) {
+          totalRequiredFullRacks = totalRequiredFullRacks + item.fullRacksRequired;
+        };
+
+        return totalRequiredFullRacks + requiredPartialRacks;
+      }
+
       buildRackRequirementArray().then(
         result => {
           console.log(result);
-          buildPartialRackRequiredObject(result).then(result2 => {
-            console.log(result2);
-            const returnPayload = {
-              postcode: inputs.Postcode,
-              price: "$100",
-              shippingPossible: ShippingFactorRecord.length !== 0,
-              result2,
-            };
-        
-            return exits.success(returnPayload);
-          });
+          buildPartialRackRequiredObject(result).then(
+            result2 => {
+              console.log(result2);
+              fullRacksRequiredFromPartialRacks(result2).then(
+                result3 => {
+                  console.log(result3);
+                  combinePartialRacksRequiredAndFullRacksRequired(result, result3).then(
+                    result4 => {
+                      const totalNumberOfPackages = Math.ceil(result4/2) // line 47
+                      const totalPrice = totalNumberOfPackages * 2146 // look this up from tak factor on other data
+                      console.log(totalPrice);
+                      const returnPayload = {
+                        postcode: inputs.Postcode,
+                        price: totalPrice,
+                        shippingPossible: ShippingFactorRecord.length !== 0,
+                        result2,
+                      };
+                  
+                      return exits.success(returnPayload);
+                    }
+                  )
+                }
+              )
+            }
+          );
         }
       );
 
