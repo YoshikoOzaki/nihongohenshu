@@ -114,6 +114,7 @@ parasails.registerPage('selection', {
 
       // push in shipping code and current cart to check shipping function
       result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
+
       const newCart = {
         ...oldCart,
         shipping: {
@@ -127,31 +128,50 @@ parasails.registerPage('selection', {
     },
 
     handleItemSubmitting: async function(data) {
-      // check all the logic for order items & update cart
-      result = await Cloud.checkCartItemValid(..._.values(data));
-
-      oldCart = await parasails.util.getCart();
-
-      const newCart = {
-        ...oldCart,
-        items: [
-          ...oldCart.items,
-          result
-        ],
-      };
-
-      if (result) {
-        // data needs to be Postcost and Cart
-        result2 = await Cloud.checkShippingPrice(newCart.shipping.postcode, newCart);
-        const newCart2 = {
+      const getCartWithNewItem = async function(itemData) {
+        result = await Cloud.checkCartItemValid(..._.values(data));
+        oldCart = await parasails.util.getCart();
+        const newCart = {
           ...oldCart,
+          items: [
+            ...oldCart.items,
+            result
+          ],
+        };
+        if (result) {
+          return newCart;
+        }
+      }
+
+      const getCartWithNewItemAndShippingCalulated = async function(newCart){
+        // oldCart = await parasails.util.getCart();
+        result = await Cloud.checkShippingPrice(newCart.shipping.Postcode || 0, newCart);
+        const newCart2 = {
+          ...newCart,
           shipping: {
-            ...result2
+            ...result
           },
         };
-
-        localStorage.setItem('cart', JSON.stringify(newCart2));
+        if (result) {
+          return newCart2;
+        }
       }
+
+      getCartWithNewItem(data).then(
+        result => {
+          console.log(result);
+          getCartWithNewItemAndShippingCalulated(result).then(
+            result2 => {
+              console.log(result2);
+              if (result2) {
+                localStorage.setItem('cart', JSON.stringify(result2));
+                this.cart = result2;
+                return;
+              }
+            }
+          )
+        }
+      )
     },
 
     removeItemFromCart: async function(data) {
