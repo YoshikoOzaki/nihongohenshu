@@ -51,6 +51,7 @@ module.exports = {
       LowZip: { '<=': inputs.Postcode },
       HighZip: { '>=': inputs.Postcode }
     });
+    console.log(ShippingFactorRecord);
 
     // calculate price based on factor record and cart contents
     // from shipping factor get tak factor & truck factor
