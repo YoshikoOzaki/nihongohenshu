@@ -181,11 +181,18 @@ parasails.registerPage('selection', {
     },
 
     removeItemFromCart: async function(data) {
-      oldCart = await parasails.util.getCart();
-
-      oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item) => {
-        return item.Id !== data.Id;
-      });
+      const removeItemFromCart = async function(itemToRemove) {
+        oldCart = await parasails.util.getCart();
+        oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item) => {
+          return item.Id !== data.Id;
+        });
+        const newCart = {
+          ...oldCart,
+          items: oldCartItemsWithItemRemoved,
+        };
+        return newCart;
+      }
+      // wip
 
       const newCart = {
         ...oldCart,
