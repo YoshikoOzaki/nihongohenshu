@@ -92,27 +92,6 @@ parasails.registerPage('selection', {
       this.cart = await parasails.util.getCart();
     },
 
-    handleShippingSubmitting: async function(data) {
-      // check all the logic for order time & update cart
-      oldCart = await parasails.util.getCart();
-
-      // push in shipping code and current cart to check shipping function
-      result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
-
-      const newCart = {
-        ...oldCart,
-        shipping: { 
-          ...result
-        },
-      };
-
-      if (result) {
-        localStorage.setItem('cart', JSON.stringify(newCart));
-        console.log(result);
-      }
-      console.log('test1');
-    },
-
     handleTimeSubmitting: async function(data) {
       // check all the logic for order time & update cart
       result = await Cloud.checkCartTimeValid(..._.values(data));
@@ -122,6 +101,24 @@ parasails.registerPage('selection', {
       const newCart = {
         ...oldCart,
         timePeriod: {...result},
+      };
+
+      if (result) {
+        localStorage.setItem('cart', JSON.stringify(newCart));
+      }
+    },
+
+    handleShippingSubmitting: async function(data) {
+      // check all the logic for order time & update cart
+      oldCart = await parasails.util.getCart();
+
+      // push in shipping code and current cart to check shipping function
+      result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
+      const newCart = {
+        ...oldCart,
+        shipping: {
+          ...result
+        },
       };
 
       if (result) {
@@ -142,10 +139,18 @@ parasails.registerPage('selection', {
           result
         ],
       };
-      console.log(newCart);
 
       if (result) {
-        localStorage.setItem('cart', JSON.stringify(newCart));
+        // data needs to be Postcost and Cart
+        result2 = await Cloud.checkShippingPrice(newCart.shipping.postcode, newCart);
+        const newCart2 = {
+          ...oldCart,
+          shipping: {
+            ...result2
+          },
+        };
+
+        localStorage.setItem('cart', JSON.stringify(newCart2));
       }
     },
 

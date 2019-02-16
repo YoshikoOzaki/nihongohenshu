@@ -127,25 +127,21 @@ module.exports = {
 
       buildRackRequirementArray().then(
         result => {
-          console.log(result);
           buildPartialRackRequiredObject(result).then(
             result2 => {
-              console.log(result2);
               fullRacksRequiredFromPartialRacks(result2).then(
                 result3 => {
-                  console.log(result3);
                   combinePartialRacksRequiredAndFullRacksRequired(result, result3).then(
                     result4 => {
                       const totalNumberOfPackages = Math.ceil(result4/2) // line 47
                       const totalPrice = totalNumberOfPackages * 2146 // look this up from tak factor on other data
-                      console.log(totalPrice);
                       const returnPayload = {
                         postcode: inputs.Postcode,
                         price: totalPrice,
                         shippingPossible: ShippingFactorRecord.length !== 0,
                         result2,
                       };
-                  
+
                       return exits.success(returnPayload);
                     }
                   )
