@@ -144,7 +144,6 @@ parasails.registerPage('selection', {
       }
 
       const getCartWithNewItemAndShippingCalulated = async function(newCart){
-        console.log(newCart);
         const postcode = () => {
           if (newCart.shipping && newCart.shipping.postcode) {
             return newCart.shipping.postcode;
@@ -165,10 +164,8 @@ parasails.registerPage('selection', {
 
       getCartWithNewItem(data).then(
         result => {
-          console.log(result);
           getCartWithNewItemAndShippingCalulated(result).then(
             result2 => {
-              console.log(result2);
               if (result2) {
                 localStorage.setItem('cart', JSON.stringify(result2));
                 this.cart = result2;
@@ -192,17 +189,48 @@ parasails.registerPage('selection', {
         };
         return newCart;
       }
-      // wip
 
-      const newCart = {
-        ...oldCart,
-        items: oldCartItemsWithItemRemoved,
-      };
-
-      if (oldCart) {
-        localStorage.setItem('cart', JSON.stringify(newCart));
-        this.cart = await parasails.util.getCart();
+      const getCartWithRemovedItemAndShippingCalculated = async function(newCart) {
+        const postcode = () => {
+          if (newCart.shipping && newCart.shipping.postcode) {
+            return newCart.shipping.postcode;
+          }
+          return 0;
+        }
+        result = await Cloud.checkShippingPrice(newCart.shipping.Postcode || 0, newCart);
+        const newCart2 = {
+          ...newCart,
+          shipping: {
+            ...result
+          },
+        };
+        if (result) {
+          return newCart2;
+        }
       }
+
+      removeItemFromCart(data).then(
+        result => {
+          getCartWithRemovedItemAndShippingCalculated(result).then(
+            result2 => {
+              if (result2) {
+                localStorage.setItem('cart', JSON.stringify(result2));
+                this.cart = result2;
+                return;
+              }
+            }
+          )
+        }
+      )
+      // const newCart = {
+      //   ...oldCart,
+      //   items: oldCartItemsWithItemRemoved,
+      // };
+
+      // if (oldCart) {
+      //   localStorage.setItem('cart', JSON.stringify(newCart));
+      //   this.cart = await parasails.util.getCart();
+      // }
     },
 
     handleParsingShippingForm: function() {
