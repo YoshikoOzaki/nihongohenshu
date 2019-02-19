@@ -71,7 +71,6 @@ parasails.registerPage('selection', {
 
     createOrderFromCart: async function() {
       const cart = await parasails.util.getCart();
-      console.log(cart);
       const payload = {
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
@@ -144,13 +143,15 @@ parasails.registerPage('selection', {
       }
 
       const getCartWithNewItemAndShippingCalulated = async function(newCart){
+        console.log(newCart);
         const postcode = () => {
           if (newCart.shipping && newCart.shipping.postcode) {
             return newCart.shipping.postcode;
           }
           return 0;
         }
-        result = await Cloud.checkShippingPrice(newCart.shipping.Postcode || 0, newCart);
+        console.log(postcode());
+        result = await Cloud.checkShippingPrice(postcode(), newCart);
         const newCart2 = {
           ...newCart,
           shipping: {

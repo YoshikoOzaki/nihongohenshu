@@ -51,7 +51,6 @@ module.exports = {
       LowZip: { '<=': inputs.Postcode },
       HighZip: { '>=': inputs.Postcode }
     });
-    console.log(ShippingFactorRecord);
 
     // calculate price based on factor record and cart contents
     // from shipping factor get tak factor & truck factor
@@ -59,7 +58,21 @@ module.exports = {
     const vehicleTypeRequired = ShippingFactorRecord.Truck_Ok === 1 ? 'truck' : 'takuhai';
 
     if (vehicleTypeRequired === 'takuhai') {
-      const takuhaiFactor = ShippingFactorRecord.Takuhai_Factor;
+
+      // currently this returns [] if there is no ShippingFactorRecord which happens if user hasn't added a postcode yet
+      // wip
+      // need to async get this value
+      getValidTakuhaiFactor = (record) => {
+        if (ShippingFactorRecord !== []) {
+          return ShippingFactorRecord.Takuhai_Factor;
+        }
+        return 1;
+      }
+      TakuhaiUnitChargeObject = await TakuhaiUnitCharge.find({ 'TakuhaiFactor': getValidTakuhaiFactor(ShippingFactorRecord) });
+      console.log(TakuhaiUnitChargeObject);
+      console.log(getValidTakuhaiFactor(ShippingFactorRecord));
+      console.log(ShippingFactorRecord);
+
       const cartItems = inputs.Cart.items;
 
       const buildRackRequirementArray = async function(){
@@ -135,7 +148,7 @@ module.exports = {
                   combinePartialRacksRequiredAndFullRacksRequired(result, result3).then(
                     result4 => {
                       const totalNumberOfPackages = Math.ceil(result4/2) // line 47
-                      const totalPrice = totalNumberOfPackages * 2146 // look this up from tak factor on other data
+                      const totalPrice = totalNumberOfPackages * TakuhaiUnitChargeObject.TakuhaiUnitCharge // look this up from tak factor on other data
                       const returnPayload = {
                         postcode: inputs.Postcode,
                         price: totalPrice,

@@ -117,6 +117,29 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
+  await TakuhaiUnitCharge.createEach([
+    {
+      TakuhaiFactor: 1,
+      TakuhaiUnitCharge: 1776,
+    },
+    {
+      TakuhaiFactor: 2,
+      TakuhaiUnitCharge: 1863,
+    },
+    {
+      TakuhaiFactor: 3,
+      TakuhaiUnitCharge: 1960,
+    },
+    {
+      TakuhaiFactor: 4,
+      TakuhaiUnitCharge: 2146,
+    },
+    {
+      TakuhaiFactor: 9,
+      TakuhaiUnitCharge: 2295,
+    },
+  ]);
+
   // Save new bootstrap version
   await sails.helpers.fs.writeJson.with({
     destination: bootstrapLastRunInfoPath,
