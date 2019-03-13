@@ -69,6 +69,9 @@
               <button class="btn btn-outline-light account-settings-button" @click="createOrderFromCart">
                 Reserve Order
               </button>
+              <button class="btn btn-success account-settings-button" @click="sendOrderToStripe">
+                Send Order to Stripe
+              </button>
               <button class="btn btn-success account-settings-button" @click="createOrderFromCart">
                 Create Order
               </button>
@@ -87,13 +90,13 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Postcode</label>
-                    <input 
-                      class="form-control" 
-                      id="postcode" 
-                      name="postcode" 
-                      type="number"  
-                      :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']" 
-                      v-model.trim="formDataShipping.Postcode" 
+                    <input
+                      class="form-control"
+                      id="postcode"
+                      name="postcode"
+                      type="number"
+                      :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']"
+                      v-model.trim="formDataShipping.Postcode"
                       autocomplete="postcode"
                     >
                     <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter days a postcode.</div>

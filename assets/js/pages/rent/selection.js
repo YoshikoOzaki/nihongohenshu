@@ -81,6 +81,19 @@ parasails.registerPage('selection', {
       order = await Cloud.createOrder(..._.values(payload));
     },
 
+    sendOrderToStripe: async function() {
+      const cart = await parasails.util.getCart();
+      const payload = {
+        DateStart: cart.timePeriod.DateStart,
+        DateEnd: cart.timePeriod.DateEnd,
+        DaysOfUse: cart.timePeriod.DaysOfUse,
+        Items: cart.items,
+      }
+
+      parasails.util.openStripeCheckout("pk_test_IqoHBVhDOCbe2kBaZCbjk3Ow", "jarodccrowe@gmail.com");
+      // gets token if cc + details are valid - use token to charge the card
+    },
+
     submittedForm: async function() {
       // Redirect to the account page on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--

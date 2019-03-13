@@ -69,9 +69,6 @@ module.exports = {
         return 1;
       }
       TakuhaiUnitChargeObject = await TakuhaiUnitCharge.find({ 'TakuhaiFactor': getValidTakuhaiFactor(ShippingFactorRecord) });
-      console.log(TakuhaiUnitChargeObject);
-      console.log(getValidTakuhaiFactor(ShippingFactorRecord));
-      console.log(ShippingFactorRecord);
 
       const cartItems = inputs.Cart.items;
 
