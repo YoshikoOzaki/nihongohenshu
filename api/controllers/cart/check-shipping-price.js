@@ -47,11 +47,21 @@ module.exports = {
     // from the cart items and the post code, return the shipping cost
 
     // some japanese will have a '-' in them that needs to be cleared probably before here though
-    const ShippingFactorRecord = await DeliveryCost.find({
+    const ShippingFactorRecord = await DeliveryCost.findOne({
       LowZip: { '<=': inputs.Postcode },
       HighZip: { '>=': inputs.Postcode }
     });
 
+    // if theres no shipping record for the post code, return that it's not possible
+    if (ShippingFactorRecord === undefined) {
+      const returnPayload = {
+        postcode: inputs.Postcode,
+        price: 0,
+        shippingPossible: false,
+      };
+
+      return exits.success(returnPayload);
+    }
     // calculate price based on factor record and cart contents
     // from shipping factor get tak factor & truck factor
     // is truck or tak ? ->
@@ -62,13 +72,9 @@ module.exports = {
       // currently this returns [] if there is no ShippingFactorRecord which happens if user hasn't added a postcode yet
       // wip
       // need to async get this value
-      getValidTakuhaiFactor = (record) => {
-        if (ShippingFactorRecord !== []) {
-          return ShippingFactorRecord.Takuhai_Factor;
-        }
-        return 1;
-      }
-      TakuhaiUnitChargeObject = await TakuhaiUnitCharge.find({ 'TakuhaiFactor': getValidTakuhaiFactor(ShippingFactorRecord) });
+      TakuhaiUnitChargeObject = await TakuhaiUnitCharge.findOne({ 'TakuhaiFactor':
+        ShippingFactorRecord.Takuhai_Factor || 1
+      });
 
       const cartItems = inputs.Cart.items;
 
@@ -149,7 +155,7 @@ module.exports = {
                       const returnPayload = {
                         postcode: inputs.Postcode,
                         price: totalPrice,
-                        shippingPossible: ShippingFactorRecord.length !== 0,
+                        shippingPossible: ShippingFactorRecord,
                         result2,
                       };
 

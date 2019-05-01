@@ -53,6 +53,11 @@
             <div class="col-sm-12 m-0 p-0 mb-3">
               <div>Shipping Postcode: {{cart.shipping && cart.shipping.postcode}}</div>
               <div>Shipping Price: ¥ {{cart.shipping && cart.shipping.price}}</div>
+              <div>
+                <p class="text-danger" v-if="cart.shipping && cart.shipping.shippingPossible === false">
+                   Shipping is not supported to this postcode
+                </p>
+              </div>
             </div>
             <div class="col-sm-12 m-0 p-0">
               <div v-for="item in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
@@ -69,9 +74,9 @@
               <button class="btn btn-outline-light account-settings-button" @click="createOrderFromCart">
                 Reserve Order
               </button>
-              <button class="btn btn-success account-settings-button" @click="sendOrderToStripe">
+              <!-- <button class="btn btn-success account-settings-button" @click="sendOrderToStripe">
                 Send Order to Stripe
-              </button>
+              </button> -->
               <button class="btn btn-success account-settings-button" @click="createOrderFromCart">
                 Create Order
               </button>

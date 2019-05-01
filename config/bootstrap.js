@@ -117,6 +117,47 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
+  await Order.createEach([
+    {
+      DateStart: '2019-05-01',
+      DateEnd: '2019-05-10',
+      DaysOfUse: '6',
+    },
+    {
+      DateStart: '2019-05-01',
+      DateEnd: '2019-05-10',
+      DaysOfUse: '6',
+    },
+  ]);
+
+  await OrderLineNumber.createEach([
+    {
+      Quantity: '1000',
+      Glass: '12',
+      Order: '1',
+    },
+    {
+      Quantity: '1000',
+      Glass: '12',
+      Order: '1',
+    },
+    {
+      Quantity: '1000',
+      Glass: '12',
+      Order: '1',
+    },
+    {
+      Quantity: '500',
+      Glass: '12',
+      Order: '2',
+    },
+    {
+      Quantity: '500',
+      Glass: '13',
+      Order: '2',
+    },
+  ]);
+
   await TakuhaiUnitCharge.createEach([
     {
       TakuhaiFactor: 1,

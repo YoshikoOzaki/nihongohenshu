@@ -156,14 +156,12 @@ parasails.registerPage('selection', {
       }
 
       const getCartWithNewItemAndShippingCalulated = async function(newCart){
-        console.log(newCart);
         const postcode = () => {
           if (newCart.shipping && newCart.shipping.postcode) {
             return newCart.shipping.postcode;
           }
           return 0;
         }
-        console.log(postcode());
         result = await Cloud.checkShippingPrice(postcode(), newCart);
         const newCart2 = {
           ...newCart,

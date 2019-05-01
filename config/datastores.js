@@ -53,7 +53,7 @@ module.exports.datastores = {
     // adapter: 'sails-mysql',
     // // url: 'mysql://user:password@host:port/database',
     // adapter: 'sails-mongo',
-    // url: 'mongodb://jc:red18hut@cluster0-shard-00-01-khnsh.mongodb.net:27017/Plumm_Title',
+    // url: 'mongodb://jc:red18hut@cluster0-shard-00-01-khnsh.mongodb.net:27017/Plumm Glass Rental',
   },
 
 
