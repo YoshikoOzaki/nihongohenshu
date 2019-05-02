@@ -1,5 +1,5 @@
 /**
- * OrderLineNumbers.js
+ * OrderLineNumber.js
  *
  * The lines in an order, ie a type of glass with it's quantity.
  */
@@ -22,6 +22,11 @@ module.exports = {
     Order: {
       model: 'Order',
     },
+
+    Transaction: {
+      collection: 'Transaction',
+      via: 'LineNumber',
+    }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

@@ -158,6 +158,31 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
+  await Transaction.createEach([
+    {
+      OrderNumber: '1',
+      LineNumber: '1',
+      TransactionType: '40',
+      Product: '12',
+      Quantity: '1000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'order created',
+      Date: '2019-05-01',
+    },
+    {
+      OrderNumber: '2',
+      LineNumber: '2',
+      TransactionType: '40',
+      Product: '13',
+      Quantity: '1000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'order created',
+      Date: '2019-05-01',
+    }
+  ]);
+
   await TakuhaiUnitCharge.createEach([
     {
       TakuhaiFactor: 1,

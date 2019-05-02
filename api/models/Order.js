@@ -35,6 +35,11 @@ module.exports = {
     OrderLineNumbers: {
       collection: 'OrderLineNumber',
       via: 'Order',
+    },
+
+    OrderTransactions: {
+      collection: 'Transaction',
+      via: 'OrderNumber'
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

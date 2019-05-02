@@ -32,6 +32,9 @@ module.exports.datastores = {
   ***************************************************************************/
 
   default: {
+    // use this for local
+    // adapter: 'sails-disk',
+
     adapter: 'sails-postgresql',
     url: 'postgres://kshdzlzodjxrxa:88f4cbc0b683c57144a0db7bafb341b651ffa3316e1f3b53a3e780fb5e33c943@ec2-75-101-138-26.compute-1.amazonaws.com:5432/dev1mj9uq0dsqc',
     ssl: true
@@ -51,7 +54,7 @@ module.exports.datastores = {
     *                                                                          *
     ***************************************************************************/
     // adapter: 'sails-mysql',
-    // // url: 'mysql://user:password@host:port/database',
+    // url: 'mysql://user:password@host:port/database',
     // adapter: 'sails-mongo',
     // url: 'mongodb://jc:red18hut@cluster0-shard-00-01-khnsh.mongodb.net:27017/Plumm Glass Rental',
   },
