@@ -1,5 +1,5 @@
 /**
- * Transaction.js
+ * TransactionType.js
  *
  * Descriptions of all the transactions going through the system and their status.
  */
@@ -11,53 +11,35 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    OrderNumber: {
-      collection: 'Order',
-      via: 'OrderTransactions',
+    id: {
+      type: 'number',
+      description: 'Code for transactionType',
+      example: 10,
+      required: true,
     },
 
-    LineNumber: {
-      collection: 'OrderLineNumber',
-      via: 'Transaction',
-    },
-
-    TransactionType: {
-      model: 'TransactionType',
-    },
-
-    Product: {
-      model: 'Glass',
-    },
-
-    Quantity: {
+    Name: {
       type: 'string',
-      description: 'Amount of product in the order',
-      example: '450'
+      description: 'Name in Japanese',
+      example: '確定'
     },
 
-    UnitPrice: {
+    Description: {
       type: 'string',
-      description: 'Time when the transaction will / did take place',
-      example: '100',
+      description: 'Description',
+      example: 'Breakage In Warehouse',
     },
 
-    Warehouse: {
+    RecordHandlingGuide: {
       type: 'string',
-      description: 'Will later reference a warehouse table',
-      example: '60'
+      description: 'Not sure',
+      example: '11',
     },
 
-    Comment: {
-      type: 'string',
-      description: 'Product owner description of string',
-      example: 'Customer requested return one day later',
+    Transactions: {
+      collection: 'Transaction',
+      via: 'TransactionType',
     },
-
-    Date: {
-      type: 'string',
-      description: 'Time the order was made',
-      example: '2018-08-08T14:00:00.000Z',
-    }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

@@ -117,6 +117,41 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
+  await TransactionType.createEach([
+    {
+      id: 10,
+      Name: '確定',
+      Description: 'Stock in',
+      RecordHandlingGuide: '11',
+    },
+    {
+      id: 40,
+      Name: '注文確定',
+      Description: 'Rental order',
+      RecordHandlingGuide: '12',
+    },
+    {
+      id: 53,
+      Name: 'ﾚﾝﾀﾙ中',
+      Description: 'With the renter',
+      RecordHandlingGuide: '22',
+    },
+    {
+      id: 55,
+      Name: '返却済み',
+      Description: 'Rental Return Confirmed',
+      RecordHandlingGuide: '22',
+    },
+    {
+      id: 57,
+      Name: '洗浄済み転記可',
+      Description: 'Wash Completed, post to accounts receivable. If payment already received, ' +
+      'it will be recorded in the independent accounts receivable package. Lotus posts across' +
+      ' the systems, but this could be handled as a separately developed batch op.',
+      RecordHandlingGuide: '22',
+    },
+  ]);
+
   await Order.createEach([
     {
       DateStart: '2019-05-01',
