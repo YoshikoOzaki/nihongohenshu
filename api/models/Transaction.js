@@ -23,16 +23,19 @@ module.exports = {
 
     TransactionType: {
       model: 'TransactionType',
+      required: true,
     },
 
     Product: {
       model: 'Glass',
+      required: true,
     },
 
     Quantity: {
       type: 'string',
       description: 'Amount of product in the order',
-      example: '450'
+      example: '450',
+      required: true,
     },
 
     UnitPrice: {
@@ -57,6 +60,7 @@ module.exports = {
       type: 'string',
       description: 'Time the order was made',
       example: '2018-08-08T14:00:00.000Z',
+      required: true,
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

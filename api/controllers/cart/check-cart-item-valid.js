@@ -25,6 +25,27 @@ module.exports = {
       example: "555"
     },
 
+    DateStart: {
+      type: 'string',
+      required: true,
+      description: 'The date start that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
+    },
+
+    DateEnd: {
+      type: 'string',
+      required: true,
+      description: 'The date end that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
+    },
+
+    DaysOfUse: {
+      type: 'string',
+      required: true,
+      description: 'Total number of days the glasses will be used',
+      example: "555"
+    }
+
     // should be able to change this to a date range picker with startdate enddate
   },
 
@@ -47,15 +68,14 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-    // console.log(inputs);
-    // add logic to check against other dates already taken and their quantities
-    // if (inputs.DateStart === "2018-08-16") {
-    //   throw 'dateTaken';
-    // }
 
-    // if all the validation passes - check the dates and item ids/skus
-    // then just send back the validated item/order to add to the cart
-    console.log(inputs.id);
+    // check availability and add available to each item that is checked
+    // if no date, they must select a date range first
+    // send in the dates also
+    const getAvailability = () => {
+      return 'Unknown';
+    };
+
     var item = await Glass.findOne({ id: inputs.Id });
     // get the days of use from the cart value
 
@@ -156,6 +176,7 @@ module.exports = {
       DiscountedUnitPrice: discountedUnitPrice,
       DiscountedUnitPriceWithWash: discountedUnitPriceWithWash,
       DiscountedTotalPrice: discountedTotalPrice,
+      Available: getAvailability(),
     }
 
     return exits.success(discountedInputs);

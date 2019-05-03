@@ -195,6 +195,14 @@ module.exports.bootstrap = async function(done) {
 
   await Transaction.createEach([
     {
+      TransactionType: '10',
+      Product: '12',
+      Quantity: '5000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
       OrderNumber: '1',
       LineNumber: '1',
       TransactionType: '40',
@@ -215,6 +223,17 @@ module.exports.bootstrap = async function(done) {
       Warehouse: '60',
       Comment: 'order created',
       Date: '2019-05-01',
+    },
+    {
+      OrderNumber: '2',
+      LineNumber: '2',
+      TransactionType: '57',
+      Product: '13',
+      Quantity: '1000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'order returned',
+      Date: '2019-05-05',
     }
   ]);
 

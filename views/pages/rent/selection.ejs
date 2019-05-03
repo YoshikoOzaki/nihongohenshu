@@ -182,6 +182,7 @@
               </div>
               <div class="row">
                 <div class="col-sm-12">
+                  <!-- <p class="text-danger" v-if="cloudError === 'noDateSelected'">You must select a date before you can input items</p> -->
                   <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
                   <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
                 </div>

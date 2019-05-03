@@ -141,8 +141,14 @@ parasails.registerPage('selection', {
 
     handleItemSubmitting: async function(data) {
       const getCartWithNewItem = async function(itemData) {
-        result = await Cloud.checkCartItemValid(..._.values(data));
         oldCart = await parasails.util.getCart();
+        const dataWithTimePeriod = {
+          ...data,
+          ...oldCart.timePeriod,
+        }
+        console.log(..._.values(dataWithTimePeriod));
+        console.log(dataWithTimePeriod);
+        result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
         const newCart = {
           ...oldCart,
           items: [
@@ -302,6 +308,9 @@ parasails.registerPage('selection', {
       if(!argins.Quantity) {
         this.formErrorsItems.Quantity = true;
       }
+      // if(!cart.DateEnd || !cart.DateEnd) {
+      //   this.formErrorsItems.noDateSeleted = true;
+      // }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be
       // cancelled.)
