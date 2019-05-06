@@ -152,7 +152,7 @@ module.exports = {
     ***************************************************************************/
     cors: {
       allowOrigins: [
-        'https://plumm-rental.herokuapp.com/',
+        'https://plumm-rental.herokuapp.com',
       ]
     },
 
@@ -254,7 +254,7 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     onlyAllowOrigins: [
-      'https://plumm-rental.herokuapp.com/',
+      'https://plumm-rental.herokuapp.com',
     ],
 
 
@@ -373,7 +373,7 @@ module.exports = {
   *                                                                         *
   ***************************************************************************/
   custom: {
-    baseUrl: 'https://plumm-rental.herokuapp.com/',
+    baseUrl: 'https://plumm-rental.herokuapp.com',
     internalEmailAddress: 'jarodccrowe@gmail.com',
 
     // mailgunDomain: 'mg.example.com',
