@@ -376,8 +376,9 @@ module.exports = {
   *                                                                         *
   ***************************************************************************/
   custom: {
+    // baseUrl: 'localhost:1337',
     baseUrl: 'https://plumm-rental.herokuapp.com',
-    internalEmailAddress: 'jarodccrowe@gmail.com',
+    internalEmailAddress: 'support@example.com',
 
     // mailgunDomain: 'mg.example.com',
     // mailgunSecret: 'key-prod_fake_bd32301385130a0bafe030c',
