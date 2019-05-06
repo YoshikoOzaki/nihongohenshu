@@ -1,7 +1,7 @@
 /**
- * OrderLineNumber.js
+ * TransactionType.js
  *
- * The lines in an order, ie a type of glass with it's quantity.
+ * Descriptions of all the transactions going through the system and their status.
  */
 
 module.exports = {
@@ -11,22 +11,35 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    Quantity: {
+    id: {
       type: 'number',
+      description: 'Code for transactionType',
+      example: 10,
+      required: true,
     },
 
-    Glass: {
-      model: 'Glass',
+    Name: {
+      type: 'string',
+      description: 'Name in Japanese',
+      example: '確定'
     },
 
-    Order: {
-      model: 'Order',
+    Description: {
+      type: 'string',
+      description: 'Description',
+      example: 'Breakage In Warehouse',
     },
 
-    Transaction: {
+    RecordHandlingGuide: {
+      type: 'string',
+      description: 'Not sure',
+      example: '11',
+    },
+
+    Transactions: {
       collection: 'Transaction',
-      via: 'LineNumber',
-    }
+      via: 'TransactionType',
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
