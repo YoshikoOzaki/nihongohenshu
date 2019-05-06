@@ -52,7 +52,7 @@
             </div>
             <div class="col-sm-12 m-0 p-0 mb-3">
               <div>Shipping Postcode: {{cart.shipping && cart.shipping.postcode}}</div>
-              <div>Shipping Price: ¥ {{cart.shipping && cart.shipping.price}}</div>
+              <div>Shipping Price: ¥{{cart.shipping && cart.shipping.price}}</div>
               <div>
                 <p class="text-danger" v-if="cart.shipping && cart.shipping.shippingPossible === false">
                    Shipping is not supported to this postcode
@@ -63,10 +63,16 @@
               <div v-for="item in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
                 <div>Name: {{item.NameEng}}</input></div>
                 <div>Quantity: {{item.Quantity}}</div>
+                <div>Unit Price: ¥{{item.UnitPrice}}</div>
+                <div>Wash And Polish: ¥{{item.WashAndPolish}}</div>
                 <div>Discount: {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%</div>
-                <div>Dunit$: {{item.DiscountedUnitPrice}}</div>
-                <div>unit$: {{item.UnitPrice}}</div>
-                <div>Price: ${{item.TotalPrice}}</div>
+                <div>Discounted Unit Price: ¥{{item.DiscountedUnitPrice}}</div>
+                <div>Discounted Unit Price With Wash: ¥{{item.DiscountedUnitPriceWithWash}}</div>
+                <hr />
+                <div>Price: ¥{{item.TotalPrice}}</div>
+                <div>Discounted Total Price With Wash And Polish: ¥{{item.DiscountedTotalPrice}}</div>
+                <hr />
+                <div>Available: {{item.Available}}</div>
                 <div @click="removeItemFromCart({Id: item.Id})" style="cursor: pointer"><i><small>Remove</small></i></div>
               </div>
             </div>

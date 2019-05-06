@@ -57,9 +57,10 @@ module.exports = {
     },
 
     Date: {
-      type: 'string',
+      type: 'ref',
+      columnType: 'datetime',
       description: 'Time the order was made',
-      example: '2018-08-08T14:00:00.000Z',
+      example: '2018-08-08',
       required: true,
     }
 

@@ -27,21 +27,18 @@ module.exports = {
 
     DateStart: {
       type: 'string',
-      required: true,
       description: 'The date start that needs to be checked',
       example: '2018-08-08T14:00:00.000Z'
     },
 
     DateEnd: {
       type: 'string',
-      required: true,
       description: 'The date end that needs to be checked',
       example: '2018-08-08T14:00:00.000Z'
     },
 
     DaysOfUse: {
       type: 'string',
-      required: true,
       description: 'Total number of days the glasses will be used',
       example: "555"
     }
@@ -68,15 +65,86 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-
     // check availability and add available to each item that is checked
-    // if no date, they must select a date range first
-    // send in the dates also
-    const getAvailability = () => {
-      return 'Unknown';
+    console.log(inputs.DateEnd);
+    console.log(inputs.DateStart);
+    async function getAvailability () {
+      if (!inputs.DateEnd || !inputs.DateStart) {
+        return 'No date set to evaluate';
+      }
+
+      // will need to add every possible code
+      [
+        stockIn,
+        orderOut,
+        returnPlanned,
+        orderReturned,
+        returnAndWashCompleted,
+      ] = await Promise.all([
+        await Transaction.find({
+          where: {
+            Product: inputs.Id,
+            Date: { '<=': inputs.DateStart },
+            TransactionType: 10,
+          },
+          select: ['Quantity'],
+        }),
+        await Transaction.find({
+          where: {
+            Product: inputs.Id,
+            Date: { '<=': inputs.DateEnd },
+            TransactionType: 40,
+          },
+          select: ['Quantity'],
+        }),
+        await Transaction.find({
+          where: {
+            Product: inputs.Id,
+            Date: { '<=': inputs.DateEnd },
+            TransactionType: 44,
+          },
+          select: ['Quantity'],
+        }),
+        await Transaction.find({
+          where: {
+            Product: inputs.Id,
+            Date: { '<=': inputs.DateEnd },
+            TransactionType: 55,
+          },
+          select: ['Quantity'],
+        }),
+        await Transaction.find({
+          where: {
+            Product: inputs.Id,
+            Date: { '<=': inputs.DateEnd },
+            TransactionType: 57,
+          },
+          select: ['Quantity'],
+        })
+      ]);
+
+      // collect totals
+      const stockInTotal = _.sum(stockIn, (o) => { return o.Quantity });
+      const orderOutTotal = _.sum(orderOut, (o) => { return o.Quantity });
+      const returnPlanedTotal = _.sum(returnPlanned, (o) => { return o.Quantity });
+      const orderReturnedTotal = _.sum(orderReturned, (o) => { return o.Quantity });
+      const returnAndWashedTotal = _.sum(returnAndWashCompleted, (o) => { return o.Quantity });
+
+      // calculate available or not
+      const totalAvailableForOrder =
+      stockInTotal -
+      orderOutTotal +
+      returnPlanedTotal +
+      orderReturnedTotal +
+      returnAndWashedTotal;
+
+      const availability = totalAvailableForOrder - inputs.Quantity > 0 ? 'Available' : 'Not Available'
+
+      return availability;
     };
 
-    var item = await Glass.findOne({ id: inputs.Id });
+    // find price of items
+    var item =  await Glass.findOne({ id: inputs.Id });
     // get the days of use from the cart value
 
     // Collect variables
@@ -158,7 +226,7 @@ module.exports = {
     );
 
     const discountedUnitPrice = discountedBasePrice / Quantity;
-    const discountedUnitPriceWithWash = ( discountedBasePrice / Quantity ) + washAndPolishConstant;
+    const discountedUnitPriceWithWash = discountedUnitPrice + washAndPolishConstant;
 
     // Use the new discounted unit price to calculate the discounted total cost
     const discountedTotalPrice = discountedUnitPriceWithWash * Quantity;
@@ -176,7 +244,7 @@ module.exports = {
       DiscountedUnitPrice: discountedUnitPrice,
       DiscountedUnitPriceWithWash: discountedUnitPriceWithWash,
       DiscountedTotalPrice: discountedTotalPrice,
-      Available: getAvailability(),
+      Available: await getAvailability(),
     }
 
     return exits.success(discountedInputs);
