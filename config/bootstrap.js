@@ -71,7 +71,7 @@ module.exports.bootstrap = async function(done) {
       TotalQuantityInSystem: 10000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-listing/pluh3320a_1_plumm-listing.jpg',
       Sku: 160,
-      UnitPrice: 12,
+      UnitPrice: 10,
       RackCapacity: 10,
     },
     {
@@ -79,16 +79,16 @@ module.exports.bootstrap = async function(done) {
       NameJap: '東京都新島村',
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_4_plumm-large.jpg',
-      Sku: 160,
+      Sku: 161,
       UnitPrice: 12,
       RackCapacity: 10,
     },
     {
-      NameEng: 'Handmade Glass WHITE',
+      NameEng: 'Handmade Glass RED',
       NameJap: '東京都新島村',
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_4_plumm-large.jpg',
-      Sku: 160,
+      Sku: 162,
       UnitPrice: 12,
       RackCapacity: 10,
     },
@@ -117,6 +117,47 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
+  await TransactionType.createEach([
+    {
+      id: 10,
+      Name: '確定',
+      Description: 'Stock in',
+      RecordHandlingGuide: '11',
+    },
+    {
+      id: 40,
+      Name: '注文確定',
+      Description: 'Rental order',
+      RecordHandlingGuide: '12',
+    },
+    {
+      id: 53,
+      Name: 'ﾚﾝﾀﾙ中',
+      Description: 'With the renter',
+      RecordHandlingGuide: '22',
+    },
+    {
+      id: 44,
+      Name: 'ﾚﾝﾀﾙ中',
+      Description: 'Rental return planned',
+      RecordHandlingGuide: '22',
+    },
+    {
+      id: 55,
+      Name: '返却済み',
+      Description: 'Rental Return Confirmed',
+      RecordHandlingGuide: '22',
+    },
+    {
+      id: 57,
+      Name: '洗浄済み転記可',
+      Description: 'Wash Completed, post to accounts receivable. If payment already received, ' +
+      'it will be recorded in the independent accounts receivable package. Lotus posts across' +
+      ' the systems, but this could be handled as a separately developed batch op.',
+      RecordHandlingGuide: '22',
+    },
+  ]);
+
   await Order.createEach([
     {
       DateStart: '2019-05-01',
@@ -133,28 +174,103 @@ module.exports.bootstrap = async function(done) {
   await OrderLineNumber.createEach([
     {
       Quantity: '1000',
-      Glass: '12',
+      Glass: '1',
       Order: '1',
     },
     {
       Quantity: '1000',
-      Glass: '12',
+      Glass: '2',
       Order: '1',
     },
     {
       Quantity: '1000',
-      Glass: '12',
+      Glass: '3',
       Order: '1',
     },
     {
       Quantity: '500',
-      Glass: '12',
+      Glass: '1',
       Order: '2',
     },
     {
       Quantity: '500',
-      Glass: '13',
+      Glass: '2',
       Order: '2',
+    },
+  ]);
+
+  // these should actually be different orders or a few orders updating
+  // over time into different states
+  await Transaction.createEach([
+    {
+      TransactionType: '10',
+      Product: '1',
+      Quantity: '5000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '10',
+      Product: '1',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '40',
+      Product: '1',
+      Quantity: '1000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'rental order',
+      Date: '2019-05-01',
+    },
+    {
+      TransactionType: '40',
+      Product: '1',
+      Quantity: '1000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'rental order',
+      Date: '2019-05-01',
+    },
+    {
+      TransactionType: '44',
+      Product: '1',
+      Quantity: '100',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'return planned',
+      Date: '2019-05-03',
+    },
+    {
+      TransactionType: '55',
+      Product: '1',
+      Quantity: '1000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'order returned',
+      Date: '2019-05-05',
+    },
+    {
+      TransactionType: '57',
+      Product: '1',
+      Quantity: '1000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'washed and restocked',
+      Date: '2019-05-05',
+    },
+    {
+      TransactionType: '40',
+      Product: '1',
+      Quantity: '15000',
+      UnitPrice: '100',
+      Warehouse: '60',
+      Comment: 'rental order',
+      Date: '2019-05-06',
     },
   ]);
 

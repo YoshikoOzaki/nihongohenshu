@@ -106,13 +106,49 @@ parasails.registerPage('selection', {
 
     handleTimeSubmitting: async function(data) {
       // check all the logic for order time & update cart
-      result = await Cloud.checkCartTimeValid(..._.values(data));
+      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
 
       oldCart = await parasails.util.getCart();
 
+      // check each item to update if available - START -
+      // remove all if you want to remove function
+      const newCartItems = [];
+      if (oldCart.items && oldCart.items.length > 0) {
+        const checkCartItemAvailable = async function(item) {
+          const dataWithTimePeriod = {
+            Id: item.Id,
+            Quantity: item.Quantity,
+            ...oldCart.timePeriod,
+          }
+          console.log('dataWithTimePeriod', dataWithTimePeriod);
+          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+          console.log('item result', result);
+          return result;
+        };
+        console.log(oldCart);
+        async function asyncForEach(array, callback) {
+          console.log('asyncForEach triggered');
+          console.log(array, callback);
+          for (let index = 0; index < array.length; index++) {
+            console.log('loop called');
+            await callback(array[index], index, array);
+          }
+        }
+        await asyncForEach(oldCart.items, async (o) => {
+          console.log('call asyncForEach');
+          console.log(o);
+          const result = await checkCartItemAvailable(o);
+          console.log('result', result);
+          newCartItems.push(result);
+        });
+        console.log(newCartItems);
+      }
+      // check each item to update if available - END
+
       const newCart = {
         ...oldCart,
-        timePeriod: {...result},
+        items: newCartItems,
+        timePeriod: {...timeValidResult},
       };
 
       if (result) {
@@ -141,8 +177,13 @@ parasails.registerPage('selection', {
 
     handleItemSubmitting: async function(data) {
       const getCartWithNewItem = async function(itemData) {
-        result = await Cloud.checkCartItemValid(..._.values(data));
         oldCart = await parasails.util.getCart();
+        const dataWithTimePeriod = {
+          ...data,
+          ...oldCart.timePeriod,
+        }
+
+        result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
         const newCart = {
           ...oldCart,
           items: [
@@ -302,6 +343,9 @@ parasails.registerPage('selection', {
       if(!argins.Quantity) {
         this.formErrorsItems.Quantity = true;
       }
+      // if(!cart.DateEnd || !cart.DateEnd) {
+      //   this.formErrorsItems.noDateSeleted = true;
+      // }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be
       // cancelled.)
