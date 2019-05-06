@@ -47,6 +47,9 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     default: {
+      adapter: 'sails-postgresql',
+      url: 'postgres://kshdzlzodjxrxa:88f4cbc0b683c57144a0db7bafb341b651ffa3316e1f3b53a3e780fb5e33c943@ec2-75-101-138-26.compute-1.amazonaws.com:5432/dev1mj9uq0dsqc',
+      ssl: true
       // adapter: 'sails-mysql',
       // url: 'mysql://user:password@host:port/database',
       //--------------------------------------------------------------------------
@@ -148,9 +151,9 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     cors: {
-      // allowOrigins: [
-      //   'https://example.com',
-      // ]
+      allowOrigins: [
+        'https://plumm-rental.herokuapp.com',
+      ]
     },
 
   },
@@ -186,6 +189,9 @@ module.exports = {
     ***************************************************************************/
     // adapter: '@sailshq/connect-redis',
     // url: 'redis://user:password@localhost:6379/databasenumber',
+
+    adapter: '@sailshq/connect-redis',
+    url: 'redis://redistogo:56873674d7d944672c24bcacedee97e6@dory.redistogo.com:11420',
     //--------------------------------------------------------------------------
     // /\   OR, to avoid checking it in to version control, you might opt to
     // ||   set sensitive credentials like this using an environment variable.
@@ -221,7 +227,7 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     cookie: {
-      // secure: true,
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000,  // 24 hours
     },
 
@@ -250,10 +256,9 @@ module.exports = {
     * > Be sure to use the right protocol!  ("http://" vs. "https://")         *
     *                                                                          *
     ***************************************************************************/
-    // onlyAllowOrigins: [
-    //   'https://example.com',
-    //   'https://staging.example.com',
-    // ],
+    onlyAllowOrigins: [
+      'https://plumm-rental.herokuapp.com',
+    ],
 
 
     /***************************************************************************
@@ -322,7 +327,7 @@ module.exports = {
     * (https://sailsjs.com/config/http)                                        *
     *                                                                          *
     ***************************************************************************/
-    // trustProxy: true,
+    trustProxy: true,
 
   },
 
