@@ -189,7 +189,9 @@ module.exports = {
     ***************************************************************************/
     adapter: '@sailshq/connect-redis',
     // url: 'redis://user:password@localhost:6379/databasenumber',
-    url : 'redis://redistogo:56873674d7d944672c24bcacedee97e6@dory.redistogo.com:11420',
+
+    adapter: '@sailshq/connect-redis',
+    url: 'redis://redistogo:56873674d7d944672c24bcacedee97e6@dory.redistogo.com:11420',
     //--------------------------------------------------------------------------
     // /\   OR, to avoid checking it in to version control, you might opt to
     // ||   set sensitive credentials like this using an environment variable.
@@ -225,7 +227,7 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     cookie: {
-      // secure: true,
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000,  // 24 hours
     },
 
@@ -325,7 +327,7 @@ module.exports = {
     * (https://sailsjs.com/config/http)                                        *
     *                                                                          *
     ***************************************************************************/
-    // trustProxy: true,
+    trustProxy: true,
 
   },
 
