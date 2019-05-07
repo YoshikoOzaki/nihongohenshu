@@ -25,8 +25,24 @@
               <small>Regular Price: {{ glass.UnitPrice }}</small>
               <br />
               <small>Product Code: {{ glass.ProductCode }}</small>
-              <div>
-                  <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
+              <ajax-form
+                action="checkCartItemValid"
+                @submitted="submittedForm()"
+                :syncing.sync="syncing"
+                :cloud-error.sync="cloudError"
+                :handle-submitting="handleItemSubmitting"
+                :handle-parsing="handleParsingItemForm"
+              >
+                <div>
+                  <input
+                    class="form-control"
+                    id="quantity"
+                    name="quantity"
+                    type="number"
+                    :class="[formErrorsItems.Quantity ? 'is-invalid' : '']"
+                    placeholder="0"
+                    autocomplete="quantity"
+                  >
                   <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
                   <div class="form-group mt-1">
                     <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Add to Cart</ajax-button>
@@ -36,11 +52,12 @@
                   <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
                   <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
                 </div>
+              </ajax-form>
             </div>
           </div>
         </div>
         <div class="col-sm-6">
-          <div class="p-3 ml-3 row mb-3" style="border: 1px lightgray solid; background: rgb(36, 144, 194); color: white;">
+          <div class="p-3 ml-3 row mb-3" style="border: 1px lightgray solid; background: #8A75B6; color: white;">
             <div class="col-sm-12 m-0 p-0" style="display: flex; justify-content: space-between">
               <div style="font-size: 1.4rem">Order Cart</div>
               <div>Edit</div>

@@ -120,28 +120,18 @@ parasails.registerPage('selection', {
             Quantity: item.Quantity,
             ...oldCart.timePeriod,
           }
-          console.log('dataWithTimePeriod', dataWithTimePeriod);
           result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-          console.log('item result', result);
           return result;
         };
-        console.log(oldCart);
         async function asyncForEach(array, callback) {
-          console.log('asyncForEach triggered');
-          console.log(array, callback);
           for (let index = 0; index < array.length; index++) {
-            console.log('loop called');
             await callback(array[index], index, array);
           }
         }
         await asyncForEach(oldCart.items, async (o) => {
-          console.log('call asyncForEach');
-          console.log(o);
           const result = await checkCartItemAvailable(o);
-          console.log('result', result);
           newCartItems.push(result);
         });
-        console.log(newCartItems);
       }
       // check each item to update if available - END
 
