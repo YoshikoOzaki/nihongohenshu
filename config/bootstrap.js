@@ -219,6 +219,14 @@ module.exports.bootstrap = async function(done) {
       Date: '2019-04-01',
     },
     {
+      TransactionType: '10',
+      Product: '3',
+      Quantity: '5000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
       TransactionType: '40',
       Product: '1',
       Quantity: '1000',
