@@ -25,8 +25,25 @@
 
   <body>
     <div id="page-wrap">
-      <header id="page-header" class="navbar navbar-expand-sm navbar-dark bg-dark flex-column flex-md-row justify-content-between">
-        <a class="navbar-brand mr-0" href="/">Plumm Glass Rental</a>
+      <header id="page-header" class="navbar navbar-expand-sm navbar-dark bg-primary flex-column flex-md-row justify-content-between">
+        <a class="navbar-brand mr-0" href="/">
+          <img style="width: 120px" src="../images/plumm-logo.png" />
+          <div style="color: #878a93">
+            <b>Glass Rental</b>
+          </div>
+          <div style="color: white; font-size: 0.8rem" class="text-center">
+            <b>in <span class="text-uppercase">Glazmataz<span></b>
+          </div>
+        </a>
+        <div class="navbar-nav flex-row">
+            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">Home</a>
+            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">Rental Service</a>
+            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Glass Types</a>
+            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Test Renting</a>
+            <div class="form-inline d-none ml-2 d-md-block" >
+              <a class="btn btn-outline-secondary fa-shopping-bag" href="/rent/cart">Cart</a>
+            </div>
+        </div>
         <div class="navbar-nav flex-row">
           <!-- LOGGED-IN NAVIGATION -->
           <% if(me) { %>
@@ -48,7 +65,7 @@
           <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/login">Log in</a>
           <!-- Only in desktop nav -->
           <div class="form-inline d-none ml-2 d-md-block" >
-            <a class="btn btn-outline-info" href="/signup">Sign up</a>
+            <a class="btn btn-outline-secondary" href="/signup">Sign up</a>
           </div>
           <!-- Only in mobile nav -->
           <a class="nav-item nav-link text-info ml-2 d-block d-md-none" href="/signup">Sign up</a>
@@ -136,6 +153,7 @@
     <script src="/js/pages/homepage.page.js"></script>
     <script src="/js/pages/legal/privacy.page.js"></script>
     <script src="/js/pages/legal/terms.page.js"></script>
+    <script src="/js/pages/rent/cart.page.js"></script>
     <script src="/js/pages/rent/selection.js"></script>
     <!--SCRIPTS END-->
   </body>

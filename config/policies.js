@@ -22,4 +22,5 @@ module.exports.policies = {
   'cart/check-shipping-price': true,
   'glass/get-glasses': true,
   'rent/view-selection': true,
+  'rent/view-cart': true,
 };
