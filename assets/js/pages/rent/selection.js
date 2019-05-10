@@ -166,6 +166,7 @@ parasails.registerPage('selection', {
     },
 
     handleItemSubmitting: async function(data) {
+      console.log('data', data);
       const getCartWithNewItem = async function(itemData) {
         oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {

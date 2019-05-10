@@ -3,6 +3,83 @@
  *
  * > NOTE THAT THIS FILE AFFECTS GLOBAL STYLES.
  */
+// html {
+//   font-size: 12px;
+// }
+
+@brand-primary: #4C3778;
+
+.bg-primary {
+  background-color: @brand-primary !important;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: @brand-primary;
+  border-color: @brand-primary;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+
+.btn-primary:focus, .btn-primary.focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: @brand-primary;
+  border-color: @brand-primary;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #0062cc;
+  border-color: #005cbf;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.btn-outline-primary {
+  color: @brand-primary;
+  background-color: transparent;
+  background-image: none;
+  border-color: @brand-primary;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: @brand-primary;
+  border-color: @brand-primary;
+}
+
+.btn-outline-primary:focus, .btn-outline-primary.focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.btn-outline-primary.disabled, .btn-outline-primary:disabled {
+  color: @brand-primary;
+  background-color: transparent;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-primary.dropdown-toggle {
+  color: #fff;
+  background-color: @brand-primary;
+  border-color: @brand-primary;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active:focus, .btn-outline-primary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
 
 // lesshint-disable
 * {
