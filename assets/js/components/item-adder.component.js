@@ -33,13 +33,12 @@ parasails.registerComponent('itemAdder', {
 
   template: `
     <div
-      class="row mb-3 p-3"
       style="border: 1px lightgray solid"
     >
-      <div class="col-sm-6">
+      <div class="col-md-12">
         <img width="230" :src="product.ImgSrc" />
       </div>
-      <div class="col-sm-6">
+      <div class="col-md-12">
         <div>{{ product.NameEng }}</div>
         <div>{{ product.NameJap }}</div>
         <small>Total Count: {{ product.TotalQuantityInSystem }}</small>
