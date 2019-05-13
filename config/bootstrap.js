@@ -10,7 +10,6 @@
  */
 
 module.exports.bootstrap = async function(done) {
-
   // Import dependencies
   var path = require('path');
 

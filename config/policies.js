@@ -23,4 +23,5 @@ module.exports.policies = {
   'glass/get-glasses': true,
   'rent/view-selection': true,
   'rent/view-cart': true,
+  'checkout/view-reserve-prompt': true,
 };

@@ -152,12 +152,11 @@
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0" style="display: flex; justify-content: space-between">
-            <button class="btn btn-outline-primary account-settings-button" @click="createOrderFromCart">
-              Reserve Order
-            </button>
-            <!-- <button class="btn btn-success account-settings-button" @click="sendOrderToStripe">
-              Send Order to Stripe
-            </button> -->
+            <a href="../checkout/reserve-prompt">
+              <button class="btn btn-outline-primary account-settings-button">
+                Reserve Order
+              </button>
+            </a>
             <button class="btn btn-primary account-settings-button" @click="createOrderFromCart">
               Create Order
             </button>

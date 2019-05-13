@@ -5,7 +5,6 @@
         <div
           v-for="(glass, index) in glasses"
           :key="index"
-          v-cloak
           class="col-lg-3 col-md-6 mb-1"
         >
           <item-adder
@@ -15,58 +14,6 @@
             :syncing.sync="syncing"
             :cloud-error.sync="cloudError"
             />
-        </div>
-        <div
-          v-for="glass in glasses"
-          style="border: 1px lightgray solid"
-          class="mb-3 p-3 row col-sm-4"
-          v-if="false"
-          v-cloak
-        >
-          <div class="col-sm-12">
-            <img width="230" :src="glass.ImgSrc" />
-          </div>
-          <div class="col-sm-12">
-            <div>{{ glass.NameEng }}</div>
-            <div>{{ glass.NameJap }}</div>
-            <small>Total Count: {{ glass.TotalQuantityInSystem }}</small>
-            <br />
-            <small>Sku: {{ glass.Sku }}</small>
-            <br />
-            <small>Id: {{ glass.id }}</small>
-            <br />
-            <small>Regular Price: {{ glass.UnitPrice }}</small>
-            <br />
-            <small>Product Code: {{ glass.ProductCode }}</small>
-            <ajax-form
-              action="checkCartItemValid"
-              @submitted="submittedForm()"
-              :syncing.sync="syncing"
-              :cloud-error.sync="cloudError"
-              :handle-submitting="handleItemSubmitting"
-              :handle-parsing="handleParsingItemForm"
-            >
-              <div>
-                <input
-                  class="form-control"
-                  id="quantity"
-                  name="quantity"
-                  type="number"
-                  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']"
-                  placeholder="0"
-                  autocomplete="quantity"
-                >
-                <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
-                <div class="form-group mt-1">
-                  <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Add to Cart</ajax-button>
-                </div>
-              </div>
-              <div class="col-sm-12">
-                <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
-                <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
-              </div>
-            </ajax-form>
-          </div>
         </div>
       </div>
     </div>

@@ -37,6 +37,10 @@ module.exports.routes = {
   'GET /rent/selection':     { action: 'rent/view-selection' },
   'GET /rent/cart':          { action: 'rent/view-cart' },
 
+  'GET /checkout/reserve-prompt':   { action: 'checkout/view-reserve-prompt' },
+  'GET /checkout/reserve-member':   { action: 'checkout/view-reserve-member' },
+  'GET /checkout/reserve-guest':   { action: 'checkout/view-reserve-guest' },
+
 
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
