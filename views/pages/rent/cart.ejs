@@ -79,8 +79,23 @@
             </div>
           </ajax-form>
         </div>
-        <div style="border: 1px lightgray solid" class="mb-3 p-3 row">
-          <ajax-form action="checkCartItemValid" @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError" :handle-submitting="handleItemSubmitting" :handle-parsing="handleParsingItemForm">
+        <div
+          style="border: 1px lightgray solid"
+          class="mb-3 p-3 row"
+        >
+        <div
+          v-if="glasses.length === 0"
+          class="fa fa-spinner fa-spin"
+        >
+        </div>
+          <ajax-form
+            @submitted="submittedForm()"
+            :syncing.sync="syncing"
+            :cloud-error.sync="cloudError"
+            :handle-submitting="handleItemSubmitting"
+            :handle-parsing="handleParsingItemForm"
+            v-if="glasses.length > 0"
+          >
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">

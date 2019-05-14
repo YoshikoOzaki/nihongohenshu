@@ -23,7 +23,9 @@ parasails.registerPage('cart', {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
     this.cart = await parasails.util.getCart();
+    this.glasses = await Cloud.getGlasses();
   },
+
   mounted: async function() {
     //…
   },
@@ -117,7 +119,6 @@ parasails.registerPage('cart', {
     },
 
     handleItemSubmitting: async function(data) {
-      console.log('data', data);
       const getCartWithNewItem = async function(itemData) {
         oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {

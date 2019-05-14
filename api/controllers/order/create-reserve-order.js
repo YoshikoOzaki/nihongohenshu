@@ -1,14 +1,14 @@
 module.exports = {
 
 
-  friendlyName: 'Create Order',
+  friendlyName: 'Create Reserve Order',
 
 
-  description: 'Create an order.',
+  description: 'Create an order for reserved items.',
 
 
   extendedDescription:
-  `Adds an order to the database`,
+  `Adds an order to the database with a reserved status`,
 
   inputs: {
 
@@ -33,7 +33,7 @@ module.exports = {
       example: "555"
     },
 
-    CustomerName: {
+    CustomerKeyword: {
       type: 'string',
       required: true,
       description: 'Customer name or customer order keyword'
@@ -61,28 +61,38 @@ module.exports = {
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
+    console.log(inputs);
     orderInputs = {
       DateStart: inputs.DateStart,
       DateEnd: inputs.DateEnd,
       DaysOfUse: inputs.DaysOfUse,
-      CustomerName,
+      CustomerKeyword: inputs.CustomerKeyword,
     }
 
     var newRecord = await Order.create(orderInputs).fetch();
 
     let itemResults = [];
 
-    _.forEach(inputs.Items, async (item, i) => {
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
+    await asyncForEach(inputs.Items, async (item, i) => {
       const itemInputs = {
         Quantity: item.Quantity,
         Glass: Number(item.Id),
         Order: Number(newRecord.id),
       }
-      console.log(itemInputs);
 
-      itemResults[i] = await OrderLineNumber.create(itemInputs).fetch();
+      itemResults[i] = await OrderLineNumber.create(itemInputs)
+        .fetch();
     });
 
+    const newRecordAndItems = {
+      ...newRecord,
+      items: itemResults,
+    }
     // after we have the line numers, need to add their ids in a collection to the order
 
     // localStorage.setItem('storedData', inputs)
@@ -90,7 +100,7 @@ module.exports = {
     // then just send back the validated item/order to add to the cart
 
     // Since everything went ok, send our 200 response.
-    return exits.success(newRecord);
+    return exits.success(newRecordAndItems);
   }
 
 };

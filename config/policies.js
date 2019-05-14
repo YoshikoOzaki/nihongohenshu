@@ -24,4 +24,7 @@ module.exports.policies = {
   'rent/view-selection': true,
   'rent/view-cart': true,
   'checkout/view-reserve-prompt': true,
+  'checkout/view-reserve-guest': true,
+  'order/view-order-confirmation': true,
+  'order/create-reserve-order': true,
 };

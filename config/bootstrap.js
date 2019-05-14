@@ -59,8 +59,9 @@ module.exports.bootstrap = async function(done) {
 
   // By convention, this is a good place to set up fake data during development.
   await User.createEach([
-    { emailAddress: 'jarodccrowe@gmail.com', fullName: 'Jarod Crowe', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123') },
+    { emailAddress: 'jarodccrowe@gmail.com', fullName: 'Harry', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123') },
     { emailAddress: 'j@crowe.com', fullName: 'Jarod Crowe', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123') },
+    { emailAddress: 'richard@email.com', fullName: 'Richard', isSuperAdmin: false, password: await sails.helpers.passwords.hashPassword('abc123') },
   ]);
 
   await Glass.createEach([
@@ -171,11 +172,19 @@ module.exports.bootstrap = async function(done) {
       DateStart: '2019-05-01',
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
+      User: '2',
     },
     {
       DateStart: '2019-05-01',
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
+      User: '3',
+    },
+    {
+      DateStart: '2019-05-01',
+      DateEnd: '2019-05-10',
+      DaysOfUse: '6',
+      CustomerKeyword: 'wineorder1234',
     },
   ]);
 

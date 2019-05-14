@@ -32,6 +32,17 @@ module.exports = {
       example: "555"
     },
 
+    CustomerKeyword: {
+      type: 'string',
+      description: 'If customer is a guest it will need a keyword for identification',
+      example: 'wineorder1234'
+    },
+
+    User: {
+      model: 'User',
+      description: 'Links order to a user, not required as some orders are for guests'
+    },
+
     OrderLineNumbers: {
       collection: 'OrderLineNumber',
       via: 'Order',

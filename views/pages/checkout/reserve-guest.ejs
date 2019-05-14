@@ -1,7 +1,46 @@
 <div id="reserve-guest" v-cloak>
-
-  <h1>TODO: Implement this page.</h1>
-  <p>(See also <em>assets/styles/pages/checkout/reserve-guest.less</em>, <em>assets/js/pages/checkout/reserve-guest.page.js</em>, and <em>api/controllers/checkout/view-reserve-guest.js</em>.)</p>
-
+  <div class="container">
+    <div class="row pt-3">
+      <div class="col-md-6 offset-md-3">
+        <p>Show cart orders block</p>
+        <p>Add keyword to reserve order</p>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitReserveOrder"
+          :handle-parsing="handleParsingReserveForm"
+        >
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="keyword"
+              name="keyword"
+              type="string"
+              :class="[formErrorsOrder.Keyword ? 'is-invalid' : '']"
+              v-model.trim="formDataOrder.Keyword"
+              placeholder="Enter a Keyword"
+              autocomplete="quantity"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrorsOrder.Keyword"
+            >
+              Please enter a keyword.
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group text-right">
+              <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+                Add to Order
+              </ajax-button>
+            </div>
+          </div>
+        </ajax-form>
+      </div>
+    </div>
+  </div>
 </div>
 <%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

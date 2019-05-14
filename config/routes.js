@@ -40,6 +40,7 @@ module.exports.routes = {
   'GET /checkout/reserve-prompt':   { action: 'checkout/view-reserve-prompt' },
   'GET /checkout/reserve-member':   { action: 'checkout/view-reserve-member' },
   'GET /checkout/reserve-guest':   { action: 'checkout/view-reserve-guest' },
+  'GET /checkout/order-confirmation':   { action: 'checkout/view-order-confirmation' },
 
 
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
@@ -59,6 +60,7 @@ module.exports.routes = {
   'POST  /api/v1/glass/create-glass':          { action: 'glass/create-glass' },
   'GET  /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
+  'POST  /api/v1/order/create-reserve-order':          { action: 'order/create-reserve-order' },
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
   'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },
   'POST  /api/v1/cart/check-shipping-price':          { action: 'cart/check-shipping-price' },
