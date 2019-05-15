@@ -5,6 +5,8 @@ parasails.registerPage('order-confirmation', {
   data: {
     //…
     loadedOrder: {},
+    glasses: [],
+    orderWithAllData: {},
     cloudError: '',
   },
 
@@ -14,18 +16,12 @@ parasails.registerPage('order-confirmation', {
   beforeMount: async function() {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
-    this.loadedOrder = await parasails.util.getCompletedOrder();
-    this.order2 = await Cloud.getOrder(this.loadedOrder.id);
-    console.log(order2);
   },
   mounted: async function() {
 
-    //…
-    // let itemResults = [];
-    // await parasails.util.asyncForEach(completedOrder.Items, async (item, i) => {
-    //   itemResults[i] = await Glass.findOne(item.Glass)
-    //     .fetch();
-    // });
+    this.loadedOrder = await parasails.util.getCompletedOrder();
+    this.orderWithAllData = await Cloud.getOrder(this.loadedOrder.id);
+
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗

@@ -59,6 +59,7 @@ module.exports.routes = {
   'POST  /api/v1/deliver-contact-form-message':          { action: 'deliver-contact-form-message' },
   'POST  /api/v1/glass/create-glass':          { action: 'glass/create-glass' },
   'GET   /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
+  'GET   /api/v1/glass/get-glass':          { action: 'glass/get-glass' },
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
   'GET   /api/v1/order/get-order':          { action: 'order/get-order' },
   'POST  /api/v1/order/create-reserve-order':          { action: 'order/create-reserve-order' },

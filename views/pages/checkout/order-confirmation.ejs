@@ -56,7 +56,22 @@
             Order Items
           </div>
           <div class="card-body">
-            Test
+            <div v-for="orderLine in orderWithAllData.OrderLineNumbers">
+              <div class="row">
+                <div class="col-md-2">
+                  <img width="130" :src="orderLine.glassDetails.ImgSrc" />
+                </div>
+                <div class="col-md-5">
+                  <div>{{ orderLine.glassDetails.NameEng }}</div>
+                  <div>{{ orderLine.glassDetails.NameJap }}</div>
+                  <br />
+                </div>
+                <div class="col-md-5">
+                  <div><small>Quantity In Order</small></div>
+                  <div>{{ orderLine.Quantity }}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

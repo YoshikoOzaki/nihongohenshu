@@ -33,8 +33,25 @@ module.exports = {
       }
     ).populate('OrderLineNumbers');
 
+    // add in the deeper propogated glass details
+    const recordWithItemsPropgated = {
+      ...newRecord,
+    }
+    console.log(recordWithItemsPropgated);
+
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
+    await asyncForEach(newRecord.OrderLineNumbers, async (item, i) => {
+      glassDetailsForItem = await Glass.findOne(item.Glass);
+      recordWithItemsPropgated.OrderLineNumbers[i].glassDetails = glassDetailsForItem;
+    });
+    // add in the deeper propogated glass details
+
     // Since everything went ok, send our 200 response.
-    return exits.success(newRecord);
+    return exits.success(recordWithItemsPropgated);
   }
 
 };
