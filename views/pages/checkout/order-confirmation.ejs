@@ -1,16 +1,63 @@
 <div id="order-confirmation" v-cloak>
   <div class="container">
     <div class="row">
-      <div class="col-md-12 p-3">
+      <div class="col-md-12 mt-3 mb-2">
         <h4>Order Successful</h4>
-        <div class="card p-3 mb-3">
-          <h6>User Details</h6>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            User Details
+          </div>
+          <div class="card-body">
+            <div class="mb-2">
+              <div><small>User Name</small></div>
+              <div>{{loadedOrder.User || 'Guest'}}</div>
+            </div>
+            <div>
+              <div><small>Order Recovery Keyword</small></div>
+              <div>{{loadedOrder.CustomerKeyword}}</div>
+            </div>
+          </div>
         </div>
-        <div class="card p-3 mb-3">
-          <h6>Order Infomation</h6>
+      </div>
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            Order Infomation
+          </div>
+          <div class="card-body">
+            <div class="mb-2">
+              <div><small>Starting Date</small></div>
+              <div>{{loadedOrder.DateStart}}</div>
+            </div>
+            <div>
+              <div><small>Ending Date</small></div>
+              <div>{{loadedOrder.DateEnd}}</div>
+            </div>
+            <div>
+              <div><small>Days Of Use</small></div>
+              <div>{{loadedOrder.DaysOfUse}}</div>
+            </div>
+            <div>
+              <div><small>Time Created</small></div>
+              <div>{{loadedOrder.createdAt}}</div>
+            </div>
+          </div>
         </div>
-        <div class="card p-3 mb-3">
-          <h6>Order Items</h6>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-3">
+          <div class="card-header">
+            Order Items
+          </div>
+          <div class="card-body">
+            Test
+          </div>
         </div>
       </div>
     </div>

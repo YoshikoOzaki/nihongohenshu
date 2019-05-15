@@ -27,4 +27,5 @@ module.exports.policies = {
   'checkout/view-reserve-guest': true,
   'checkout/view-order-confirmation': true,
   'order/create-reserve-order': true,
+  'order/get-order': true,
 };
