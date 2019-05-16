@@ -5,7 +5,6 @@ parasails.registerPage('order-confirmation', {
   data: {
     //…
     loadedOrder: {},
-    glasses: [],
     orderWithAllData: {},
     cloudError: '',
   },

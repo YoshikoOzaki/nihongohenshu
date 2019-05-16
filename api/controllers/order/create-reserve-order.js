@@ -67,6 +67,7 @@ module.exports = {
       DateEnd: inputs.DateEnd,
       DaysOfUse: inputs.DaysOfUse,
       CustomerKeyword: inputs.CustomerKeyword,
+      ReserveOnly: inputs.ReserveOnly,
     }
 
     var newRecord = await Order.create(orderInputs).fetch();

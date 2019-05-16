@@ -25,26 +25,32 @@
 
   <body>
     <div id="page-wrap">
-      <header id="page-header" class="navbar navbar-expand-sm navbar-dark bg-primary flex-column flex-md-row justify-content-between">
+      <header
+        id="page-header"
+        class="navbar navbar-expand-sm navbar flex-column flex-md-row justify-content-between"
+      >
         <a class="navbar-brand mr-0" href="/">
-          <img style="width: 120px" src="../images/plumm-logo.png" />
-          <div style="color: #878a93">
+          <img class="navbar-brand-image" src="../images/plumm-logo.png" />
+          <div>
             <b>Glass Rental</b>
           </div>
-          <div style="color: white; font-size: 0.8rem" class="text-center">
+          <div class="navbar-brand--subheading">
             <b>in <span class="text-uppercase">Glazmataz<span></b>
           </div>
         </a>
         <div class="navbar-nav flex-row">
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">Home</a>
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">Rental Service</a>
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Glass Types</a>
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Test Renting</a>
-            <div class="form-inline d-none ml-2 d-md-block" >
-              <a class="btn btn-lg btn-secondary fa fa-shopping-cart" href="/rent/cart"> Cart</a>
-            </div>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">Home</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">Service</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Products</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Rent</a>
         </div>
         <div class="navbar-nav flex-row">
+          <div class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" style="margin-top: -5px">
+            <a class="btn btn-lg btn-secondary fa fa-shopping-cart" href="/rent/cart">
+              <span id="cartNumber"></span>
+              Cart
+            </a>
+          </div>
           <!-- LOGGED-IN NAVIGATION -->
           <% if(me) { %>
           <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/contact">Help</a>
@@ -113,6 +119,10 @@
       (https://sailsjs.com/docs/concepts/assets/task-automation)
     */ %>
 
+    <script>
+      console.log(this);
+    </script>
+
     <% /* Load Stripe Checkout */ %>
     <script src="https://checkout.stripe.com/checkout.js"></script>
 
@@ -134,6 +144,7 @@
     <script src="/js/cloud.setup.js"></script>
     <script src="/js/components/ajax-button.component.js"></script>
     <script src="/js/components/ajax-form.component.js"></script>
+    <script src="/js/components/cart-button.component.js"></script>
     <script src="/js/components/item-adder.component.js"></script>
     <script src="/js/components/item-info.component.js"></script>
     <script src="/js/components/modal.component.js"></script>

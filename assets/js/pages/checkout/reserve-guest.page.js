@@ -39,15 +39,19 @@ parasails.registerPage('reserve-guest', {
     },
 
     submitReserveOrder: async function() {
+      console.log('test');
       const cart = await parasails.util.getCart();
+      console.log(cart);
       const payload = {
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
         DaysOfUse: cart.timePeriod.DaysOfUse,
         CustomerKeyword: this.formDataOrder.Keyword,
         Items: cart.items,
+        ReserveOnly: true,
       }
       const order = await Cloud.createReserveOrder(..._.values(payload));
+      console.log(order);
       await localStorage.setItem('completedOrder', JSON.stringify(order));
     },
 
@@ -56,6 +60,7 @@ parasails.registerPage('reserve-guest', {
       this.formErrorsOrder = {};
 
       var argins = this.formDataOrder;
+      console.log(argins);
 
       // Validate id:
       if(!argins.Keyword) {

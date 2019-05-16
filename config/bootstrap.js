@@ -101,6 +101,15 @@ module.exports.bootstrap = async function(done) {
       UnitPrice: 12,
       RackCapacity: 10,
     },
+    {
+      NameEng: 'Handmade Vintage REDb Retail',
+      NameJap: '東京都新島村',
+      TotalQuantityInSystem: 20000,
+      ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3310b/plumm-large/pluh3310b_3_plumm-large.jpg',
+      Sku: 162,
+      UnitPrice: 12,
+      RackCapacity: 10,
+    },
   ]);
 
   await DeliveryCost.createEach([
@@ -173,18 +182,21 @@ module.exports.bootstrap = async function(done) {
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
       User: '2',
+      ReserveOnly: false,
     },
     {
       DateStart: '2019-05-01',
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
       User: '3',
+      ReserveOnly: false,
     },
     {
       DateStart: '2019-05-01',
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
       CustomerKeyword: 'wineorder1234',
+      ReserveOnly: true,
     },
   ]);
 

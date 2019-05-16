@@ -38,6 +38,13 @@ module.exports = {
       example: 'wineorder1234'
     },
 
+    ReserveOnly: {
+      type: 'boolean',
+      description: 'Is this a reserved order',
+      example: true,
+      defaultsTo: false,
+    },
+
     User: {
       model: 'User',
       description: 'Links order to a user, not required as some orders are for guests'
