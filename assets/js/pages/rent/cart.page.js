@@ -59,14 +59,16 @@ parasails.registerPage('cart', {
 
     handleTimeSubmitting: async function(data) {
       // check all the logic for order time & update cart
-      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
-
       oldCart = await parasails.util.getCart();
+      console.log(oldCart);
+      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
+      console.log(timeValidResult);
 
       // check each item to update if available - START -
       // remove all if you want to remove function
       const newCartItems = [];
       if (oldCart.items && oldCart.items.length > 0) {
+        console.log('cart has items');
         const checkCartItemAvailable = async function(item) {
           const dataWithTimePeriod = {
             Id: item.Id,
@@ -87,14 +89,14 @@ parasails.registerPage('cart', {
         });
       }
       // check each item to update if available - END
-
+      console.log('function skipped');
       const newCart = {
         ...oldCart,
         items: newCartItems,
         timePeriod: {...timeValidResult},
       };
-
-      if (result) {
+      console.log(newCart);
+      if (timeValidResult) {
         localStorage.setItem('cart', JSON.stringify(newCart));
       }
     },
