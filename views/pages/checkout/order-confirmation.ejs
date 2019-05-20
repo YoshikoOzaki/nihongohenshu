@@ -1,0 +1,96 @@
+<div id="order-confirmation" v-cloak>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mt-3 mb-2">
+        <h4>Order Successful</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            User Details
+          </div>
+          <div class="card-body">
+            <div class="mb-2">
+              <div><small>User Name</small></div>
+              <div>{{loadedOrder.User || 'Guest'}}</div>
+            </div>
+            <div>
+              <div><small>Order Recovery Keyword</small></div>
+              <div>{{loadedOrder.CustomerKeyword}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            Order Infomation
+          </div>
+          <div class="card-body">
+            <div class="mb-2">
+              <div><small>Starting Date</small></div>
+              <div>{{loadedOrder.DateStart}}</div>
+            </div>
+            <div>
+              <div><small>Ending Date</small></div>
+              <div>{{loadedOrder.DateEnd}}</div>
+            </div>
+            <div>
+              <div><small>Days Of Use</small></div>
+              <div>{{loadedOrder.DaysOfUse}}</div>
+            </div>
+            <div>
+              <div><small>Time Created</small></div>
+              <div>{{loadedOrder.createdAt}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-3">
+          <div class="card-header">
+            Order Items
+          </div>
+          <div class="card-body">
+            <div v-for="orderLine in orderWithAllData.OrderLineNumbers">
+              <div class="row">
+                <div class="col-md-2">
+                  <img width="130" :src="orderLine.glassDetails.ImgSrc" />
+                </div>
+                <div class="col-md-4">
+                  <div>{{ orderLine.glassDetails.NameEng }}</div>
+                  <div>{{ orderLine.glassDetails.NameJap }}</div>
+                  <br />
+                </div>
+                <div class="col-md-2">
+                  <div><small>Unit Price</small></div>
+                  <div>¥{{ orderLine.UnitPrice }}</div>
+                </div>
+                <div class="col-md-2">
+                  <div><small>Quantity In Order</small></div>
+                  <div>¥{{ orderLine.Quantity }}</div>
+                </div>
+                <div class="col-md-2">
+                  <div><small>Total Price</small></div>
+                  <div>¥{{ orderLine.UnitPrice * orderLine.Quantity }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                  <div><small>Order Total Price</small></div>
+                  <div>¥ (OLunitCosts + washCost) * OLquantity + Shipping </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

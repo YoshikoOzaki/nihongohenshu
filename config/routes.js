@@ -37,6 +37,11 @@ module.exports.routes = {
   'GET /rent/selection':     { action: 'rent/view-selection' },
   'GET /rent/cart':          { action: 'rent/view-cart' },
 
+  'GET /checkout/reserve-prompt':   { action: 'checkout/view-reserve-prompt' },
+  'GET /checkout/reserve-member':   { action: 'checkout/view-reserve-member' },
+  'GET /checkout/reserve-guest':   { action: 'checkout/view-reserve-guest' },
+  'GET /checkout/order-confirmation':   { action: 'checkout/view-order-confirmation' },
+
 
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
@@ -53,8 +58,11 @@ module.exports.routes = {
   'POST  /api/v1/entrance/update-password-and-login':    { action: 'entrance/update-password-and-login' },
   'POST  /api/v1/deliver-contact-form-message':          { action: 'deliver-contact-form-message' },
   'POST  /api/v1/glass/create-glass':          { action: 'glass/create-glass' },
-  'GET  /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
+  'GET   /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
+  'GET   /api/v1/glass/get-glass':          { action: 'glass/get-glass' },
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
+  'GET   /api/v1/order/get-order':          { action: 'order/get-order' },
+  'POST  /api/v1/order/create-reserve-order':          { action: 'order/create-reserve-order' },
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
   'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },
   'POST  /api/v1/cart/check-shipping-price':          { action: 'cart/check-shipping-price' },

@@ -15,6 +15,12 @@ module.exports = {
       type: 'number',
     },
 
+    UnitPrice: {
+      type: 'number',
+      description: 'The price of the item when the order was made - '
+      + 'non compulsary as some order lines do other things',
+    },
+
     Glass: {
       model: 'Glass',
     },

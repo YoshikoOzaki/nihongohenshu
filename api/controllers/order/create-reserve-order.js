@@ -1,0 +1,151 @@
+module.exports = {
+
+
+  friendlyName: 'Create Reserve Order',
+
+
+  description: 'Create an order for reserved items.',
+
+
+  extendedDescription:
+  `Adds an order to the database with a reserved status`,
+
+  inputs: {
+
+    DateStart: {
+      type: 'string',
+      required: true,
+      description: 'The date start that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
+    },
+
+    DateEnd: {
+      type: 'string',
+      required: true,
+      description: 'The date end that needs to be checked',
+      example: '2018-08-08T14:00:00.000Z'
+    },
+
+    DaysOfUse: {
+      type: 'string',
+      required: true,
+      description: 'Total number of days the glasses will be used',
+      example: "555"
+    },
+
+    CustomerKeyword: {
+      type: 'string',
+      required: true,
+      description: 'Customer name or customer order keyword'
+    },
+
+    Items: {
+      type: [{
+        Id: "number",
+        Quantity: "number",
+        UnitPrice: "number"
+      }]
+    },
+
+    Reserved: {
+      type: 'boolean',
+      description: 'Change order to reserve order',
+    },
+
+    DeliveryCost: {
+      type: 'number',
+      description: 'Cost of the delivery based on postcode',
+      required: true,
+    }
+
+  },
+
+  exits: {
+
+    invalid: {
+      responseType: 'badRequest',
+      description: '',
+      extendedDescription: ''
+    },
+
+  },
+
+
+  fn: async function (inputs, exits) {
+    // utility looping function
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
+
+    const createOrder = async function() {
+      orderInputs = {
+        DateStart: inputs.DateStart,
+        DateEnd: inputs.DateEnd,
+        DaysOfUse: inputs.DaysOfUse,
+        CustomerKeyword: inputs.CustomerKeyword,
+        Reserved: inputs.Reserved,
+      }
+      var newRecord = await Order.create(orderInputs).fetch();
+      return newRecord;
+    };
+
+    const createItemOrderLines = async function(order) {
+      let itemResults = [];
+      await asyncForEach(inputs.Items, async (item, i) => {
+        const itemInputs = {
+          Quantity: Number(item.Quantity),
+          UnitPrice: Number(item.UnitPrice),
+          Glass: Number(item.Id),
+          Order: Number(order.id),
+        }
+
+        itemResults[i] = await OrderLineNumber.create(itemInputs)
+          .fetch();
+      });
+      return itemResults;
+    };
+
+    const createDeliveryOrderLine = async function(order) {
+      const payload = {
+        Quantity: 1,
+        UnitPrice: inputs.DeliveryCost,
+        Order: Number(order.id),
+      }
+      let delivery = await OrderLineNumber.create(payload).fetch();
+      return delivery;
+    };
+
+    // check one final time that order is totally valid
+
+    try {
+      const order = await createOrder();
+      const orderItemLines = await createItemOrderLines(order);
+      const deliveryDetails = await createDeliveryOrderLine(order);
+      const combinedResults = {
+        ...order,
+        items: orderItemLines,
+        delivery: deliveryDetails,
+      };
+      return exits.success(combinedResults);
+    } catch (err) {
+      return exits.invalid(err);
+    }
+
+
+    // after we have the line numers, need to add their ids in a collection to the order
+
+    // localStorage.setItem('storedData', inputs)
+    // if all the validation passes - check the dates and item ids/skus
+    // then just send back the validated item/order to add to the cart
+
+    // Since everything went ok, send our 200 response.
+
+    // Need to roll back everything if something doesn't work
+    // execute all funtions, if any fail - delete order and delete all order lines
+
+    return exits.success();
+  }
+
+};

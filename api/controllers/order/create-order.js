@@ -33,9 +33,20 @@ module.exports = {
       example: "555"
     },
 
+    CustomerName: {
+      type: 'string',
+      required: true,
+      description: 'Customer name or customer order keyword'
+    },
+
     Items: {
       type: [{Id: "string", Quantity: "string"}]
-    }
+    },
+
+    ReserveOnly: {
+      type: 'boolean',
+      description: 'Is this a reserved order',
+    },
 
   },
 
@@ -59,6 +70,8 @@ module.exports = {
       DateStart: inputs.DateStart,
       DateEnd: inputs.DateEnd,
       DaysOfUse: inputs.DaysOfUse,
+      CustomerName: inputs.CustomerName,
+      ReserveOnly: inputs.ReserveOnly,
     }
 
     var newRecord = await Order.create(orderInputs).fetch();
@@ -71,7 +84,6 @@ module.exports = {
         Glass: Number(item.Id),
         Order: Number(newRecord.id),
       }
-      console.log(itemInputs);
 
       itemResults[i] = await OrderLineNumber.create(itemInputs).fetch();
     });

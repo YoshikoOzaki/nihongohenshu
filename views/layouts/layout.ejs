@@ -15,42 +15,52 @@
         (https://sailsjs.com/docs/concepts/assets/task-automation)
     */ %>
 
+
     <% /* Auto-injected «link» tags: */ %>
     <!--STYLES-->
     <link rel="stylesheet" href="/dependencies/bootstrap-4/bootstrap-4.css">
     <link rel="stylesheet" href="/dependencies/font-awesome-4/css/font-awesome.css">
     <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
   </head>
 
   <body>
     <div id="page-wrap">
-      <header id="page-header" class="navbar navbar-expand-sm navbar-dark bg-primary flex-column flex-md-row justify-content-between">
+      <header
+        id="page-header"
+        style="border-bottom: 1px solid rgba(0, 0, 0, 0.1)"
+        class="navbar navbar-expand-sm navbar flex-column flex-md-row justify-content-between"
+      >
         <a class="navbar-brand mr-0" href="/">
-          <img style="width: 120px" src="../images/plumm-logo.png" />
-          <div style="color: #878a93">
+          <img class="navbar-brand-image" src="../images/plumm-logo.png" />
+          <div>
             <b>Glass Rental</b>
           </div>
-          <div style="color: white; font-size: 0.8rem" class="text-center">
+          <div class="navbar-brand--subheading">
             <b>in <span class="text-uppercase">Glazmataz<span></b>
           </div>
         </a>
         <div class="navbar-nav flex-row">
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">Home</a>
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">Rental Service</a>
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Glass Types</a>
-            <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Test Renting</a>
-            <div class="form-inline d-none ml-2 d-md-block" >
-              <a class="btn btn-lg btn-outline-secondary fa fa-shopping-cart" href="/rent/cart"> Cart</a>
-            </div>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">Home</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">Service Overview</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Products</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Try Renting</a>
         </div>
         <div class="navbar-nav flex-row">
+          <div class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" style="margin-top: -3px">
+            <a class="btn btn-sm btn-secondary" href="/rent/cart">
+              <span class="fa fa-shopping-cart"></span>
+              <span id="cartNumber"></span>
+              Cart
+            </a>
+          </div>
           <!-- LOGGED-IN NAVIGATION -->
           <% if(me) { %>
           <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/contact">Help</a>
           <!-- Only in desktop nav -->
           <div class="nav-item dropdown d-none d-sm-block">
-            <a class="nav-link dropdown-toggle" id="header-account-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account</a>
+            <a class="nav-link nav-item dropdown-toggle" id="header-account-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account</a>
             <div class="dropdown-menu account-menu" aria-labelledby="header-account-menu-link">
               <a class="dropdown-item" href="/account">Settings</a>
               <a class="dropdown-item" href="/logout">Sign out</a>
@@ -92,11 +102,11 @@
 
       <footer id="page-footer" class="navbar navbar-light justify-content-between flex-row-reverse">
         <div class="nav">
-          <small class="nav-item"><a class="nav-link text-info" href="/contact">Contact<span class="d-none d-sm-inline"> us</span></a></small>
-          <small class="nav-item"><a class="nav-link text-info" href="/legal/terms">Terms<span class="d-none d-sm-inline"> of Use</span></a></small>
-          <small class="nav-item"><a class="nav-link text-info" href="/legal/privacy">Privacy<span class="d-none d-sm-inline"> policy</span></a></small>
+          <small class="nav-item"><a class="nav-link text-primary" href="/contact">Contact<span class="d-none d-sm-inline"> us</span></a></small>
+          <small class="nav-item"><a class="nav-link text-primary" href="/legal/terms">Terms<span class="d-none d-sm-inline"> of Use</span></a></small>
+          <small class="nav-item"><a class="nav-link text-primary" href="/legal/privacy">Privacy<span class="d-none d-sm-inline"> policy</span></a></small>
           <% if(me) { %>
-          <small class="nav-item"><a class="nav-link text-info" href="/logout">Sign out</a></small>
+          <small class="nav-item"><a class="nav-link text-primary" href="/logout">Sign out</a></small>
           <% } %>
         </div>
         <small class="copy">Copyright &copy; 2018 Village Cellars. <br class="xs-only"/>All rights reserved.</small>
@@ -120,7 +130,6 @@
     (see https://developer.mozilla.org/en-US/docs/Web/API/Window/self) */ %>
     <script>delete window.self;</script>
 
-
     <% /* Auto-injected «script» tags: */ %>
     <!--SCRIPTS-->
     <script src="/dependencies/sails.io.js"></script>
@@ -134,14 +143,23 @@
     <script src="/js/cloud.setup.js"></script>
     <script src="/js/components/ajax-button.component.js"></script>
     <script src="/js/components/ajax-form.component.js"></script>
+    <script src="/js/components/cart-button.component.js"></script>
     <script src="/js/components/item-adder.component.js"></script>
+    <script src="/js/components/item-info.component.js"></script>
     <script src="/js/components/modal.component.js"></script>
+    <script src="/js/utilities/async-for-each.js"></script>
+    <script src="/js/utilities/clear-cart.js"></script>
     <script src="/js/utilities/get-cart.js"></script>
+    <script src="/js/utilities/get-completed-order.js"></script>
     <script src="/js/utilities/open-stripe-checkout.js"></script>
     <script src="/js/pages/498.page.js"></script>
     <script src="/js/pages/account/account-overview.page.js"></script>
     <script src="/js/pages/account/edit-password.page.js"></script>
     <script src="/js/pages/account/edit-profile.page.js"></script>
+    <script src="/js/pages/checkout/order-confirmation.page.js"></script>
+    <script src="/js/pages/checkout/reserve-guest.page.js"></script>
+    <script src="/js/pages/checkout/reserve-member.page.js"></script>
+    <script src="/js/pages/checkout/reserve-prompt.page.js"></script>
     <script src="/js/pages/contact.page.js"></script>
     <script src="/js/pages/dashboard/welcome.page.js"></script>
     <script src="/js/pages/entrance/confirmed-email.page.js"></script>
@@ -154,7 +172,27 @@
     <script src="/js/pages/legal/privacy.page.js"></script>
     <script src="/js/pages/legal/terms.page.js"></script>
     <script src="/js/pages/rent/cart.page.js"></script>
-    <script src="/js/pages/rent/selection.js"></script>
+    <script src="/js/pages/rent/selection.page.js"></script>
     <!--SCRIPTS END-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
+    </script>
   </body>
 </html>

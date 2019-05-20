@@ -237,6 +237,7 @@ module.exports = {
       NameEng: item.NameEng,
       Quantity: inputs.Quantity,
       UnitPrice: item.UnitPrice,
+      ImgSrc: item.ImgSrc,
       WashAndPolish: washAndPolishConstant,
       TotalPrice: totalPrice,
       TotalPriceWithWash: totalPriceWithWash,
@@ -246,6 +247,9 @@ module.exports = {
       DiscountedTotalPrice: discountedTotalPrice,
       Available: await getAvailability(),
     }
+
+    console.log(item);
+    console.log(discountedInputs);
 
     return exits.success(discountedInputs);
   }

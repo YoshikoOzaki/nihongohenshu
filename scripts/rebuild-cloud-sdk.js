@@ -3,7 +3,8 @@ module.exports = {
   friendlyName: 'Rebuild Cloud SDK',
 
 
-  description: 'Regenerate the configuration for the "Cloud SDK" -- the JavaScript module used for AJAX and WebSockets.',
+  description: 'Regenerate the configuration for the "Cloud SDK" -- ' +
+  'the JavaScript module used for AJAX and WebSockets.',
 
 
   fn: async function(inputs, exits){

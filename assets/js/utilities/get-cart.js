@@ -6,5 +6,6 @@ parasails.registerUtility('getCart', async function getCart() {
   return {
     timePeriod: {},
     items: [],
+    shipping: {},
   };
 });

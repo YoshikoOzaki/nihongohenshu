@@ -166,7 +166,7 @@ parasails.registerPage('selection', {
     },
 
     handleItemSubmitting: async function(data) {
-      console.log('data', data);
+      this.syncing = true;
       const getCartWithNewItem = async function(itemData) {
         oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {
@@ -213,6 +213,8 @@ parasails.registerPage('selection', {
               if (result2) {
                 localStorage.setItem('cart', JSON.stringify(result2));
                 this.cart = result2;
+                this.syncing = false;
+                toastr.success('Added item to the cart');
                 return;
               }
             }
@@ -266,15 +268,6 @@ parasails.registerPage('selection', {
           )
         }
       )
-      // const newCart = {
-      //   ...oldCart,
-      //   items: oldCartItemsWithItemRemoved,
-      // };
-
-      // if (oldCart) {
-      //   localStorage.setItem('cart', JSON.stringify(newCart));
-      //   this.cart = await parasails.util.getCart();
-      // }
     },
 
     handleParsingShippingForm: function() {
@@ -326,13 +319,17 @@ parasails.registerPage('selection', {
       this.formErrorsItems = {};
 
       var argins = this.formDataItem;
-
+      console.log(argins);
       // Validate id:
       if(!argins.Id) {
         this.formErrorsItems.Id = true;
       }
       if(!argins.Quantity) {
         this.formErrorsItems.Quantity = true;
+      }
+      if(!argins.Quantity > 0) {
+        // console.log(argins);
+        this.formErrorsItems.QuantityNotAValidNumber = true;
       }
       // if(!cart.DateEnd || !cart.DateEnd) {
       //   this.formErrorsItems.noDateSeleted = true;

@@ -23,7 +23,9 @@ parasails.registerPage('cart', {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
     this.cart = await parasails.util.getCart();
+    this.glasses = await Cloud.getGlasses();
   },
+
   mounted: async function() {
     //…
   },
@@ -32,6 +34,7 @@ parasails.registerPage('cart', {
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
+
     submittedForm: async function() {
       // Redirect to the account page on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--
@@ -56,14 +59,16 @@ parasails.registerPage('cart', {
 
     handleTimeSubmitting: async function(data) {
       // check all the logic for order time & update cart
-      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
-
       oldCart = await parasails.util.getCart();
+      console.log(oldCart);
+      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
+      console.log(timeValidResult);
 
       // check each item to update if available - START -
       // remove all if you want to remove function
       const newCartItems = [];
       if (oldCart.items && oldCart.items.length > 0) {
+        console.log('cart has items');
         const checkCartItemAvailable = async function(item) {
           const dataWithTimePeriod = {
             Id: item.Id,
@@ -84,14 +89,14 @@ parasails.registerPage('cart', {
         });
       }
       // check each item to update if available - END
-
+      console.log('function skipped');
       const newCart = {
         ...oldCart,
         items: newCartItems,
         timePeriod: {...timeValidResult},
       };
-
-      if (result) {
+      console.log(newCart);
+      if (timeValidResult) {
         localStorage.setItem('cart', JSON.stringify(newCart));
       }
     },
@@ -116,7 +121,6 @@ parasails.registerPage('cart', {
     },
 
     handleItemSubmitting: async function(data) {
-      console.log('data', data);
       const getCartWithNewItem = async function(itemData) {
         oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {
@@ -172,8 +176,8 @@ parasails.registerPage('cart', {
     removeItemFromCart: async function(data) {
       const removeItemFromCart = async function(itemToRemove) {
         oldCart = await parasails.util.getCart();
-        oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item) => {
-          return item.Id !== data.Id;
+        oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
+          return i !== data.index;
         });
         const newCart = {
           ...oldCart,

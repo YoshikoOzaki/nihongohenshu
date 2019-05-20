@@ -1,0 +1,47 @@
+<div id="reserve-guest" v-cloak>
+  <div class="container">
+    <div class="row pt-3">
+      <div class="col-md-6 offset-md-3">
+        <div class="text-muted">
+        <i>Show cart orders details here</i>
+        </div>
+        <p>Add a recovery keyword to reserve your order</p>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitReserveOrder"
+          :handle-parsing="handleParsingReserveForm"
+        >
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="keyword"
+              name="keyword"
+              type="string"
+              :class="[formErrors.Keyword ? 'is-invalid' : '']"
+              v-model.trim="formData.Keyword"
+              placeholder="Enter a Keyword"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Keyword"
+            >
+              Please enter a keyword.
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group text-right">
+              <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+                Add to Order
+              </ajax-button>
+            </div>
+          </div>
+        </ajax-form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>
