@@ -40,7 +40,22 @@ module.exports = {
     },
 
     Items: {
-      type: [{Id: "string", Quantity: "string"}]
+      type: [{
+        Id: "number",
+        Quantity: "number",
+        UnitPrice: "number"
+      }]
+    },
+
+    Reserved: {
+      type: 'boolean',
+      description: 'Change order to reserve order',
+    },
+
+    DeliveryCost: {
+      type: 'number',
+      description: 'Cost of the delivery based on postcode',
+      required: true,
     }
 
   },
@@ -57,43 +72,68 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-    // var newEmailAddress = inputs.emailAddress.toLowerCase();
-
-    // Build up data for the new user record and save it to the database.
-    // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    console.log(inputs);
-    orderInputs = {
-      DateStart: inputs.DateStart,
-      DateEnd: inputs.DateEnd,
-      DaysOfUse: inputs.DaysOfUse,
-      CustomerKeyword: inputs.CustomerKeyword,
-      ReserveOnly: inputs.ReserveOnly,
-    }
-
-    var newRecord = await Order.create(orderInputs).fetch();
-
-    let itemResults = [];
-
+    // utility looping function
     async function asyncForEach(array, callback) {
       for (let index = 0; index < array.length; index++) {
         await callback(array[index], index, array);
       }
     }
-    await asyncForEach(inputs.Items, async (item, i) => {
-      const itemInputs = {
-        Quantity: item.Quantity,
-        Glass: Number(item.Id),
-        Order: Number(newRecord.id),
+
+    const createOrder = async function() {
+      orderInputs = {
+        DateStart: inputs.DateStart,
+        DateEnd: inputs.DateEnd,
+        DaysOfUse: inputs.DaysOfUse,
+        CustomerKeyword: inputs.CustomerKeyword,
+        Reserved: inputs.Reserved,
       }
+      var newRecord = await Order.create(orderInputs).fetch();
+      return newRecord;
+    };
 
-      itemResults[i] = await OrderLineNumber.create(itemInputs)
-        .fetch();
-    });
+    const createItemOrderLines = async function(order) {
+      let itemResults = [];
+      await asyncForEach(inputs.Items, async (item, i) => {
+        const itemInputs = {
+          Quantity: Number(item.Quantity),
+          UnitPrice: Number(item.UnitPrice),
+          Glass: Number(item.Id),
+          Order: Number(order.id),
+        }
 
-    const newRecordAndItems = {
-      ...newRecord,
-      items: itemResults,
+        itemResults[i] = await OrderLineNumber.create(itemInputs)
+          .fetch();
+      });
+      return itemResults;
+    };
+
+    const createDeliveryOrderLine = async function(order) {
+      const payload = {
+        Quantity: 1,
+        UnitPrice: inputs.DeliveryCost,
+        Order: Number(order.id),
+      }
+      let delivery = await OrderLineNumber.create(payload).fetch();
+      return delivery;
+    };
+
+    // check one final time that order is totally valid
+
+    try {
+      const order = await createOrder();
+      const orderItemLines = await createItemOrderLines(order);
+      const deliveryDetails = await createDeliveryOrderLine(order);
+      const combinedResults = {
+        ...order,
+        items: orderItemLines,
+        delivery: deliveryDetails,
+      };
+      return exits.success(combinedResults);
+    } catch (err) {
+      return exits.invalid(err);
     }
+
+
     // after we have the line numers, need to add their ids in a collection to the order
 
     // localStorage.setItem('storedData', inputs)
@@ -101,7 +141,11 @@ module.exports = {
     // then just send back the validated item/order to add to the cart
 
     // Since everything went ok, send our 200 response.
-    return exits.success(newRecordAndItems);
+
+    // Need to roll back everything if something doesn't work
+    // execute all funtions, if any fail - delete order and delete all order lines
+
+    return exits.success();
   }
 
 };

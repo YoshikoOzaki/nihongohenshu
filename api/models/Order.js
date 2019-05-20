@@ -38,7 +38,7 @@ module.exports = {
       example: 'wineorder1234'
     },
 
-    ReserveOnly: {
+    Reserved: {
       type: 'boolean',
       description: 'Is this a reserved order',
       example: true,

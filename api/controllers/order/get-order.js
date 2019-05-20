@@ -37,7 +37,6 @@ module.exports = {
     const recordWithItemsPropgated = {
       ...newRecord,
     }
-    console.log(recordWithItemsPropgated);
 
     async function asyncForEach(array, callback) {
       for (let index = 0; index < array.length; index++) {
@@ -45,8 +44,8 @@ module.exports = {
       }
     }
     await asyncForEach(newRecord.OrderLineNumbers, async (item, i) => {
-      glassDetailsForItem = await Glass.findOne(item.Glass);
-      recordWithItemsPropgated.OrderLineNumbers[i].glassDetails = glassDetailsForItem;
+      glassDetailsForItem = await Glass.find(item.Glass).limit(1);
+      recordWithItemsPropgated.OrderLineNumbers[i].glassDetails = glassDetailsForItem[0];
     });
     // add in the deeper propogated glass details
 

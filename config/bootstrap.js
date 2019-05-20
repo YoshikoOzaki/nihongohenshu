@@ -71,7 +71,7 @@ module.exports.bootstrap = async function(done) {
       TotalQuantityInSystem: 10000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-large/pluh3320a_3_plumm-large.jpg',
       Sku: 160,
-      UnitPrice: 10,
+      UnitPrice: 100,
       RackCapacity: 10,
     },
     {
@@ -80,7 +80,7 @@ module.exports.bootstrap = async function(done) {
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_6_plumm-large.jpg',
       Sku: 161,
-      UnitPrice: 12,
+      UnitPrice: 120,
       RackCapacity: 10,
     },
     {
@@ -89,7 +89,7 @@ module.exports.bootstrap = async function(done) {
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluo6660rw/plumm-large/pluo6660rw_3_plumm-large.jpg',
       Sku: 162,
-      UnitPrice: 12,
+      UnitPrice: 120,
       RackCapacity: 10,
     },
     {
@@ -98,7 +98,7 @@ module.exports.bootstrap = async function(done) {
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluv4420b2/plumm-large/pluv4420b2_6_plumm-large.jpg',
       Sku: 162,
-      UnitPrice: 12,
+      UnitPrice: 120,
       RackCapacity: 10,
     },
     {
@@ -107,7 +107,7 @@ module.exports.bootstrap = async function(done) {
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3310b/plumm-large/pluh3310b_3_plumm-large.jpg',
       Sku: 162,
-      UnitPrice: 12,
+      UnitPrice: 120,
       RackCapacity: 10,
     },
   ]);
@@ -174,6 +174,12 @@ module.exports.bootstrap = async function(done) {
       ' the systems, but this could be handled as a separately developed batch op.',
       RecordHandlingGuide: '22',
     },
+    {
+      id: 60,
+      Name: '洗浄済み転記可',
+      Description: 'Sale - also used for delivery costs',
+      RecordHandlingGuide: '11',
+    },
   ]);
 
   await Order.createEach([
@@ -182,21 +188,21 @@ module.exports.bootstrap = async function(done) {
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
       User: '2',
-      ReserveOnly: false,
+      Reserved: false,
     },
     {
       DateStart: '2019-05-01',
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
       User: '3',
-      ReserveOnly: false,
+      Reserved: false,
     },
     {
       DateStart: '2019-05-01',
       DateEnd: '2019-05-10',
       DaysOfUse: '6',
       CustomerKeyword: 'wineorder1234',
-      ReserveOnly: true,
+      Reserved: true,
     },
   ]);
 
@@ -205,26 +211,43 @@ module.exports.bootstrap = async function(done) {
       Quantity: '1000',
       Glass: '1',
       Order: '1',
+      UnitPrice: '100'
     },
     {
       Quantity: '1000',
       Glass: '2',
       Order: '1',
+      UnitPrice: '100'
     },
     {
       Quantity: '1000',
       Glass: '3',
       Order: '1',
+      UnitPrice: '100'
     },
     {
       Quantity: '500',
       Glass: '1',
       Order: '2',
+      UnitPrice: '100'
     },
     {
       Quantity: '500',
       Glass: '2',
       Order: '2',
+      UnitPrice: '100'
+    },
+    {
+      Quantity: '1',
+      Order: '2',
+      UnitPrice: '3000',
+      Glass: '60',
+    },
+    {
+      Quantity: '1',
+      Order: '1',
+      UnitPrice: '3000',
+      Glass: '60',
     },
   ]);
 

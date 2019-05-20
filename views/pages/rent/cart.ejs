@@ -34,7 +34,7 @@
               </div>
               <div class="col-sm-12">
                 <div class="form-group text-right">
-                  <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Apply to Order</ajax-button>
+                  <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Add Postcode</ajax-button>
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
                   </div>
                 </div>
               </div>
@@ -121,7 +121,7 @@
               </div>
               <div class="col-sm-12">
                 <div class="form-group text-right">
-                  <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Add to Order</ajax-button>
+                  <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Add</ajax-button>
                 </div>
               </div>
             </div>
@@ -129,53 +129,110 @@
         </div>
       </div>
       <div class="col-sm-8">
-        <div class="p-3 ml-3 row mb-3" style="border: 1px lightgray solid;">
-          <div class="col-sm-12 m-0 p-0" style="display: flex; justify-content: space-between">
-            <h4>Cart</h4>
-            <div>Edit</div>
-          </div>
-          <div class="col-md-6 m-0 p-0 mb-3">
-            <div>Pick up date: {{cart.timePeriod && cart.timePeriod.DateStart}}</div>
-            <div>Return date: {{cart.timePeriod && cart.timePeriod.DateEnd}}</div>
-            <div>Days of use: {{cart.timePeriod && cart.timePeriod.DaysOfUse}}</div>
-          </div>
-          <div class="col-md-6 m-0 p-0 mb-3">
-            <div>Shipping Postcode: {{cart.shipping && cart.shipping.postcode}}</div>
-            <div>Shipping Price: ¥{{cart.shipping && cart.shipping.price}}</div>
-            <div>
-              <p class="text-danger" v-if="cart.shipping && cart.shipping.postcode && cart.shipping.shippingPossible === false">
-                Shipping is not supported to this postcode
-              </p>
-            </div>
-          </div>
+        <div class="p-3 ml-3 container mb-3" style="border: 1px lightgray solid;">
           <div class="col-sm-12 m-0 p-0">
-            <div v-for="item in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
-              <div><b>{{item.NameEng}}</b></input></div>
+            <div v-for="(item, index) in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
+              <div style="display: flex; justify-content: space-between">
+                <b>{{item.NameEng}}</b>
+                <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-primary">
+                  <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
+                </button>
+              </div>
               <div class="text-success" v-bind:class="{ 'text-warning': item.Available === 'Not Available' }">
                 {{item.Available}}
               </div>
               <div class="row">
-                <div class="col-md-4">
-                  <div>Quantity: {{item.Quantity}}</div>
-                  <div>Base Unit Price: ¥{{item.UnitPrice}}</div>
+                <div class="col-md-3">
+                  <img style="height: 85px" :src="item.ImgSrc" />
                 </div>
-                <div class="col-md-4">
-                  <div>Wash And Polish: ¥{{item.WashAndPolish}}</div>
-                  <div>Discount: {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%</div>
-                  <!-- <div>Discounted Unit Price: ¥{{item.DiscountedUnitPrice}}</div>
-                  <div>Discounted Unit Price With Wash: ¥{{item.DiscountedUnitPriceWithWash}}</div> -->
-                </div>
-                <div class="col-md-4">
-                  <!-- <div>Total Price (No Wash): ¥{{item.TotalPrice}}</div> -->
-                  <div>Discounted Total Price (Washed): ¥{{item.DiscountedTotalPrice}}</div>
+                <div class="col-md-9">
+                  <table class="table">
+                    <tr>
+                      <th>
+                        Quantity
+                      </th>
+                      <th>
+                        Unit Price
+                      </th>
+                      <th>
+                        Wash And Polish
+                      </th>
+                      <th>
+                        Discount
+                      </th>
+                      <th>
+                        Total
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>
+                        {{item.Quantity}}
+                      </td>
+                      <td>
+                        ¥{{item.UnitPrice}}
+                      </td>
+                      <td>
+                        ¥{{item.WashAndPolish}}
+                      </td>
+                      <td>
+                        {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%
+                      </td>
+                      <td>
+                        ¥{{item.DiscountedTotalPrice}}
+                      </td>
+                    </tr>
+                  </table>
                 </div>
               </div>
-              <button @click="removeItemFromCart({Id: item.Id})" class="btn btn-outline-primary">
-                <i><small>Remove</small></i>
-              </button>
             </div>
           </div>
-          <div class="col-sm-12 m-0 p-0" style="display: flex; justify-content: space-between">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table">
+                <tr class="tr">
+                  <th>
+                    Pick Up
+                  </th>
+                  <th>
+                    Return
+                  </th>
+                  <th>
+                    Days
+                  </th>
+                  <th>
+                    Postcode
+                  </th>
+                  <th>
+                    Shipping
+                  </th>
+                  <th>
+                    Total
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    {{cart.timePeriod && cart.timePeriod.DateStart}}
+                  </td>
+                  <td>
+                    {{cart.timePeriod && cart.timePeriod.DateEnd}}
+                  </td>
+                  <td>
+                    {{cart.timePeriod && cart.timePeriod.DaysOfUse}}
+                  </td>
+                  <td>
+                    {{cart.shipping && cart.shipping.postcode}}
+                  </td>
+                  <td>
+                    ¥{{cart.shipping && cart.shipping.price}}
+                  </td>
+                  <td>
+                    <b>¥{{cart.shipping && _.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price }}</b>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-12 m-0 p-0 mt-2" style="display: flex; justify-content: space-between">
             <a href="../checkout/reserve-prompt">
               <button class="btn btn-outline-primary account-settings-button">
                 Reserve Order

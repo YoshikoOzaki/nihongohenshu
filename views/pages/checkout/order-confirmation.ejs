@@ -61,14 +61,29 @@
                 <div class="col-md-2">
                   <img width="130" :src="orderLine.glassDetails.ImgSrc" />
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                   <div>{{ orderLine.glassDetails.NameEng }}</div>
                   <div>{{ orderLine.glassDetails.NameJap }}</div>
                   <br />
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-2">
+                  <div><small>Unit Price</small></div>
+                  <div>¥{{ orderLine.UnitPrice }}</div>
+                </div>
+                <div class="col-md-2">
                   <div><small>Quantity In Order</small></div>
-                  <div>{{ orderLine.Quantity }}</div>
+                  <div>¥{{ orderLine.Quantity }}</div>
+                </div>
+                <div class="col-md-2">
+                  <div><small>Total Price</small></div>
+                  <div>¥{{ orderLine.UnitPrice * orderLine.Quantity }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                  <div><small>Order Total Price</small></div>
+                  <div>¥ (OLunitCosts + washCost) * OLquantity + Shipping </div>
                 </div>
               </div>
             </div>

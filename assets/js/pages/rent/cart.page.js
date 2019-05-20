@@ -176,8 +176,8 @@ parasails.registerPage('cart', {
     removeItemFromCart: async function(data) {
       const removeItemFromCart = async function(itemToRemove) {
         oldCart = await parasails.util.getCart();
-        oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item) => {
-          return item.Id !== data.Id;
+        oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
+          return i !== data.index;
         });
         const newCart = {
           ...oldCart,
