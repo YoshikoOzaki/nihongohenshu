@@ -2,45 +2,54 @@
   <div class="container mt-3">
     <div class="row">
       <div class="col-sm-4">
-        <div style="border: 1px lightgray solid" class="mb-3 p-3 row">
-          <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label for="full-name">Start Date</label>
-                  <input class="form-control" id="date-start" name="date-start" type="date"  :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart" placeholder="0" autocomplete="date-end" >
-                  <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
+        <div class="mb-3 card row">
+          <div class="card-header">
+            Dates Required
+          </div>
+          <div class="card-body">
+            <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Start Date</label>
+                    <input class="form-control" id="date-start" name="date-start" type="date"  :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart" placeholder="0" autocomplete="date-end" >
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">End Date</label>
+                    <input class="form-control" id="date-end" name="date-end" type="date"  :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd" placeholder="0" autocomplete="date-end" >
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Days of Usage</label>
+                    <input class="form-control" id="days-of-use" name="days-of-use" type="number"  :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse" placeholder="0" autocomplete="days-of-use">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
+                  </div>
                 </div>
               </div>
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label for="full-name">End Date</label>
-                  <input class="form-control" id="date-end" name="date-end" type="date"  :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd" placeholder="0" autocomplete="date-end" >
-                  <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
+                  </div>
                 </div>
               </div>
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label for="full-name">Days of Usage</label>
-                  <input class="form-control" id="days-of-use" name="days-of-use" type="number"  :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse" placeholder="0" autocomplete="days-of-use">
-                  <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-12">
-                <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
-                <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
-              </div>
-              <div class="col-sm-12">
-                <div class="form-group text-right">
-                  <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
-                </div>
-              </div>
-            </div>
-          </ajax-form>
+            </ajax-form>
+          </div>
         </div>
-        <div style="border: 1px lightgray solid" class="mb-3 p-3 row">
+        <div class="mb-3 card row">
+          <div class="card-header">
+            Shipping
+          </div>
+          <div class="card-body">
             <ajax-form style="width: 100%"
               :syncing.sync="syncing"
               :cloud-error.sync="cloudError"
@@ -77,16 +86,20 @@
                 </div>
               </div>
             </ajax-form>
+            </div>
           </div>
         <div
-          style="border: 1px lightgray solid"
-          class="mb-3 p-3 row"
+          class="mb-3 card row"
         >
-        <div
-          v-if="glasses.length === 0"
-          class="fa fa-spinner fa-spin"
-        >
+        <div class="card-header">
+          Add More Products
         </div>
+        <div class="card-body">
+          <div
+            v-if="glasses.length === 0"
+            class="fa fa-spinner fa-spin"
+          >
+          </div>
           <ajax-form
             @submitted="submittedForm()"
             :syncing.sync="syncing"
@@ -126,6 +139,7 @@
               </div>
             </div>
           </ajax-form>
+        </div>
         </div>
       </div>
       <div class="col-sm-8">
