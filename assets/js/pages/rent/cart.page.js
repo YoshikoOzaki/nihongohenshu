@@ -12,6 +12,7 @@ parasails.registerPage('cart', {
     formErrorsTime: { /* … */ },
     formErrorsItems: { /* … */ },
     formErrorsShipping: { /* … */ },
+    checkoutEnabled: false,
     cart: [],
     glasses: [],
   },
@@ -30,6 +31,9 @@ parasails.registerPage('cart', {
     //…
   },
 
+  updated: async function() {
+    await this.checkIfCheckoutEnabled();
+  },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
@@ -43,6 +47,35 @@ parasails.registerPage('cart', {
       // window.location = '/rent/selection';
       // should add the returned item to the cart
       this.cart = await parasails.util.getCart();
+    },
+
+    checkIfCheckoutEnabled: async function() {
+      const cart = await parasails.util.getCart();
+
+      const parametersRequired = {
+        cartHasItems: false,
+        cartItemsAreValid: false,
+        shippingCodeEntered: false,
+        shippingCodeValid: false,
+        datesEntered: false,
+        daysOfUseEntered: false,
+      };
+
+      parametersRequired.cartHasItems = cart.items.length > 0;
+      parametersRequired.cartItemsAreValid = _.each(cart.items, (o) => {
+        return o.Available.available === 'Available';
+      }).length === cart.items.length;
+      parametersRequired.shippingCodeEntered = cart.shipping.postcode > 0;
+      parametersRequired.shippingCodeValid = cart.shipping.shippingPossible !== false;
+      parametersRequired.datesEntered = !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
+      parametersRequired.daysOfUseEntered = cart.timePeriod.DaysOfUse > 0;
+      if (
+        _.includes(parametersRequired, false)
+      ) {
+        this.checkoutEnabled = false;
+        return;
+      }
+      this.checkoutEnabled = true;
     },
 
     createOrderFromCart: async function() {
@@ -60,15 +93,12 @@ parasails.registerPage('cart', {
     handleTimeSubmitting: async function(data) {
       // check all the logic for order time & update cart
       oldCart = await parasails.util.getCart();
-      console.log(oldCart);
       timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
-      console.log(timeValidResult);
 
       // check each item to update if available - START -
       // remove all if you want to remove function
       const newCartItems = [];
       if (oldCart.items && oldCart.items.length > 0) {
-        console.log('cart has items');
         const checkCartItemAvailable = async function(item) {
           const dataWithTimePeriod = {
             Id: item.Id,
@@ -89,13 +119,12 @@ parasails.registerPage('cart', {
         });
       }
       // check each item to update if available - END
-      console.log('function skipped');
       const newCart = {
         ...oldCart,
         items: newCartItems,
         timePeriod: {...timeValidResult},
       };
-      console.log(newCart);
+
       if (timeValidResult) {
         localStorage.setItem('cart', JSON.stringify(newCart));
       }

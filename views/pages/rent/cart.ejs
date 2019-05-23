@@ -1,7 +1,7 @@
 <div id="cart" v-cloak>
   <div class="container mt-3">
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="mb-3 card row">
           <div class="card-header">
             Dates Required
@@ -142,7 +142,7 @@
         </div>
         </div>
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-9">
         <div class="ml-3 mb-3 card">
           <div class="card-header">
             Cart
@@ -158,16 +158,21 @@
                   </button>
                 </div>
                 <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
-                  {{item.Available.available}}&nbsp;-
-                  <i>{{item.Available.remaining}} available for the required dates</i>
+                  <div v-if="item.Available !== 'No date set to evaluate'">
+                    {{item.Available.available}}&nbsp;-
+                    <i>{{item.Available.remaining}} available for the required dates</i>
+                  </div>
+                  <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
+                    {{item.Available}}
+                  </div>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <img style="height: 85px" :src="item.ImgSrc" />
                 </div>
-                <div class="col-md-9">
-                  <table class="table">
+                <div class="col-md-10">
+                  <table class="table table-sm">
                     <tr>
                       <th>
                         Quantity
@@ -253,13 +258,15 @@
               </table>
             </div>
           </div>
-          <div class="col-sm-12 m-0 p-0 mt-2" style="display: flex; justify-content: space-between">
-            <a href="../checkout/reserve-prompt">
-              <button class="btn btn-outline-primary account-settings-button">
-                Reserve Order
-              </button>
-            </a>
-            <button class="btn btn-primary account-settings-button" @click="createOrderFromCart">
+          <div class="col-sm-12 m-0 p-0 mt-2 text-right">
+            <span class="mr-2">
+              <a href="../checkout/reserve-prompt">
+                <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
+                  Reserve Order
+                </button>
+              </a>
+            </span>
+            <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
               Create Order
             </button>
           </div>
