@@ -138,7 +138,10 @@ module.exports = {
       orderReturnedTotal +
       returnAndWashedTotal;
 
-      const availability = totalAvailableForOrder - inputs.Quantity > 0 ? 'Available' : 'Not Available'
+      const availability = {
+        available: totalAvailableForOrder - inputs.Quantity > 0 ? 'Available' : 'Not Available',
+        remaining: totalAvailableForOrder,
+      };
 
       return availability;
     };

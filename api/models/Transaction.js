@@ -28,7 +28,6 @@ module.exports = {
 
     Product: {
       model: 'Glass',
-      required: true,
     },
 
     Quantity: {
@@ -60,9 +59,8 @@ module.exports = {
       // type: 'ref',
       // columnType: 'datetime',
       type: 'string',
-      description: 'Time the order was made',
+      description: 'Date the transaction has/will happen(ed)',
       example: '2018-08-08',
-      required: true,
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

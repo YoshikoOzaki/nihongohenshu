@@ -150,14 +150,17 @@
           <div class="card-body">
           <div class="col-sm-12 m-0 p-0">
             <div v-for="(item, index) in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
-              <div style="display: flex; justify-content: space-between">
-                <b>{{item.NameEng}}</b>
-                <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-primary">
-                  <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
-                </button>
-              </div>
-              <div class="text-success" v-bind:class="{ 'text-warning': item.Available === 'Not Available' }">
-                {{item.Available}}
+              <div class="p-2">
+                <div style="display: flex; justify-content: space-between">
+                  <b>{{item.NameEng}}</b>
+                  <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-primary">
+                    <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
+                  </button>
+                </div>
+                <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
+                  {{item.Available.available}}&nbsp;-
+                  <i>{{item.Available.remaining}} available for the required dates</i>
+                </div>
               </div>
               <div class="row">
                 <div class="col-md-3">
