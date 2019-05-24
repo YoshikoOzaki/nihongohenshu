@@ -1,0 +1,62 @@
+<div id="order-recovery" v-cloak>
+  <div class="container">
+    <div class="row pt-3">
+      <div class="col-md-6 offset-md-3">
+        <p>Input a recovery keyword and order id to retrieve your order</p>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitForm"
+          :handle-parsing="handleParsingForm"
+        >
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="orderId"
+              name="orderId"
+              type="string"
+              :class="[formErrors.OrderId ? 'is-invalid' : '']"
+              v-model.trim="formData.OrderId"
+              placeholder="Enter an Order Id"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.orderId"
+            >
+              Please enter an order Id.
+            </div>
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="keyword"
+              name="keyword"
+              type="string"
+              :class="[formErrors.Keyword ? 'is-invalid' : '']"
+              v-model.trim="formData.Keyword"
+              placeholder="Enter a Keyword"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Keyword"
+            >
+              Please enter a keyword.
+            </div>
+          </div>
+          <div class="form-group text-right">
+            <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+              Recover Order
+            </ajax-button>
+          </div>
+        </ajax-form>
+        <div class="text-muted">
+        <i>Show recovered cart orders details here</i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

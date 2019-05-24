@@ -54,7 +54,6 @@ module.exports = {
         recordWithItemsPropgated.OrderLineNumbers[i].glassDetails = glassDetailsForItem[0];
       });
 
-      // this isn't working yet
       async function getTotalOrderPrice() {
         const costs = [];
         const washCost = await WashAndPolish.findOne({ Name: "Wash And Polish"  });

@@ -45,6 +45,12 @@ module.exports = {
       defaultsTo: false,
     },
 
+    Postcode: {
+      type: 'number',
+      description: 'Added for reserving orders',
+      example: 600000,
+    },
+
     User: {
       model: 'User',
       description: 'Links order to a user, not required as some orders are for guests'

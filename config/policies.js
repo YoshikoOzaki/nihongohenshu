@@ -27,6 +27,7 @@ module.exports.policies = {
 
   'rent/view-selection': true,
   'rent/view-cart': true,
+  'rent/view-order-recovery': true,
 
   'checkout/view-reserve-prompt': true,
   'checkout/view-reserve-guest': true,
@@ -34,4 +35,5 @@ module.exports.policies = {
 
   'order/create-reserve-order': true,
   'order/get-order': true,
+  'order/recover-reserved-order': true,
 };
