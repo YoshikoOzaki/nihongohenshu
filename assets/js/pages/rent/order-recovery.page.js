@@ -8,7 +8,7 @@ parasails.registerPage('order-recovery', {
     cloudError: '',
     formErrors: { /* … */ },
     formData: { /* … */ },
-    cart: [],
+    newCart: [],
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -26,6 +26,15 @@ parasails.registerPage('order-recovery', {
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
+    addReservedOrderToCart: async function() {
+      try {
+        await localStorage.setItem('cart', JSON.stringify(this.newCart));
+        toastr.success('Added reserved order to the cart');
+      } catch (err) {
+        toastr.failed('Could not add order to cart');
+      }
+    },
+
     submittedForm: async function() {
       // this.syncing = true;
       // window.location = '/checkout/cart';
@@ -106,6 +115,7 @@ parasails.registerPage('order-recovery', {
         },
       };
       console.log(newCart);
+      this.newCart = newCart;
       // then check shipping is possible with the new cart
 
     },

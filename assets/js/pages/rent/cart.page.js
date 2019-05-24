@@ -222,7 +222,7 @@ parasails.registerPage('cart', {
           }
           return 0;
         }
-        result = await Cloud.checkShippingPrice(newCart.shipping.Postcode || 0, newCart);
+        result = await Cloud.checkShippingPrice(newCart.shipping.postcode || 0, newCart);
         const newCart2 = {
           ...newCart,
           shipping: {
@@ -234,19 +234,30 @@ parasails.registerPage('cart', {
         }
       }
 
-      removeItemFromCart(data).then(
-        result => {
-          getCartWithRemovedItemAndShippingCalculated(result).then(
-            result2 => {
-              if (result2) {
-                localStorage.setItem('cart', JSON.stringify(result2));
-                this.cart = result2;
-                return;
-              }
-            }
-          )
-        }
-      )
+      try {
+        const result = await removeItemFromCart(data);
+        const result2 = await getCartWithRemovedItemAndShippingCalculated(result);
+        localStorage.setItem('cart', JSON.stringify(result2));
+        this.cart = result2;
+        toastr.success('Item removed from the cart');
+      } catch (err) {
+        toastr.error('Item could not be removed from the cart');
+      }
+
+
+      // removeItemFromCart(data).then(
+      //   result => {
+      //     getCartWithRemovedItemAndShippingCalculated(result).then(
+      //       result2 => {
+      //         if (result2) {
+      //           localStorage.setItem('cart', JSON.stringify(result2));
+      //           this.cart = result2;
+      //           return;
+      //         }
+      //       }
+      //     )
+      //   }
+      // )
     },
 
     handleParsingShippingForm: function() {
