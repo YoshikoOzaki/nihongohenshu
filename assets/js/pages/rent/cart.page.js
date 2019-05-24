@@ -241,23 +241,9 @@ parasails.registerPage('cart', {
         this.cart = result2;
         toastr.success('Item removed from the cart');
       } catch (err) {
+        console.log(err);
         toastr.error('Item could not be removed from the cart');
       }
-
-
-      // removeItemFromCart(data).then(
-      //   result => {
-      //     getCartWithRemovedItemAndShippingCalculated(result).then(
-      //       result2 => {
-      //         if (result2) {
-      //           localStorage.setItem('cart', JSON.stringify(result2));
-      //           this.cart = result2;
-      //           return;
-      //         }
-      //       }
-      //     )
-      //   }
-      // )
     },
 
     handleParsingShippingForm: function() {
