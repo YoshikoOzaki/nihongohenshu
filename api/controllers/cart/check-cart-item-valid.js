@@ -41,7 +41,13 @@ module.exports = {
       type: 'string',
       description: 'Total number of days the glasses will be used',
       example: "555"
-    }
+    },
+
+    OrderIdToIgnore: {
+      type: 'number',
+      description: 'If we are adding a recovered order, we dont want to calculate transactions from that order',
+      example: 12,
+    },
 
     // should be able to change this to a date range picker with startdate enddate
   },
@@ -66,14 +72,27 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     // check availability and add available to each item that is checked
-    console.log(inputs.DateEnd);
-    console.log(inputs.DateStart);
     async function getAvailability () {
       if (!inputs.DateEnd || !inputs.DateStart) {
         return 'No date set to evaluate';
       }
 
+      // const OrderIdToIgnore = inputs.OrderIdToIgnore === undefined ? 0 : inputs.OrderIdToIgnore;
+      const TransactionNumbersToIgnore = async function() {
+        if (inputs.OrderIdToIgnore) {
+          const order = await Order.findOne(
+            { id: inputs.OrderIdToIgnore }
+          ).populate('OrderTransactions');
+          const transactionUsingInputProduct = _.findOne(order.OrderTransactions, { 'Product': inputs.Glass });
+          const transactionNumberToIgnore = transactionUsingInputProduct.id;
+          return transactionNumberToIgnore;
+        }
+        return [];
+      }
+      // TODO: pass in the *order number* in inputs, get the transaction numbers from that, exclude those transaction numbers in the below query
+      console.log('transaction numbers to ignore', await TransactionNumbersToIgnore());
       // will need to add every possible code
+      // unless we use the transaction process type values well
       [
         stockIn,
         orderOut,
@@ -123,7 +142,7 @@ module.exports = {
         })
       ]);
 
-      // collect totals
+      // collect totals related to those dates
       const stockInTotal = _.sum(stockIn, (o) => { return o.Quantity });
       const orderOutTotal = _.sum(orderOut, (o) => { return o.Quantity });
       const returnPlanedTotal = _.sum(returnPlanned, (o) => { return o.Quantity });
@@ -250,9 +269,6 @@ module.exports = {
       DiscountedTotalPrice: discountedTotalPrice,
       Available: await getAvailability(),
     }
-
-    console.log(item);
-    console.log(discountedInputs);
 
     return exits.success(discountedInputs);
   }

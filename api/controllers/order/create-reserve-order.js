@@ -127,7 +127,7 @@ module.exports = {
       let transactionLines = [];
       await asyncForEach(orderLines, async (orderLine, i) => {
         const reserveFromPayload = {
-          OrderNumber: orderLine.order,
+          OrderNumber: order.id,
           LineNumber: orderLine.id,
           TransactionType: 40, // rental order
           Product: orderLine.Glass,
@@ -138,7 +138,7 @@ module.exports = {
           Date: order.DateStart,
         }
         const returnPlannedOnPayload = {
-          OrderNumber: orderLine.order,
+          OrderNumber: order.id,
           LineNumber: orderLine.id,
           TransactionType: 44, // return planned
           Product: orderLine.Glass,

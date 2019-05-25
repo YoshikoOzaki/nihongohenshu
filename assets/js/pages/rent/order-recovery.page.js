@@ -8,7 +8,7 @@ parasails.registerPage('order-recovery', {
     cloudError: '',
     formErrors: { /* … */ },
     formData: { /* … */ },
-    newCart: [],
+    newCart: {},
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -31,7 +31,7 @@ parasails.registerPage('order-recovery', {
         await localStorage.setItem('cart', JSON.stringify(this.newCart));
         toastr.success('Added reserved order to the cart');
       } catch (err) {
-        toastr.failed('Could not add order to cart');
+        toastr.error('Could not add order to cart');
       }
     },
 
@@ -47,29 +47,39 @@ parasails.registerPage('order-recovery', {
         CustomerKeyword: this.formData.Keyword,
       }
 
-      const order = await Cloud.recoverReservedOrder(..._.values(payload));
-      await this.convertRecoveredOrderToCart(order);
+      try {
+        const order = await Cloud.recoverReservedOrder(..._.values(payload));
+        await this.convertRecoveredOrderToCartSyntax(order);
+        toastr.success('Recovered Order');
+      } catch (err) {
+        console.log(err);
+        toastr.error('Could not recover order');
+      }
       // get real order
       // convert cart to order
       // await localStorage.setItem('cart', JSON.stringify(order));
     },
 
-    convertRecoveredOrderToCart: async function(recoveredOrder) {
+    convertRecoveredOrderToCartSyntax: async function(recoveredOrder) {
       // should check all items, add the time, check shipping and add to cart
       // also start syncing here
       const newCartItems = [];
       // check all items - need to exclude this order
       if (recoveredOrder.OrderLineNumbers && recoveredOrder.OrderLineNumbers.length > 0) {
         // might need to add a price override here - price should be what it was reserved at
-        const checkCartItemAvailable = async function(item) {
-          const dataWithTimePeriod = {
-            Id: item.Glass,
-            Quantity: item.Quantity,
+        // also need to not include any order lines that are from this order
+        const checkCartItemAvailable = async function(orderLineNumber) {
+          const payload = {
+            Id: orderLineNumber.Glass,
+            Quantity: orderLineNumber.Quantity,
             DateStart: recoveredOrder.DateStart,
             DateEnd: recoveredOrder.DateEnd,
+            DaysOfUse: recoveredOrder.DaysOfUse,
+            OrderIdToIgnore: recoveredOrder.id,
           }
-          if (item.Glass !== null) {
-            result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+          console.log(payload);
+          if (orderLineNumber.Glass !== null) {
+            result = await Cloud.checkCartItemValid(..._.values(payload));
             return result;
           }
         };
@@ -94,17 +104,13 @@ parasails.registerPage('order-recovery', {
 
       // Add the shipping details
       // Check the shipping
-      console.log('test1');
       const shippingTransactionLine = _.find(recoveredOrder.OrderLineNumbers, { 'Glass': null });
-      console.log(shippingTransactionLine);
 
       const newCartShipping = {
         postcode: recoveredOrder.Postcode,
         price: shippingTransactionLine.UnitPrice * shippingTransactionLine.Quantity,
       }
-      console.log(newCartShipping);
 
-      console.log(newCartItems);
       const newCart = {
         items: [ ...newCartItems ],
         shipping: {
@@ -114,7 +120,6 @@ parasails.registerPage('order-recovery', {
           ...newCartTimePeriod,
         },
       };
-      console.log(newCart);
       this.newCart = newCart;
       // then check shipping is possible with the new cart
 
