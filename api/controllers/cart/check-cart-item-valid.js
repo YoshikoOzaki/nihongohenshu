@@ -41,7 +41,13 @@ module.exports = {
       type: 'string',
       description: 'Total number of days the glasses will be used',
       example: "555"
-    }
+    },
+
+    OrderIdToIgnore: {
+      type: 'number',
+      description: 'If we are adding a recovered order, we dont want to calculate transactions from that order',
+      example: 12,
+    },
 
     // should be able to change this to a date range picker with startdate enddate
   },
@@ -66,14 +72,27 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     // check availability and add available to each item that is checked
-    console.log(inputs.DateEnd);
-    console.log(inputs.DateStart);
     async function getAvailability () {
       if (!inputs.DateEnd || !inputs.DateStart) {
         return 'No date set to evaluate';
       }
 
+      // const OrderIdToIgnore = inputs.OrderIdToIgnore === undefined ? 0 : inputs.OrderIdToIgnore;
+      const getTransactionNumbersToIgnore = async function() {
+        if (inputs.OrderIdToIgnore) {
+          const order = await Order.findOne(
+            { id: inputs.OrderIdToIgnore }
+          ).populate('OrderTransactions');
+          const transactionIds = _.map(_.filter(order.OrderTransactions, { 'Product': Number(inputs.Id) }), 'id');
+          return transactionIds;
+        }
+        return [];
+      }
+      // TODO: pass in the *order number* in inputs, get the transaction numbers from that, exclude those transaction numbers in the below query
       // will need to add every possible code
+      // unless we use the transaction process type values well
+      const transactionNumbersToIgnore = await getTransactionNumbersToIgnore();
+
       [
         stockIn,
         orderOut,
@@ -84,46 +103,51 @@ module.exports = {
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateStart },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 10,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateEnd },
             TransactionType: 40,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 44,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 55,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 57,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         })
       ]);
 
-      // collect totals
+      // collect totals related to those dates
       const stockInTotal = _.sum(stockIn, (o) => { return o.Quantity });
       const orderOutTotal = _.sum(orderOut, (o) => { return o.Quantity });
       const returnPlanedTotal = _.sum(returnPlanned, (o) => { return o.Quantity });
@@ -132,13 +156,18 @@ module.exports = {
 
       // calculate available or not
       const totalAvailableForOrder =
-      stockInTotal -
-      orderOutTotal +
+      (stockInTotal - orderOutTotal) +
       returnPlanedTotal +
       orderReturnedTotal +
       returnAndWashedTotal;
 
-      const availability = totalAvailableForOrder - inputs.Quantity > 0 ? 'Available' : 'Not Available'
+      const inventory = totalAvailableForOrder;
+      const remaining = totalAvailableForOrder - inputs.Quantity;
+
+      const availability = {
+        available: remaining >= 0 ? 'Available' : 'Not Available',
+        remaining: inventory >= 0 ? inventory : 0,
+      };
 
       return availability;
     };
@@ -247,9 +276,6 @@ module.exports = {
       DiscountedTotalPrice: discountedTotalPrice,
       Available: await getAvailability(),
     }
-
-    console.log(item);
-    console.log(discountedInputs);
 
     return exits.success(discountedInputs);
   }

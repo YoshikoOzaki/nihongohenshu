@@ -43,17 +43,20 @@
         </a>
         <div class="navbar-nav flex-row">
           <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">Home</a>
-          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">Service Overview</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">About</a>
           <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Products</a>
-          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Try Renting</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/order-recovery">Order Recovery</a>
+          <!-- <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Try Renting</a> -->
         </div>
         <div class="navbar-nav flex-row">
           <div class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" style="margin-top: -3px">
             <a class="btn btn-sm btn-secondary" href="/rent/cart">
               <span class="fa fa-shopping-cart"></span>
-              <span id="cartNumber"></span>
+              <span id="cartNumber">
+              </span>
               Cart
             </a>
+            <ajax-button/>
           </div>
           <!-- LOGGED-IN NAVIGATION -->
           <% if(me) { %>
@@ -172,6 +175,7 @@
     <script src="/js/pages/legal/privacy.page.js"></script>
     <script src="/js/pages/legal/terms.page.js"></script>
     <script src="/js/pages/rent/cart.page.js"></script>
+    <script src="/js/pages/rent/order-recovery.page.js"></script>
     <script src="/js/pages/rent/selection.page.js"></script>
     <!--SCRIPTS END-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

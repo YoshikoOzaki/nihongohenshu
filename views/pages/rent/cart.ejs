@@ -1,7 +1,7 @@
 <div id="cart" v-cloak>
   <div class="container mt-3">
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="mb-3 card row">
           <div class="card-header">
             Dates Required
@@ -88,9 +88,7 @@
             </ajax-form>
             </div>
           </div>
-        <div
-          class="mb-3 card row"
-        >
+        <div class="mb-3 card row">
         <div class="card-header">
           Add More Products
         </div>
@@ -142,29 +140,45 @@
         </div>
         </div>
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-9">
         <div class="ml-3 mb-3 card">
           <div class="card-header">
             Cart
           </div>
           <div class="card-body">
+          <div v-if="cart.orderIdToIgnore" class="card mb-3">
+            <div class="card-body">
+              Based off Reserved Order <br />
+              Order Number: {{cart.orderIdToIgnore}} <br />
+              Customer Keyword: {{cart.reserveOrderKeyword}} <br />
+              <button @click="clearCart" class="btn btn-sm btn-outline-primary">Clear cart and remove reserved order</button>
+            </div>
+          </div>
           <div class="col-sm-12 m-0 p-0">
             <div v-for="(item, index) in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
-              <div style="display: flex; justify-content: space-between">
-                <b>{{item.NameEng}}</b>
-                <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-primary">
-                  <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
-                </button>
-              </div>
-              <div class="text-success" v-bind:class="{ 'text-warning': item.Available === 'Not Available' }">
-                {{item.Available}}
+              <div class="p-2">
+                <div style="display: flex; justify-content: space-between">
+                  <b>{{item.NameEng}}</b>
+                  <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-primary">
+                    <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
+                  </button>
+                </div>
+                <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
+                  <div v-if="item.Available !== 'No date set to evaluate'">
+                    {{item.Available.available}}&nbsp;-
+                    <span class="text-muted">{{item.Available.remaining}} Total</span>
+                  </div>
+                  <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
+                    {{item.Available}}
+                  </div>
+                </div>
               </div>
               <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <img style="height: 85px" :src="item.ImgSrc" />
                 </div>
-                <div class="col-md-9">
-                  <table class="table">
+                <div class="col-md-10">
+                  <table class="table table-sm">
                     <tr>
                       <th>
                         Quantity
@@ -250,13 +264,18 @@
               </table>
             </div>
           </div>
-          <div class="col-sm-12 m-0 p-0 mt-2" style="display: flex; justify-content: space-between">
-            <a href="../checkout/reserve-prompt">
-              <button class="btn btn-outline-primary account-settings-button">
-                Reserve Order
-              </button>
-            </a>
-            <button class="btn btn-primary account-settings-button" @click="createOrderFromCart">
+          <div class="col-sm-12 m-0 p-0 mt-2 text-right">
+            <button class="btn btn-outline-primary mr-2" @click="clearCart">
+              Clear Cart
+            </button>
+            <span class="mr-2">
+              <a href="../checkout/reserve-prompt">
+                <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
+                  Reserve Order
+                </button>
+              </a>
+            </span>
+            <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
               Create Order
             </button>
           </div>

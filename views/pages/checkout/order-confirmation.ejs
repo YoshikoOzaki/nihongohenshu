@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="card mb-3">
           <div class="card-header">
             User Details
@@ -23,27 +23,49 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="card mb-3">
           <div class="card-header">
             Order Infomation
           </div>
           <div class="card-body">
-            <div class="mb-2">
-              <div><small>Starting Date</small></div>
-              <div>{{loadedOrder.DateStart}}</div>
-            </div>
             <div>
-              <div><small>Ending Date</small></div>
-              <div>{{loadedOrder.DateEnd}}</div>
-            </div>
-            <div>
-              <div><small>Days Of Use</small></div>
-              <div>{{loadedOrder.DaysOfUse}}</div>
-            </div>
-            <div>
-              <div><small>Time Created</small></div>
-              <div>{{loadedOrder.createdAt}}</div>
+              <table class="table">
+                <tr>
+                  <th>
+                    Order Number
+                  </th>
+                  <th>
+                    Starting Date
+                  </th>
+                  <th>
+                    Ending Date
+                  </th>
+                  <th>
+                    Days of Use
+                  </th>
+                  <th>
+                    Time Created
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    {{loadedOrder.id}}
+                  </td>
+                  <td>
+                    {{loadedOrder.DateStart}}
+                  </td>
+                  <td>
+                    {{loadedOrder.DateEnd}}
+                  </td>
+                  <td>
+                    {{loadedOrder.DaysOfUse}}
+                  </td>
+                  <td>
+                    {{loadedOrder.createdAt}}
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
@@ -56,35 +78,48 @@
             Order Items
           </div>
           <div class="card-body">
-            <div v-for="orderLine in orderWithAllData.OrderLineNumbers">
-              <div class="row">
-                <div class="col-md-2">
-                  <img width="130" :src="orderLine.glassDetails.ImgSrc" />
-                </div>
-                <div class="col-md-4">
-                  <div>{{ orderLine.glassDetails.NameEng }}</div>
-                  <div>{{ orderLine.glassDetails.NameJap }}</div>
-                  <br />
-                </div>
-                <div class="col-md-2">
-                  <div><small>Unit Price</small></div>
-                  <div>¥{{ orderLine.UnitPrice }}</div>
-                </div>
-                <div class="col-md-2">
-                  <div><small>Quantity In Order</small></div>
-                  <div>¥{{ orderLine.Quantity }}</div>
-                </div>
-                <div class="col-md-2">
-                  <div><small>Total Price</small></div>
-                  <div>¥{{ orderLine.UnitPrice * orderLine.Quantity }}</div>
-                </div>
-              </div>
-            </div>
+            <table class="table">
+              <tr>
+                <th>
+                </th>
+                <th>
+                  Name
+                </th>
+                <th>
+                  Unit Price
+                </th>
+                <th>
+                  Quantity In Order
+                </th>
+                <th>
+                  Total Price
+                </th>
+              </tr>
+              <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Glass !== null">
+                <td>
+                  <img height="100px" :src="orderLine.glassDetails.ImgSrc" />
+                </td>
+                <td>
+                  {{ orderLine.glassDetails.NameEng }}
+                  {{ orderLine.glassDetails.NameJap }}
+                </td>
+                <td>
+                  ¥{{ orderLine.UnitPrice }}
+                </td>
+                <td>
+                  ¥{{ orderLine.Quantity }}
+                </td>
+                <td>
+                  ¥{{ orderLine.UnitPrice * orderLine.Quantity }}
+                </td>
+              </tr>
+            </table>
             <div class="row">
-                <div class="col-md-12">
-                  <div><small>Order Total Price</small></div>
-                  <div>¥ (OLunitCosts + washCost) * OLquantity + Shipping </div>
-                </div>
+              <div class="col-md-12 text-right">
+                <h4>
+                  <div>Total</div>
+                  <div>¥{{orderWithAllData.TotalPrice}}</div>
+                </h4>
               </div>
             </div>
           </div>

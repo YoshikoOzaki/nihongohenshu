@@ -1,0 +1,122 @@
+<div id="order-recovery" v-cloak>
+  <div class="container">
+    <div class="row pt-3">
+      <div class="col-md-6 offset-md-3">
+        <p>Input a recovery keyword and order id to retrieve your order</p>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <ajax-form @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError"
+          :handle-submitting="submitForm" :handle-parsing="handleParsingForm">
+          <div class="form-group">
+            <label for="orderId">Order Id</label>
+            <input class="form-control" id="orderId" name="orderId" type="string"
+              :class="[formErrors.OrderId ? 'is-invalid' : '']" v-model.trim="formData.OrderId"
+              placeholder="Enter an Order Id">
+            <div class="invalid-feedback" v-if="formErrors.orderId">
+              Please enter an order Id.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="keyword">Customer Selected Keyword</label>
+            <input class="form-control" id="keyword" name="keyword" type="string"
+              :class="[formErrors.Keyword ? 'is-invalid' : '']" v-model.trim="formData.Keyword"
+              placeholder="Enter a Keyword">
+            <div class="invalid-feedback" v-if="formErrors.Keyword">
+              Please enter a keyword.
+            </div>
+          </div>
+          <div class="form-group text-right">
+            <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+              Recover Order
+            </ajax-button>
+          </div>
+        </ajax-form>
+      </div>
+    </div>
+    <div class="row" v-if="newCart.items">
+      <div class="col-md-12 p-0 card">
+        <div class="card-header">
+          Recovered Order
+        </div>
+        <div class="card-body">
+          <div>
+            <table class="table table-bordered">
+              <tr class="tr">
+                <th>
+                  Date Start
+                </th>
+                <th>
+                  Date End
+                </th>
+                <th>
+                  Days of Use
+                </th>
+                <th>
+                  Postcode
+                </th>
+              </tr>
+              <tr class="tr">
+                <td>
+                  {{newCart.timePeriod.DateStart}}
+                </td>
+                <td>
+                  {{newCart.timePeriod.DateEnd}}
+                </td>
+                <td>
+                  {{newCart.timePeriod.DaysOfUse}}
+                </td>
+                <td>
+                  {{newCart.shipping.postcode}}
+                </td>
+              </tr>
+            </table>
+            <table class="table table-bordered">
+              <tr class="tr">
+                <th>
+                  Image
+                </th>
+                <th>
+                  Name
+                </th>
+                <th>
+                  Unit Price
+                </th>
+                <th>
+                  Quantity In Order
+                </th>
+                <th>
+                  Total Price
+                </th>
+              </tr>
+              <tr v-for="item in newCart.items">
+                <td>
+                  <img height="100px" :src="item.ImgSrc" />
+                </td>
+                <td>
+                  {{ item.NameEng }}
+                  {{ item.NameJap }}
+                </td>
+                <td>
+                  ¥{{ item.UnitPrice }}
+                </td>
+                <td>
+                  ¥{{ item.Quantity }}
+                </td>
+                <td>
+                  ¥{{ item.UnitPrice * item.Quantity }}
+                </td>
+              </tr>
+            </table>
+            <div class="col-md-12 text-right">
+              <button class="btn btn-primary" @click="addReservedOrderToCart">
+                Add reserved order to cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

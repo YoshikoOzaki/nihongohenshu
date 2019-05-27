@@ -56,6 +56,11 @@ module.exports = {
       type: 'number',
       description: 'Cost of the delivery based on postcode',
       required: true,
+    },
+
+    Postcode: {
+      type: 'number',
+      description: 'Postcode assigned to the order for shipping'
     }
 
   },
@@ -86,6 +91,7 @@ module.exports = {
         DaysOfUse: inputs.DaysOfUse,
         CustomerKeyword: inputs.CustomerKeyword,
         Reserved: inputs.Reserved,
+        Postcode: inputs.Postcode,
       }
       var newRecord = await Order.create(orderInputs).fetch();
       return newRecord;
@@ -117,16 +123,68 @@ module.exports = {
       return delivery;
     };
 
+    const createReserveOrderTransactionLines = async function(orderLines, order, delivery) {
+      let transactionLines = [];
+      await asyncForEach(orderLines, async (orderLine, i) => {
+        const reserveFromPayload = {
+          OrderNumber: order.id,
+          LineNumber: orderLine.id,
+          TransactionType: 40, // rental order
+          Product: orderLine.Glass,
+          Quantity: orderLine.Quantity,
+          UnitPrice: orderLine.UnitPrice,
+          Warehouse: 60,
+          Comment: 'Created from web api',
+          Date: order.DateStart,
+        }
+        const returnPlannedOnPayload = {
+          OrderNumber: order.id,
+          LineNumber: orderLine.id,
+          TransactionType: 44, // return planned
+          Product: orderLine.Glass,
+          Quantity: orderLine.Quantity,
+          UnitPrice: orderLine.UnitPrice,
+          Warehouse: 60,
+          Comment: 'Created from web api',
+          Date: order.DateEnd,
+        }
+        transactionLines[i] = {};
+        transactionLines[i] = {
+          reservedFrom: await Transaction.create(reserveFromPayload).fetch(),
+          returnOn: await Transaction.create(returnPlannedOnPayload).fetch(),
+        }
+      });
+      const deliveryPurchasePayload = {
+        OrderNumber: order.id,
+        LineNumber: delivery.id,
+        TransactionType: 60, // delivery cost
+        Quantity: delivery.Quantity,
+        UnitPrice: delivery.UnitPrice,
+        Warehouse: 60,
+        Comment: 'Created from web api',
+      }
+      deliveryTransactionLine = await Transaction.create(deliveryPurchasePayload)
+        .fetch();
+      transactionLines.push(deliveryTransactionLine);
+      return transactionLines;
+    }
+
     // check one final time that order is totally valid
 
     try {
       const order = await createOrder();
       const orderItemLines = await createItemOrderLines(order);
       const deliveryDetails = await createDeliveryOrderLine(order);
+      const transactionLines = await createReserveOrderTransactionLines(
+        orderItemLines,
+        order,
+        deliveryDetails
+      );
       const combinedResults = {
         ...order,
         items: orderItemLines,
         delivery: deliveryDetails,
+        transactions: transactionLines,
       };
       return exits.success(combinedResults);
     } catch (err) {
