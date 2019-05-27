@@ -12,17 +12,19 @@ module.exports = {
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
     DateStart: {
-      type: 'string',
+      type: 'ref',
       required: true,
+      columnType: 'timestamp',
       description: 'The date start that needs to be checked',
-      example: '2018-08-08T14:00:00.000Z'
+      // example: '2018-08-08T14:00:00.000Z'
     },
 
     DateEnd: {
-      type: 'string',
+      type: 'ref',
       required: true,
+      columnType: 'timestamp',
       description: 'The date end that needs to be checked',
-      example: '2018-08-08T14:00:00.000Z'
+      // example: '2018-08-08T14:00:00.000Z'
     },
 
     DaysOfUse: {
@@ -43,6 +45,12 @@ module.exports = {
       description: 'Is this a reserved order',
       example: true,
       defaultsTo: false,
+    },
+
+    Postcode: {
+      type: 'number',
+      description: 'Added for reserving orders',
+      example: 600000,
     },
 
     User: {

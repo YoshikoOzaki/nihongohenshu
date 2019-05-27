@@ -48,6 +48,11 @@ module.exports = {
       description: 'Is this a reserved order',
     },
 
+    Postcode: {
+      type: 'number',
+      description: 'Postcode assigned to the order for shipping'
+    }
+
   },
 
   exits: {
@@ -72,7 +77,8 @@ module.exports = {
       DaysOfUse: inputs.DaysOfUse,
       CustomerName: inputs.CustomerName,
       ReserveOnly: inputs.ReserveOnly,
-    }
+      Postcode: inputs.Postcode,
+    };
 
     var newRecord = await Order.create(orderInputs).fetch();
 

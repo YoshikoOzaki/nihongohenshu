@@ -33,10 +33,11 @@ parasails.registerPage('reserve-guest', {
       // > to make sure the spinner stays there until the page navigation finishes.)
 
       // await parasails.util.clearCart();
-      this.syncing = true;
-      window.location = '/checkout/order-confirmation';
       // should add the returned item to the cart
       // this.cart = await parasails.util.getCart();
+
+      this.syncing = true;
+      window.location = '/checkout/order-confirmation';
     },
 
     submitReserveOrder: async function() {
@@ -49,8 +50,10 @@ parasails.registerPage('reserve-guest', {
         Items: cart.items,
         Reserved: true,
         DeliveryCost: cart.shipping.price,
+        Postcode: cart.shipping.postcode,
       }
 
+      console.log(payload);
       const order = await Cloud.createReserveOrder(..._.values(payload));
       await localStorage.setItem('completedOrder', JSON.stringify(order));
     },
