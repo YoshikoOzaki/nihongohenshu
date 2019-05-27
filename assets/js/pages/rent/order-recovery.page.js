@@ -97,8 +97,8 @@ parasails.registerPage('order-recovery', {
       }
       // Add the time period
       const newCartTimePeriod = await Cloud.checkCartTimeValid(..._.values({
-        DateEnd: recoveredOrder.DateEnd,
         DateStart: recoveredOrder.DateStart,
+        DateEnd: recoveredOrder.DateEnd,
         DaysOfUse: recoveredOrder.DaysOfUse,
       }));
 
@@ -119,6 +119,8 @@ parasails.registerPage('order-recovery', {
         timePeriod: {
           ...newCartTimePeriod,
         },
+        orderIdToIgnore: recoveredOrder.id,
+        reserveOrderKeyword: recoveredOrder.CustomerKeyword,
       };
       this.newCart = newCart;
       // then check shipping is possible with the new cart

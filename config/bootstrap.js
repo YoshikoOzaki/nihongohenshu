@@ -190,74 +190,74 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
-  await Order.createEach([
-    {
-      DateStart: '2019-05-01',
-      DateEnd: '2019-05-10',
-      DaysOfUse: '6',
-      User: '2',
-      Reserved: false,
-    },
-    {
-      DateStart: '2019-05-01',
-      DateEnd: '2019-05-10',
-      DaysOfUse: '6',
-      User: '3',
-      Reserved: false,
-    },
-    {
-      DateStart: '2019-05-01',
-      DateEnd: '2019-05-10',
-      DaysOfUse: '6',
-      CustomerKeyword: 'wineorder1234',
-      Reserved: true,
-    },
-  ]);
+  // await Order.createEach([
+  //   {
+  //     DateStart: '2019-05-01',
+  //     DateEnd: '2019-05-10',
+  //     DaysOfUse: '6',
+  //     User: '2',
+  //     Reserved: false,
+  //   },
+  //   {
+  //     DateStart: '2019-05-01',
+  //     DateEnd: '2019-05-10',
+  //     DaysOfUse: '6',
+  //     User: '3',
+  //     Reserved: false,
+  //   },
+  //   {
+  //     DateStart: '2019-05-01',
+  //     DateEnd: '2019-05-10',
+  //     DaysOfUse: '6',
+  //     CustomerKeyword: 'wineorder1234',
+  //     Reserved: true,
+  //   },
+  // ]);
 
-  await OrderLineNumber.createEach([
-    {
-      Quantity: '1000',
-      Glass: '1',
-      Order: '1',
-      UnitPrice: '100'
-    },
-    {
-      Quantity: '1000',
-      Glass: '2',
-      Order: '1',
-      UnitPrice: '100'
-    },
-    {
-      Quantity: '1000',
-      Glass: '3',
-      Order: '1',
-      UnitPrice: '100'
-    },
-    {
-      Quantity: '500',
-      Glass: '1',
-      Order: '2',
-      UnitPrice: '100'
-    },
-    {
-      Quantity: '500',
-      Glass: '2',
-      Order: '2',
-      UnitPrice: '100'
-    },
-    {
-      Quantity: '1',
-      Order: '2',
-      UnitPrice: '3000',
-      Glass: '60',
-    },
-    {
-      Quantity: '1',
-      Order: '1',
-      UnitPrice: '3000',
-      Glass: '60',
-    },
-  ]);
+  // await OrderLineNumber.createEach([
+  //   {
+  //     Quantity: '1000',
+  //     Glass: '1',
+  //     Order: '1',
+  //     UnitPrice: '100'
+  //   },
+  //   {
+  //     Quantity: '1000',
+  //     Glass: '2',
+  //     Order: '1',
+  //     UnitPrice: '100'
+  //   },
+  //   {
+  //     Quantity: '1000',
+  //     Glass: '3',
+  //     Order: '1',
+  //     UnitPrice: '100'
+  //   },
+  //   {
+  //     Quantity: '500',
+  //     Glass: '1',
+  //     Order: '2',
+  //     UnitPrice: '100'
+  //   },
+  //   {
+  //     Quantity: '500',
+  //     Glass: '2',
+  //     Order: '2',
+  //     UnitPrice: '100'
+  //   },
+  //   {
+  //     Quantity: '1',
+  //     Order: '2',
+  //     UnitPrice: '3000',
+  //     Glass: '60',
+  //   },
+  //   {
+  //     Quantity: '1',
+  //     Order: '1',
+  //     UnitPrice: '3000',
+  //     Glass: '60',
+  //   },
+  // ]);
 
   // these should actually be different orders or a few orders updating
   // over time into different states
@@ -265,15 +265,15 @@ module.exports.bootstrap = async function(done) {
     {
       TransactionType: '10',
       Product: '1',
-      Quantity: '5000',
+      Quantity: '1000',
       Warehouse: '60',
       Comment: 'stock added into system',
       Date: '2019-04-01',
     },
     {
       TransactionType: '10',
-      Product: '1',
-      Quantity: '10000',
+      Product: '2',
+      Quantity: '1000',
       Warehouse: '60',
       Comment: 'stock added into system',
       Date: '2019-04-01',
@@ -281,65 +281,65 @@ module.exports.bootstrap = async function(done) {
     {
       TransactionType: '10',
       Product: '3',
-      Quantity: '5000',
+      Quantity: '1000',
       Warehouse: '60',
       Comment: 'stock added into system',
       Date: '2019-04-01',
     },
-    {
-      TransactionType: '40',
-      Product: '1',
-      Quantity: '1000',
-      UnitPrice: '100',
-      Warehouse: '60',
-      Comment: 'rental order',
-      Date: '2019-05-01',
-    },
-    {
-      TransactionType: '40',
-      Product: '1',
-      Quantity: '1000',
-      UnitPrice: '100',
-      Warehouse: '60',
-      Comment: 'rental order',
-      Date: '2019-05-01',
-    },
-    {
-      TransactionType: '44',
-      Product: '1',
-      Quantity: '100',
-      UnitPrice: '100',
-      Warehouse: '60',
-      Comment: 'return planned',
-      Date: '2019-05-03',
-    },
-    {
-      TransactionType: '55',
-      Product: '1',
-      Quantity: '1000',
-      UnitPrice: '100',
-      Warehouse: '60',
-      Comment: 'order returned',
-      Date: '2019-05-05',
-    },
-    {
-      TransactionType: '57',
-      Product: '1',
-      Quantity: '1000',
-      UnitPrice: '100',
-      Warehouse: '60',
-      Comment: 'washed and restocked',
-      Date: '2019-05-05',
-    },
-    {
-      TransactionType: '40',
-      Product: '1',
-      Quantity: '15000',
-      UnitPrice: '100',
-      Warehouse: '60',
-      Comment: 'rental order',
-      Date: '2019-05-06',
-    },
+    // {
+    //   TransactionType: '40',
+    //   Product: '1',
+    //   Quantity: '1000',
+    //   UnitPrice: '100',
+    //   Warehouse: '60',
+    //   Comment: 'rental order',
+    //   Date: '2019-05-01',
+    // },
+    // {
+    //   TransactionType: '40',
+    //   Product: '1',
+    //   Quantity: '1000',
+    //   UnitPrice: '100',
+    //   Warehouse: '60',
+    //   Comment: 'rental order',
+    //   Date: '2019-05-01',
+    // },
+    // {
+    //   TransactionType: '44',
+    //   Product: '1',
+    //   Quantity: '100',
+    //   UnitPrice: '100',
+    //   Warehouse: '60',
+    //   Comment: 'return planned',
+    //   Date: '2019-05-03',
+    // },
+    // {
+    //   TransactionType: '55',
+    //   Product: '1',
+    //   Quantity: '1000',
+    //   UnitPrice: '100',
+    //   Warehouse: '60',
+    //   Comment: 'order returned',
+    //   Date: '2019-05-05',
+    // },
+    // {
+    //   TransactionType: '57',
+    //   Product: '1',
+    //   Quantity: '1000',
+    //   UnitPrice: '100',
+    //   Warehouse: '60',
+    //   Comment: 'washed and restocked',
+    //   Date: '2019-05-05',
+    // },
+    // {
+    //   TransactionType: '40',
+    //   Product: '1',
+    //   Quantity: '15000',
+    //   UnitPrice: '100',
+    //   Warehouse: '60',
+    //   Comment: 'rental order',
+    //   Date: '2019-05-06',
+    // },
   ]);
 
   await TakuhaiUnitCharge.createEach([

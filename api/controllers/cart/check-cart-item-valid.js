@@ -78,21 +78,20 @@ module.exports = {
       }
 
       // const OrderIdToIgnore = inputs.OrderIdToIgnore === undefined ? 0 : inputs.OrderIdToIgnore;
-      const TransactionNumbersToIgnore = async function() {
+      const getTransactionNumbersToIgnore = async function() {
         if (inputs.OrderIdToIgnore) {
           const order = await Order.findOne(
             { id: inputs.OrderIdToIgnore }
           ).populate('OrderTransactions');
-          const transactionUsingInputProduct = _.findOne(order.OrderTransactions, { 'Product': inputs.Glass });
-          const transactionNumberToIgnore = transactionUsingInputProduct.id;
-          return transactionNumberToIgnore;
+          const transactionIds = _.map(_.filter(order.OrderTransactions, { 'Product': Number(inputs.Id) }), 'id');
+          return transactionIds;
         }
         return [];
       }
       // TODO: pass in the *order number* in inputs, get the transaction numbers from that, exclude those transaction numbers in the below query
-      console.log('transaction numbers to ignore', await TransactionNumbersToIgnore());
       // will need to add every possible code
       // unless we use the transaction process type values well
+      const transactionNumbersToIgnore = await getTransactionNumbersToIgnore();
       [
         stockIn,
         orderOut,
@@ -105,6 +104,7 @@ module.exports = {
             Product: inputs.Id,
             Date: { '<=': inputs.DateStart },
             TransactionType: 10,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
@@ -113,6 +113,7 @@ module.exports = {
             Product: inputs.Id,
             Date: { '<=': inputs.DateEnd },
             TransactionType: 40,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
@@ -121,6 +122,7 @@ module.exports = {
             Product: inputs.Id,
             Date: { '<=': inputs.DateEnd },
             TransactionType: 44,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
@@ -129,6 +131,7 @@ module.exports = {
             Product: inputs.Id,
             Date: { '<=': inputs.DateEnd },
             TransactionType: 55,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         }),
@@ -137,6 +140,7 @@ module.exports = {
             Product: inputs.Id,
             Date: { '<=': inputs.DateEnd },
             TransactionType: 57,
+            id: { '!=': transactionNumbersToIgnore}
           },
           select: ['Quantity'],
         })

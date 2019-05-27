@@ -49,6 +49,10 @@ parasails.registerPage('cart', {
       this.cart = await parasails.util.getCart();
     },
 
+    clearCart: async function() {
+      this.cart = {};
+    },
+
     checkIfCheckoutEnabled: async function() {
       const cart = await parasails.util.getCart();
 

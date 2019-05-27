@@ -146,6 +146,14 @@
             Cart
           </div>
           <div class="card-body">
+          <div v-if="cart.orderIdToIgnore" class="card mb-3">
+            <div class="card-body">
+              Based off Reserved Order <br />
+              Order Number: {{cart.orderIdToIgnore}} <br />
+              Customer Keyword: {{cart.reserveOrderKeyword}} <br />
+              <button @click="clearCart" class="btn btn-sm btn-outline-primary">Clear cart and remove reserved order</button>
+            </div>
+          </div>
           <div class="col-sm-12 m-0 p-0">
             <div v-for="(item, index) in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
               <div class="p-2">
@@ -257,6 +265,9 @@
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0 mt-2 text-right">
+            <button class="btn btn-outline-primary mr-2" @click="clearCart">
+              Clear Cart
+            </button>
             <span class="mr-2">
               <a href="../checkout/reserve-prompt">
                 <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
