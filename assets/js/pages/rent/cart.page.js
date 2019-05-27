@@ -51,6 +51,7 @@ parasails.registerPage('cart', {
 
     clearCart: async function() {
       this.cart = {};
+      localStorage.removeItem('cart');
     },
 
     checkIfCheckoutEnabled: async function() {

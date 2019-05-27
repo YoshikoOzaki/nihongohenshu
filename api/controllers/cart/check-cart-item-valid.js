@@ -92,6 +92,7 @@ module.exports = {
       // will need to add every possible code
       // unless we use the transaction process type values well
       const transactionNumbersToIgnore = await getTransactionNumbersToIgnore();
+
       [
         stockIn,
         orderOut,
@@ -102,7 +103,7 @@ module.exports = {
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateStart },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 10,
             id: { '!=': transactionNumbersToIgnore}
           },
@@ -111,7 +112,7 @@ module.exports = {
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateEnd },
             TransactionType: 40,
             id: { '!=': transactionNumbersToIgnore}
           },
@@ -120,7 +121,7 @@ module.exports = {
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 44,
             id: { '!=': transactionNumbersToIgnore}
           },
@@ -129,7 +130,7 @@ module.exports = {
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 55,
             id: { '!=': transactionNumbersToIgnore}
           },
@@ -138,7 +139,7 @@ module.exports = {
         await Transaction.find({
           where: {
             Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
+            Date: { "<=": inputs.DateStart },
             TransactionType: 57,
             id: { '!=': transactionNumbersToIgnore}
           },
@@ -155,15 +156,17 @@ module.exports = {
 
       // calculate available or not
       const totalAvailableForOrder =
-      stockInTotal -
-      orderOutTotal +
+      (stockInTotal - orderOutTotal) +
       returnPlanedTotal +
       orderReturnedTotal +
       returnAndWashedTotal;
 
+      const inventory = totalAvailableForOrder;
+      const remaining = totalAvailableForOrder - inputs.Quantity;
+
       const availability = {
-        available: totalAvailableForOrder - inputs.Quantity > 0 ? 'Available' : 'Not Available',
-        remaining: totalAvailableForOrder,
+        available: remaining >= 0 ? 'Available' : 'Not Available',
+        remaining: inventory >= 0 ? inventory : 0,
       };
 
       return availability;

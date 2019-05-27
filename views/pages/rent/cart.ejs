@@ -166,7 +166,7 @@
                 <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
                   <div v-if="item.Available !== 'No date set to evaluate'">
                     {{item.Available.available}}&nbsp;-
-                    <i>{{item.Available.remaining}} available for the required dates</i>
+                    <span class="text-muted">{{item.Available.remaining}} Total</span>
                   </div>
                   <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
                     {{item.Available}}

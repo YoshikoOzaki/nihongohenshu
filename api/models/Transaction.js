@@ -58,9 +58,10 @@ module.exports = {
     Date: {
       // type: 'ref',
       // columnType: 'datetime',
-      type: 'string',
+      type: 'ref',
+      columnType: 'timestamp',
       description: 'Date the transaction has/will happen(ed)',
-      example: '2018-08-08',
+      // example: '2018-08-08',
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
