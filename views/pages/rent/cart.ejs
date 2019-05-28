@@ -155,6 +155,13 @@
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0">
+            <div class="mb-3" v-if="!cart.items || cart.items.length === 0">
+              <div class="row">
+                <div class="col-md-12">
+                  Cart currently empty
+                </div>
+              </div>
+            </div>
             <div v-for="(item, index) in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
               <div class="p-2">
                 <div style="display: flex; justify-content: space-between">
@@ -243,22 +250,22 @@
                 </tr>
                 <tr>
                   <td>
-                    {{cart.timePeriod && cart.timePeriod.DateStart}}
+                    {{cart.timePeriod && cart.timePeriod.DateStart || "None"}}
                   </td>
                   <td>
-                    {{cart.timePeriod && cart.timePeriod.DateEnd}}
+                    {{cart.timePeriod && cart.timePeriod.DateEnd || "None"}}
                   </td>
                   <td>
-                    {{cart.timePeriod && cart.timePeriod.DaysOfUse}}
+                    {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
                   </td>
                   <td>
-                    {{cart.shipping && cart.shipping.postcode}}
+                    {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}
                   </td>
                   <td>
-                    ¥{{cart.shipping && cart.shipping.price}}
+                    ¥{{cart.shipping && cart.shipping.price || 0}}
                   </td>
                   <td>
-                    <b>¥{{cart.shipping && _.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price }}</b>
+                    <b>¥{{cart.shipping && (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0 }}</b>
                   </td>
                 </tr>
               </table>
