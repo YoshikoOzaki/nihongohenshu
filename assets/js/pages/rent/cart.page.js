@@ -96,6 +96,11 @@ parasails.registerPage('cart', {
     },
 
     handleTimeSubmitting: async function(data) {
+      async function asyncForEach(array, callback) {
+        for (let index = 0; index < array.length; index++) {
+          await callback(array[index], index, array);
+        }
+      }
       // check all the logic for order time & update cart
       oldCart = await parasails.util.getCart();
       timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
@@ -108,16 +113,11 @@ parasails.registerPage('cart', {
           const dataWithTimePeriod = {
             Id: item.Id,
             Quantity: item.Quantity,
-            ...oldCart.timePeriod,
+            ...timeValidResult,
           }
           result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
           return result;
         };
-        async function asyncForEach(array, callback) {
-          for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-          }
-        }
         await asyncForEach(oldCart.items, async (o) => {
           const result = await checkCartItemAvailable(o);
           newCartItems.push(result);
@@ -260,9 +260,6 @@ parasails.registerPage('cart', {
       if(!argins.DateStart) {
         this.formErrorsTime.Postcode = true;
       }
-      // If there were any issues, they've already now been communicated to the user,
-      // so simply return undefined.  (This signifies that the submission should be
-      // cancelled.)
       if (Object.keys(this.formErrorsShipping).length > 0) {
         return;
       }
@@ -285,9 +282,6 @@ parasails.registerPage('cart', {
       if(!argins.DaysOfUse) {
         this.formErrorsTime.DaysOfUse = true;
       }
-      // If there were any issues, they've already now been communicated to the user,
-      // so simply return undefined.  (This signifies that the submission should be
-      // cancelled.)
       if (Object.keys(this.formErrorsTime).length > 0) {
         return;
       }
@@ -308,12 +302,7 @@ parasails.registerPage('cart', {
       if(!argins.Quantity) {
         this.formErrorsItems.Quantity = true;
       }
-      // if(!cart.DateEnd || !cart.DateEnd) {
-      //   this.formErrorsItems.noDateSeleted = true;
-      // }
-      // If there were any issues, they've already now been communicated to the user,
-      // so simply return undefined.  (This signifies that the submission should be
-      // cancelled.)
+
       if (Object.keys(this.formErrorsItems).length > 0) {
         return;
       }
