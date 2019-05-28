@@ -53,7 +53,7 @@
                     {{loadedOrder.id}}
                   </td>
                   <td>
-                    {{loadedOrder.DateStart}}
+                    {{moment(loadedOrder.DateStart).format("MMM Do YYYY")}}
                   </td>
                   <td>
                     {{loadedOrder.DateEnd}}

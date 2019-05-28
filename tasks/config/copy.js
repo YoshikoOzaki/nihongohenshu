@@ -13,12 +13,20 @@ module.exports = function(grunt) {
 
   grunt.config.set('copy', {
     dev: {
-      files: [{
-        expand: true,
-        cwd: './assets',
-        src: ['**/*.!(coffee|less)'],
-        dest: '.tmp/public'
-      }]
+      files: [
+        {
+          expand: true,
+          cwd: './assets',
+          src: ['**/*.!(coffee|less)'],
+          dest: '.tmp/public'
+        },
+        {
+          expand: true,
+          cwd: './node_modules/moment/min/',
+          src: ['moment.min.js'],
+          dest: '.tmp/public/dependencies'
+        },
+      ]
     },
     build: {
       files: [{

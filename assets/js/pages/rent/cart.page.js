@@ -28,6 +28,7 @@ parasails.registerPage('cart', {
   },
 
   mounted: async function() {
+    console.log(moment);
     //…
   },
 
@@ -66,14 +67,14 @@ parasails.registerPage('cart', {
         daysOfUseEntered: false,
       };
 
-      parametersRequired.cartHasItems = cart.items.length > 0;
-      parametersRequired.cartItemsAreValid = _.each(cart.items, (o) => {
+      parametersRequired.cartHasItems = cart.items && cart.items.length > 0;
+      parametersRequired.cartItemsAreValid = cart.items && _.each(cart.items, (o) => {
         return o.Available.available === 'Available';
       }).length === cart.items.length;
-      parametersRequired.shippingCodeEntered = cart.shipping.postcode > 0;
-      parametersRequired.shippingCodeValid = cart.shipping.shippingPossible !== false;
-      parametersRequired.datesEntered = !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
-      parametersRequired.daysOfUseEntered = cart.timePeriod.DaysOfUse > 0;
+      parametersRequired.shippingCodeEntered = cart.shipping && cart.shipping.postcode > 0;
+      parametersRequired.shippingCodeValid = cart.shipping && cart.shipping.shippingPossible !== false;
+      parametersRequired.datesEntered = cart.timePeriod && !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
+      parametersRequired.daysOfUseEntered = cart.timePeriod && cart.timePeriod.DaysOfUse > 0;
       if (
         _.includes(parametersRequired, false)
       ) {
@@ -96,6 +97,11 @@ parasails.registerPage('cart', {
     },
 
     handleTimeSubmitting: async function(data) {
+      async function asyncForEach(array, callback) {
+        for (let index = 0; index < array.length; index++) {
+          await callback(array[index], index, array);
+        }
+      }
       // check all the logic for order time & update cart
       oldCart = await parasails.util.getCart();
       timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
@@ -108,16 +114,11 @@ parasails.registerPage('cart', {
           const dataWithTimePeriod = {
             Id: item.Id,
             Quantity: item.Quantity,
-            ...oldCart.timePeriod,
+            ...timeValidResult,
           }
           result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
           return result;
         };
-        async function asyncForEach(array, callback) {
-          for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-          }
-        }
         await asyncForEach(oldCart.items, async (o) => {
           const result = await checkCartItemAvailable(o);
           newCartItems.push(result);
@@ -140,17 +141,20 @@ parasails.registerPage('cart', {
       oldCart = await parasails.util.getCart();
 
       // push in shipping code and current cart to check shipping function
-      result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
+      try {
+        result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
 
-      const newCart = {
-        ...oldCart,
-        shipping: {
-          ...result
-        },
-      };
+        const newCart = {
+          ...oldCart,
+          shipping: {
+            ...result
+          },
+        };
 
-      if (result) {
-        localStorage.setItem('cart', JSON.stringify(newCart));
+        await localStorage.setItem('cart', JSON.stringify(newCart));
+        toastr.success('Shipping added to the cart');
+      } catch (err) {
+        toastr.error('Shipping could not be added to the cart');
       }
     },
 
@@ -193,19 +197,29 @@ parasails.registerPage('cart', {
         }
       }
 
-      getCartWithNewItem(data).then(
-        result => {
-          getCartWithNewItemAndShippingCalulated(result).then(
-            result2 => {
-              if (result2) {
-                localStorage.setItem('cart', JSON.stringify(result2));
-                this.cart = result2;
-                return;
-              }
-            }
-          )
-        }
-      )
+      try {
+        const result = await getCartWithNewItem(data);
+        const result2 = await getCartWithNewItemAndShippingCalulated(result);
+        await localStorage.setItem('cart', JSON.stringify(result2));
+        toastr.success('Item added to the cart');
+      } catch (err) {
+        console.log(err);
+        toastr.error('Item could not be added to the cart');
+      }
+
+      // getCartWithNewItem(data).then(
+      //   result => {
+      //     getCartWithNewItemAndShippingCalulated(result).then(
+      //       result2 => {
+      //         if (result2) {
+      //           localStorage.setItem('cart', JSON.stringify(result2));
+      //           this.cart = result2;
+      //           return;
+      //         }
+      //       }
+      //     )
+      //   }
+      // )
     },
     removeItemFromCart: async function(data) {
       const removeItemFromCart = async function(itemToRemove) {
@@ -260,9 +274,6 @@ parasails.registerPage('cart', {
       if(!argins.DateStart) {
         this.formErrorsTime.Postcode = true;
       }
-      // If there were any issues, they've already now been communicated to the user,
-      // so simply return undefined.  (This signifies that the submission should be
-      // cancelled.)
       if (Object.keys(this.formErrorsShipping).length > 0) {
         return;
       }
@@ -285,9 +296,6 @@ parasails.registerPage('cart', {
       if(!argins.DaysOfUse) {
         this.formErrorsTime.DaysOfUse = true;
       }
-      // If there were any issues, they've already now been communicated to the user,
-      // so simply return undefined.  (This signifies that the submission should be
-      // cancelled.)
       if (Object.keys(this.formErrorsTime).length > 0) {
         return;
       }
@@ -308,12 +316,7 @@ parasails.registerPage('cart', {
       if(!argins.Quantity) {
         this.formErrorsItems.Quantity = true;
       }
-      // if(!cart.DateEnd || !cart.DateEnd) {
-      //   this.formErrorsItems.noDateSeleted = true;
-      // }
-      // If there were any issues, they've already now been communicated to the user,
-      // so simply return undefined.  (This signifies that the submission should be
-      // cancelled.)
+
       if (Object.keys(this.formErrorsItems).length > 0) {
         return;
       }
