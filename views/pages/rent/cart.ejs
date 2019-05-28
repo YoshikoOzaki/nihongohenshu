@@ -259,7 +259,8 @@
                     {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
                   </td>
                   <td>
-                    {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}
+                    {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}<br />
+                    <small class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
                   </td>
                   <td>
                     ¥{{cart.shipping && cart.shipping.price || 0}}

@@ -1805,6 +1805,7 @@
 
     // optional deps:
     try { $ = _require('jquery'); } catch (e) { if (e.code === 'MODULE_NOT_FOUND') {/* ok */} else { throw e; } }
+
     try {
 
       io = _require('socket.io-client');

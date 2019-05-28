@@ -28,6 +28,7 @@ parasails.registerPage('cart', {
   },
 
   mounted: async function() {
+    console.log(moment);
     //…
   },
 
@@ -66,14 +67,14 @@ parasails.registerPage('cart', {
         daysOfUseEntered: false,
       };
 
-      parametersRequired.cartHasItems = cart.items.length > 0;
-      parametersRequired.cartItemsAreValid = _.each(cart.items, (o) => {
+      parametersRequired.cartHasItems = cart.items && cart.items.length > 0;
+      parametersRequired.cartItemsAreValid = cart.items && _.each(cart.items, (o) => {
         return o.Available.available === 'Available';
       }).length === cart.items.length;
-      parametersRequired.shippingCodeEntered = cart.shipping.postcode > 0;
-      parametersRequired.shippingCodeValid = cart.shipping.shippingPossible !== false;
-      parametersRequired.datesEntered = !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
-      parametersRequired.daysOfUseEntered = cart.timePeriod.DaysOfUse > 0;
+      parametersRequired.shippingCodeEntered = cart.shipping && cart.shipping.postcode > 0;
+      parametersRequired.shippingCodeValid = cart.shipping && cart.shipping.shippingPossible !== false;
+      parametersRequired.datesEntered = cart.timePeriod && !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
+      parametersRequired.daysOfUseEntered = cart.timePeriod && cart.timePeriod.DaysOfUse > 0;
       if (
         _.includes(parametersRequired, false)
       ) {
@@ -140,17 +141,20 @@ parasails.registerPage('cart', {
       oldCart = await parasails.util.getCart();
 
       // push in shipping code and current cart to check shipping function
-      result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
+      try {
+        result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
 
-      const newCart = {
-        ...oldCart,
-        shipping: {
-          ...result
-        },
-      };
+        const newCart = {
+          ...oldCart,
+          shipping: {
+            ...result
+          },
+        };
 
-      if (result) {
-        localStorage.setItem('cart', JSON.stringify(newCart));
+        await localStorage.setItem('cart', JSON.stringify(newCart));
+        toastr.success('Shipping added to the cart');
+      } catch (err) {
+        toastr.error('Shipping could not be added to the cart');
       }
     },
 
@@ -193,19 +197,29 @@ parasails.registerPage('cart', {
         }
       }
 
-      getCartWithNewItem(data).then(
-        result => {
-          getCartWithNewItemAndShippingCalulated(result).then(
-            result2 => {
-              if (result2) {
-                localStorage.setItem('cart', JSON.stringify(result2));
-                this.cart = result2;
-                return;
-              }
-            }
-          )
-        }
-      )
+      try {
+        const result = await getCartWithNewItem(data);
+        const result2 = await getCartWithNewItemAndShippingCalulated(result);
+        await localStorage.setItem('cart', JSON.stringify(result2));
+        toastr.success('Item added to the cart');
+      } catch (err) {
+        console.log(err);
+        toastr.error('Item could not be added to the cart');
+      }
+
+      // getCartWithNewItem(data).then(
+      //   result => {
+      //     getCartWithNewItemAndShippingCalulated(result).then(
+      //       result2 => {
+      //         if (result2) {
+      //           localStorage.setItem('cart', JSON.stringify(result2));
+      //           this.cart = result2;
+      //           return;
+      //         }
+      //       }
+      //     )
+      //   }
+      // )
     },
     removeItemFromCart: async function(data) {
       const removeItemFromCart = async function(itemToRemove) {
