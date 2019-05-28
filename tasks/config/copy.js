@@ -26,6 +26,12 @@ module.exports = function(grunt) {
           src: ['moment.min.js'],
           dest: '.tmp/public/dependencies'
         },
+        {
+          expand: true,
+          cwd: './assets/dependencies/font-awesome-4/fonts/',
+          src: ['*'],
+          dest: '.tmp/public/fonts',
+        }
       ]
     },
     build: {
@@ -34,14 +40,8 @@ module.exports = function(grunt) {
         cwd: '.tmp/public',
         src: ['**/*'],
         dest: 'www'
-      },
-      {
-        expand: true,
-        cwd: './assets',
-        src: ['**/fonts/*'],
-        dest: 'www/fonts',
-        flatten: true
-      }]
+      }
+      ]
     },
     beforeLinkBuildProd: {
       files: [{
