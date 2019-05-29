@@ -153,6 +153,7 @@ module.exports = {
     cors: {
       allowOrigins: [
         'https://plumm-rental.herokuapp.com',
+        // 'http://localhost:1337',
       ]
     },
 
@@ -258,7 +259,7 @@ module.exports = {
     ***************************************************************************/
     onlyAllowOrigins: [
       'https://plumm-rental.herokuapp.com',
-      // 'http://localhost:1337',
+      'http://localhost:1337',
     ],
 
 
@@ -377,7 +378,7 @@ module.exports = {
   *                                                                         *
   ***************************************************************************/
   custom: {
-    // baseUrl: 'localhost:1337',
+    // baseUrl: 'http://localhost:1337',
     baseUrl: 'https://plumm-rental.herokuapp.com',
     internalEmailAddress: 'support@example.com',
 
