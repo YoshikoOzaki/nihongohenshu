@@ -93,6 +93,7 @@ module.exports = {
       // unless we use the transaction process type values well
       const transactionNumbersToIgnore = await getTransactionNumbersToIgnore();
 
+      try {
       [
         stockIn,
         orderOut,
@@ -147,29 +148,33 @@ module.exports = {
         })
       ]);
 
-      // collect totals related to those dates
-      const stockInTotal = _.sum(stockIn, (o) => { return o.Quantity });
-      const orderOutTotal = _.sum(orderOut, (o) => { return o.Quantity });
-      const returnPlanedTotal = _.sum(returnPlanned, (o) => { return o.Quantity });
-      const orderReturnedTotal = _.sum(orderReturned, (o) => { return o.Quantity });
-      const returnAndWashedTotal = _.sum(returnAndWashCompleted, (o) => { return o.Quantity });
+        // collect totals related to those dates
+        const stockInTotal = _.sum(stockIn, (o) => { return o.Quantity });
+        const orderOutTotal = _.sum(orderOut, (o) => { return o.Quantity });
+        const returnPlanedTotal = _.sum(returnPlanned, (o) => { return o.Quantity });
+        const orderReturnedTotal = _.sum(orderReturned, (o) => { return o.Quantity });
+        const returnAndWashedTotal = _.sum(returnAndWashCompleted, (o) => { return o.Quantity });
 
-      // calculate available or not
-      const totalAvailableForOrder =
-      (stockInTotal - orderOutTotal) +
-      returnPlanedTotal +
-      orderReturnedTotal +
-      returnAndWashedTotal;
+        // calculate available or not
+        const totalAvailableForOrder =
+        (stockInTotal - orderOutTotal) +
+        returnPlanedTotal +
+        orderReturnedTotal +
+        returnAndWashedTotal;
 
-      const inventory = totalAvailableForOrder;
-      const remaining = totalAvailableForOrder - inputs.Quantity;
+        const inventory = totalAvailableForOrder;
+        const remaining = totalAvailableForOrder - inputs.Quantity;
 
-      const availability = {
-        available: remaining >= 0 ? 'Available' : 'Not Available',
-        remaining: inventory >= 0 ? inventory : 0,
-      };
+        const availability = {
+          available: remaining >= 0 ? 'Available' : 'Not Available',
+          remaining: inventory >= 0 ? inventory : 0,
+          totalAvailable: inventory,
+        };
 
-      return availability;
+        return availability;
+      } catch (err) {
+        return err;
+      }
     };
 
     // find price of items
