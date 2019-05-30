@@ -28,6 +28,18 @@ module.exports = function(grunt) {
         },
         {
           expand: true,
+          cwd: './node_modules/toastr/build/',
+          src: ['toastr.min.js'],
+          dest: '.tmp/public/dependencies'
+        },
+        {
+          expand: true,
+          cwd: './node_modules/toastr/build/',
+          src: ['toastr.min.css'],
+          dest: '.tmp/public/styles'
+        },
+        {
+          expand: true,
           cwd: './assets/dependencies/font-awesome-4/fonts/',
           src: ['*'],
           dest: '.tmp/public/fonts',
