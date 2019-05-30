@@ -15,6 +15,7 @@ parasails.registerPage('cart', {
     checkoutEnabled: false,
     cart: [],
     glasses: [],
+    moment: moment,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -23,12 +24,12 @@ parasails.registerPage('cart', {
   beforeMount: async function() {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
+    moment.locale("ja");
     this.cart = await parasails.util.getCart();
     this.glasses = await Cloud.getGlasses();
   },
 
   mounted: async function() {
-    console.log(moment);
     //…
   },
 
@@ -87,13 +88,36 @@ parasails.registerPage('cart', {
     createOrderFromCart: async function() {
       const cart = await parasails.util.getCart();
       const payload = {
-        DateStart: cart.timePeriod.DateStart,
-        DateEnd: cart.timePeriod.DateEnd,
-        DaysOfUse: cart.timePeriod.DaysOfUse,
-        Items: cart.items,
+        "card_number":"4111111111111111",
+        "card_expire":"01/20",
+        "security_code":"123",
+        "token_api_key":"test-token-api-key",
+        "lang":"en",
       }
 
-      order = await Cloud.createOrder(..._.values(payload));
+      fetch('https://api.veritrans.co.jp/4gtoken', {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, cors, *same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+              'Content-Type': 'application/json',
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrer: 'no-referrer', // no-referrer, *client
+          body: JSON.stringify(payload),
+        }
+      )
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(JSON.stringify(myJson));
+      });
+
+      // order = await Cloud.createOrder(..._.values(payload));
+
     },
 
     handleTimeSubmitting: async function(data) {
@@ -215,21 +239,8 @@ parasails.registerPage('cart', {
         console.log(err);
         toastr.error('Item could not be added to the cart');
       }
-
-      // getCartWithNewItem(data).then(
-      //   result => {
-      //     getCartWithNewItemAndShippingCalulated(result).then(
-      //       result2 => {
-      //         if (result2) {
-      //           localStorage.setItem('cart', JSON.stringify(result2));
-      //           this.cart = result2;
-      //           return;
-      //         }
-      //       }
-      //     )
-      //   }
-      // )
     },
+
     removeItemFromCart: async function(data) {
       const removeItemFromCart = async function(itemToRemove) {
         oldCart = await parasails.util.getCart();

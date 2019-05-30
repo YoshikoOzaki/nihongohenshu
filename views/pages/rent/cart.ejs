@@ -148,10 +148,21 @@
           <div class="card-body">
           <div v-if="cart.orderIdToIgnore" class="card mb-3">
             <div class="card-body">
-              Based off Reserved Order <br />
-              Order Number: {{cart.orderIdToIgnore}} <br />
-              Customer Keyword: {{cart.reserveOrderKeyword}} <br />
-              <button @click="clearCart" class="btn btn-sm btn-outline-primary">Clear cart and remove reserved order</button>
+              <div class="row">
+                <div class="col-md-6">
+                  <div><b>Based on Reserved Order</b></div>
+                  <div>Order Number</div>
+                  <div class="text-primary">{{cart.orderIdToIgnore}}</div>
+                  <div>Order Keyword</div>
+                  <div class="text-primary">{{cart.reserveOrderKeyword}}</div>
+                </div>
+                <div class="col-md-6 text-right">
+                  <button @click="clearCart" class="btn btn-sm btn-outline-secondary">
+                    <span class="fa fa-times"></span>
+                    Clear cart and remove reserved order
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0">
@@ -162,39 +173,29 @@
                 </div>
               </div>
             </div>
-            <div v-for="(item, index) in cart.items" :key="item.Id" class="mb-3 card text-muted p-1">
-              <div class="p-2">
-                <div style="display: flex; justify-content: space-between">
-                  <b>{{item.NameEng}}</b>
-                  <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-primary">
-                    <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
-                  </button>
-                </div>
-                <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
-                  <div v-if="item.Available !== 'No date set to evaluate'">
-                    {{item.Available.available}}&nbsp;-
-                    <span class="text-muted">{{item.Available.remaining}} Total</span>
-                  </div>
-                  <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
-                    {{item.Available}}
-                  </div>
-                </div>
-              </div>
+            <div class="mb-3 text-muted p-1" v-if="cart.items && cart.items.length > 0">
               <div class="row">
-                <div class="col-md-2">
-                  <img style="height: 85px" :src="item.ImgSrc" />
-                </div>
-                <div class="col-md-10">
-                  <table class="table table-sm">
+                <div class="col-md-12">
+                  <label>Items</label>
+                  <table class="table table-bordered table-sm">
                     <tr>
+                      <th>
+                        Image
+                      </th>
+                      <th>
+                        Item
+                      </th>
+                      <th>
+                        Available
+                      </th>
                       <th>
                         Quantity
                       </th>
                       <th>
-                        Unit Price
+                        Price
                       </th>
                       <th>
-                        Wash And Polish
+                        Wash
                       </th>
                       <th>
                         Discount
@@ -202,8 +203,29 @@
                       <th>
                         Total
                       </th>
+                      <th>
+                        Actions
+                      </th>
                     </tr>
-                    <tr>
+                    <!-- Seperate this into component so it can do it's own update -->
+                    <tr v-for="(item, index) in cart.items" :key="item.Id">
+                      <td>
+                        <img style="height: 85px" :src="item.ImgSrc" />
+                      </td>
+                      <td>
+                        {{item.NameEng}}
+                      </td>
+                      <td>
+                        <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
+                          <div v-if="item.Available !== 'No date set to evaluate'">
+                            {{item.Available.available}}&nbsp;<br />
+                            <span class="text-muted" v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In Stock</span>
+                          </div>
+                          <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
+                            {{item.Available}}
+                          </div>
+                        </div>
+                      </td>
                       <td>
                         {{item.Quantity}}
                       </td>
@@ -219,6 +241,11 @@
                       <td>
                         ¥{{item.DiscountedTotalPrice}}
                       </td>
+                      <td>
+                        <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-secondary">
+                          <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
+                        </button>
+                      </td>
                     </tr>
                   </table>
                 </div>
@@ -227,16 +254,17 @@
           </div>
           <div class="row">
             <div class="col-md-12">
-              <table class="table">
+              <label>Order Totals</label>
+              <table class="table table-bordered">
                 <tr class="tr">
                   <th>
-                    Pick Up
+                    Pick Up Date
                   </th>
                   <th>
-                    Return
+                    Return Date
                   </th>
                   <th>
-                    Days
+                    Days of Use
                   </th>
                   <th>
                     Postcode
@@ -250,10 +278,10 @@
                 </tr>
                 <tr>
                   <td>
-                    {{cart.timePeriod && cart.timePeriod.DateStart || "None"}}
+                    {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
                   </td>
                   <td>
-                    {{cart.timePeriod && cart.timePeriod.DateEnd || "None"}}
+                    {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
                   </td>
                   <td>
                     {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
@@ -272,20 +300,27 @@
               </table>
             </div>
           </div>
-          <div class="col-sm-12 m-0 p-0 mt-2 text-right">
-            <button class="btn btn-outline-primary mr-2" @click="clearCart">
-              Clear Cart
-            </button>
-            <span class="mr-2">
-              <a href="../checkout/reserve-prompt">
-                <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
-                  Reserve Order
+          <div class="col-sm-12 m-0 p-0 mt-2">
+            <div class="row">
+              <div class="col-md-6">
+                <button class="btn btn-outline-secondary mr-2" @click="clearCart">
+                  <span class="fa fa-times"></span>
+                    Clear Cart
                 </button>
-              </a>
-            </span>
-            <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
-              Create Order
-            </button>
+              </div>
+              <div class="col-md-6 text-right">
+                <span class="mr-2">
+                  <a href="../checkout/reserve-prompt">
+                    <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
+                      Reserve Order
+                    </button>
+                  </a>
+                </span>
+                <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
+                  Create Order
+                </button>
+              </div>
+            </div>
           </div>
           </div>
         </div>

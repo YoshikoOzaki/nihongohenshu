@@ -57,10 +57,10 @@
               </tr>
               <tr class="tr">
                 <td>
-                  {{newCart.timePeriod.DateStart}}
+                  {{moment(newCart.timePeriod.DateStart).format("LL")}}
                 </td>
                 <td>
-                  {{newCart.timePeriod.DateEnd}}
+                  {{moment(newCart.timePeriod.DateEnd).format("LL")}}
                 </td>
                 <td>
                   {{newCart.timePeriod.DaysOfUse}}

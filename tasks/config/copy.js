@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         {
           expand: true,
           cwd: './node_modules/moment/min/',
-          src: ['moment.min.js'],
+          src: ['moment-with-locales.min.js'],
           dest: '.tmp/public/dependencies'
         },
         {
