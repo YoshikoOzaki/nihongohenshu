@@ -69,6 +69,8 @@ var jsFilesToInject = [
   // > Be sure to list dependencies that depend on each other in the right order!
   'dependencies/lodash.js',
   'dependencies/jquery.min.js',
+  'dependencies/moment.min.js',
+  'dependencies/toastr.min.js',
   'dependencies/bowser.js',
   'dependencies/vue.js',
   'dependencies/**/*.js',

@@ -6,7 +6,7 @@ parasails.registerPage('cart', {
     //…
     syncing: false,
     cloudError: '',
-    formDataTime: { /* … */ },
+    formDataTime: {},
     formDataItem: { /* … */ },
     formDataShipping: {  /* … */  },
     formErrorsTime: { /* … */ },
@@ -102,37 +102,46 @@ parasails.registerPage('cart', {
           await callback(array[index], index, array);
         }
       }
+
+      try {
       // check all the logic for order time & update cart
       oldCart = await parasails.util.getCart();
       timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
+      } catch (err) {
+        console.log(err);
+        toastr.error('Time range could not be checked for being valid');
+      }
 
+      try {
       // check each item to update if available - START -
       // remove all if you want to remove function
-      const newCartItems = [];
-      if (oldCart.items && oldCart.items.length > 0) {
-        const checkCartItemAvailable = async function(item) {
-          const dataWithTimePeriod = {
-            Id: item.Id,
-            Quantity: item.Quantity,
-            ...timeValidResult,
-          }
-          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-          return result;
+        const newCartItems = [];
+        if (oldCart.items && oldCart.items.length > 0) {
+          const checkCartItemAvailable = async function(item) {
+            const dataWithTimePeriod = {
+              Id: item.Id,
+              Quantity: item.Quantity,
+              ...timeValidResult,
+            }
+            result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+            return result;
+          };
+          await asyncForEach(oldCart.items, async (o) => {
+            const result = await checkCartItemAvailable(o);
+            newCartItems.push(result);
+          });
+        }
+        // check each item to update if available - END
+        const newCart = {
+          ...oldCart,
+          items: newCartItems,
+          timePeriod: {...timeValidResult},
         };
-        await asyncForEach(oldCart.items, async (o) => {
-          const result = await checkCartItemAvailable(o);
-          newCartItems.push(result);
-        });
-      }
-      // check each item to update if available - END
-      const newCart = {
-        ...oldCart,
-        items: newCartItems,
-        timePeriod: {...timeValidResult},
-      };
-
-      if (timeValidResult) {
         localStorage.setItem('cart', JSON.stringify(newCart));
+        toastr.success('Time range added to the cart');
+        } catch (err) {
+        console.log(err);
+        toastr.error('Time range could not be added to the cart');
       }
     },
 
