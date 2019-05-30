@@ -148,10 +148,19 @@
           <div class="card-body">
           <div v-if="cart.orderIdToIgnore" class="card mb-3">
             <div class="card-body">
-              Based off Reserved Order <br />
-              Order Number: {{cart.orderIdToIgnore}} <br />
-              Customer Keyword: {{cart.reserveOrderKeyword}} <br />
-              <button @click="clearCart" class="btn btn-sm btn-outline-primary">Clear cart and remove reserved order</button>
+              <div class="row">
+                <div class="col-md-6">
+                  <p>Reserved Order</p>
+                  <label>Order Number</label><div class="text-primary">{{cart.orderIdToIgnore}} </div>
+                  <label>Order Keyword</label><div class="text-primary">{{cart.reserveOrderKeyword}} </div>
+                </div>
+                <div class="col-md-6 text-right">
+                  <button @click="clearCart" class="btn btn-sm btn-outline-secondary">
+                    <span class="fa fa-times"></span>
+                    Clear cart and remove reserved order
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0">
@@ -272,20 +281,27 @@
               </table>
             </div>
           </div>
-          <div class="col-sm-12 m-0 p-0 mt-2 text-right">
-            <button class="btn btn-outline-primary mr-2" @click="clearCart">
-              Clear Cart
-            </button>
-            <span class="mr-2">
-              <a href="../checkout/reserve-prompt">
-                <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
-                  Reserve Order
+          <div class="col-sm-12 m-0 p-0 mt-2">
+            <div class="row">
+              <div class="col-md-6">
+                <button class="btn btn-outline-secondary mr-2" @click="clearCart">
+                  <span class="fa fa-times"></span>
+                    Clear Cart
                 </button>
-              </a>
-            </span>
-            <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
-              Create Order
-            </button>
+              </div>
+              <div class="col-md-6 text-right">
+                <span class="mr-2">
+                  <a href="../checkout/reserve-prompt">
+                    <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
+                      Reserve Order
+                    </button>
+                  </a>
+                </span>
+                <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
+                  Create Order
+                </button>
+              </div>
+            </div>
           </div>
           </div>
         </div>
