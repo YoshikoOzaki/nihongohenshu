@@ -16,7 +16,7 @@ parasails.registerPage('order-confirmation', {
   beforeMount: async function() {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
-    console.log(moment().toNow());
+    moment.locale("ja");
   },
   mounted: async function() {
 

@@ -15,6 +15,7 @@ parasails.registerPage('cart', {
     checkoutEnabled: false,
     cart: [],
     glasses: [],
+    moment: moment,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -23,12 +24,12 @@ parasails.registerPage('cart', {
   beforeMount: async function() {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
+    moment.locale("ja");
     this.cart = await parasails.util.getCart();
     this.glasses = await Cloud.getGlasses();
   },
 
   mounted: async function() {
-    console.log(moment);
     //…
   },
 

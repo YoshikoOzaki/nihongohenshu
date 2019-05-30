@@ -9,6 +9,7 @@ parasails.registerPage('order-recovery', {
     formErrors: { /* … */ },
     formData: { /* … */ },
     newCart: {},
+    moment: moment,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -17,6 +18,7 @@ parasails.registerPage('order-recovery', {
   beforeMount: function() {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
+    moment.locale("ja");
   },
   mounted: async function() {
     //…
