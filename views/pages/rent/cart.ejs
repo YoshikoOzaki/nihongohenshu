@@ -173,12 +173,14 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3 text-muted p-1">
+            <div class="mb-3 text-muted p-1" v-if="cart.items && cart.items.length > 0">
               <div class="row">
                 <div class="col-md-12">
-                  <table class="table table-sm">
+                  <label>Items</label>
+                  <table class="table table-bordered table-sm">
                     <tr>
                       <th>
+                        Image
                       </th>
                       <th>
                         Item
@@ -205,6 +207,7 @@
                         Actions
                       </th>
                     </tr>
+                    <!-- Seperate this into component so it can do it's own update -->
                     <tr v-for="(item, index) in cart.items" :key="item.Id">
                       <td>
                         <img style="height: 85px" :src="item.ImgSrc" />
@@ -215,8 +218,8 @@
                       <td>
                         <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
                           <div v-if="item.Available !== 'No date set to evaluate'">
-                            {{item.Available.available}}&nbsp;
-                            <span class="text-muted">{{item.Available.remaining}} In Stock</span>
+                            {{item.Available.available}}&nbsp;<br />
+                            <span class="text-muted" v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In Stock</span>
                           </div>
                           <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
                             {{item.Available}}
@@ -239,7 +242,7 @@
                         ¥{{item.DiscountedTotalPrice}}
                       </td>
                       <td>
-                        <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-primary">
+                        <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-secondary">
                           <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
                         </button>
                       </td>
@@ -251,16 +254,17 @@
           </div>
           <div class="row">
             <div class="col-md-12">
-              <table class="table">
+              <label>Order Totals</label>
+              <table class="table table-bordered">
                 <tr class="tr">
                   <th>
-                    Pick Up
+                    Pick Up Date
                   </th>
                   <th>
-                    Return
+                    Return Date
                   </th>
                   <th>
-                    Days
+                    Days of Use
                   </th>
                   <th>
                     Postcode
