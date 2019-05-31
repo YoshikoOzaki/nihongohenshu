@@ -91,7 +91,7 @@ parasails.registerPage('cart', {
         "card_number":"4111111111111111",
         "card_expire":"01/20",
         "security_code":"123",
-        "token_api_key":"test-token-api-key",
+        "token_api_key":"0ece37d8-f112-4f66-b57a-0ec8c66d9354",
         "lang":"en",
       }
 
