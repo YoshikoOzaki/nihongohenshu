@@ -37,7 +37,7 @@ module.exports = {
         {
           id: inputs.id,
         }
-      ).populate('OrderLineNumbers');
+      ).populate('OrderLineNumbers').populate('User');
 
       const recordWithItemsPropgated = {
         ...newRecord,

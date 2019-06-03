@@ -95,7 +95,7 @@ parasails.registerPage('cart', {
         "lang":"en",
       }
 
-      fetch('https://api.veritrans.co.jp/4gtoken', {
+      await fetch('https://api.veritrans.co.jp/4gtoken', {
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, cors, *same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -109,11 +109,13 @@ parasails.registerPage('cart', {
           body: JSON.stringify(payload),
         }
       )
-      .then(function(response) {
+      .then(async function(response) {
         return response.json();
       })
-      .then(function(myJson) {
+      .then(async function(myJson) {
         console.log(JSON.stringify(myJson));
+        // then post token to the backend
+        await Cloud.charge(myJson.token);
       });
 
       // order = await Cloud.createOrder(..._.values(payload));

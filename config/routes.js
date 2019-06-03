@@ -65,9 +65,11 @@ module.exports.routes = {
   'GET   /api/v1/order/get-order':          { action: 'order/get-order' },
   'GET   /api/v1/order/recover-reserved-order':          { action: 'order/recover-reserved-order' },
   'POST  /api/v1/order/create-reserve-order':          { action: 'order/create-reserve-order' },
+  'POST  /api/v1/order/create-member-reserve-order':          { action: 'order/create-member-reserve-order' },
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
   'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },
   'POST  /api/v1/cart/check-shipping-price':          { action: 'cart/check-shipping-price' },
+  'POST  /api/v1/veritrans/charge':          { action: 'veritrans/charge' },
 
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗

@@ -1,7 +1,30 @@
 <div id="reserve-member" v-cloak>
-
-  <h1>TODO: Implement this page.</h1>
-  <p>(See also <em>assets/styles/pages/checkout/reserve-member.less</em>, <em>assets/js/pages/checkout/reserve-member.page.js</em>, and <em>api/controllers/checkout/view-reserve-member.js</em>.)</p>
-
+  <div class="container">
+    <div class="row pt-3">
+      <div class="col-md-6 offset-md-3">
+        <div class="text-muted">
+        <i>Show cart orders details here</i>
+        </div>
+        <p>Add a recovery keyword to reserve your order</p>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitReserveOrder"
+          :handle-parsing="handleParsingReserveForm"
+        >
+          <div class="col-sm-12">
+            <div class="form-group text-right">
+              <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+                Reserve Order
+              </ajax-button>
+            </div>
+          </div>
+        </ajax-form>
+      </div>
+    </div>
+  </div>
 </div>
 <%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>
