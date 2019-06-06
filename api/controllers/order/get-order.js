@@ -32,32 +32,36 @@ module.exports = {
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
+
     try {
-      var newRecord = await Order.findOne(
+      var recordWithItems = await Order.findOne(
         {
           id: inputs.id,
         }
       ).populate('OrderLineNumbers').populate('User');
 
-      const recordWithItemsPropgated = {
-        ...newRecord,
-      }
+      const recordWithNonGlassItemsRemoved = {
+        ...recordWithItems,
+        OrderLineNumbers: _.filter(recordWithItems.OrderLineNumbers, (o) => {
+          return o.Glass !== null;
+        }),
+      };
 
-      async function asyncForEach(array, callback) {
-        for (let index = 0; index < array.length; index++) {
-          await callback(array[index], index, array);
-        }
-      }
-      await asyncForEach(newRecord.OrderLineNumbers, async (item, i) => {
+      await asyncForEach(recordWithNonGlassItemsRemoved.OrderLineNumbers, async (item, i) => {
         glassDetailsForItem = await Glass.find({ id: item.Glass });
 
-        recordWithItemsPropgated.OrderLineNumbers[i].glassDetails = glassDetailsForItem[0];
+        recordWithNonGlassItemsRemoved.OrderLineNumbers[i].glassDetails = glassDetailsForItem[0];
       });
 
       async function getTotalOrderPrice() {
         const costs = [];
         const washCost = await WashAndPolish.findOne({ Name: "Wash And Polish"  });
-        await asyncForEach(recordWithItemsPropgated.OrderLineNumbers, async (item, i) => {
+        await asyncForEach(recordWithNonGlassItemsRemoved.OrderLineNumbers, async (item, i) => {
           if (item.Glass !== null) {
             const itemCost = (item.UnitPrice + washCost.Price) * item.Quantity;
             costs.push(itemCost);
@@ -72,7 +76,7 @@ module.exports = {
       const TotalPrice = await getTotalOrderPrice();
 
       recordWithItemsPropogatedAndTotalPrice = {
-        ...recordWithItemsPropgated,
+        ...recordWithNonGlassItemsRemoved,
         TotalPrice,
       };
 

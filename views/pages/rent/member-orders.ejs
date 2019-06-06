@@ -1,0 +1,153 @@
+<div id="member-orders" v-cloak>
+  <div class="container">
+    <div class="row pt-3">
+      <div class="col-md-12">
+        <table v-if="orders.length > 0" class="table table-bordered">
+          <tr>
+            <th>
+              Order Id
+            </th>
+            <th>
+              Post Code
+            </th>
+            <th>
+              Order Lines
+            </th>
+            <th>
+              Date Start
+            </th>
+            <th>
+              Date End
+            </th>
+            <th>
+              Created At
+            </th>
+            <th>
+              Actions
+            </th>
+          </tr>
+          <template v-for="order in orders">
+          <tr>
+            <td>
+              {{order.id}}
+            </td>
+            <td>
+              {{order.Postcode}}
+            </td>
+            <td>
+              {{order.OrderLineNumbers.length}}
+            </td>
+            <td>
+              {{moment(order.DateStart).format("LL")}}
+            </td>
+            <td>
+              {{moment(order.DateEnd).format("LL")}}
+            </td>
+            <td>
+              {{moment(order.CreatedAt).format("LLLL")}}
+            </td>
+            <td>
+              <div class="row">
+                <div class="col-md-8">
+                  <button
+                    class="btn btn-outline-primary btn-sm"
+                    @click="toggleAddToSelectedOrders(order.id)"
+                  >
+                    <span class="fa fa-eye mr-1"></span>
+                    View
+                  </button>
+                  <button class="btn btn-outline-success btn-sm" @click="addOrderToCart(order)">
+                    <span class="fa-cart-plus fa mr-1"></span>
+                    Add to Cart
+                  </button>
+                </div>
+                <div class="col-md-4 text-right">
+                  <button class="btn btn-outline-danger btn-sm">
+                    <span class="fa-trash fa mr-1"></span>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="_.includes(selectedOrders, order.id)">
+            <td colspan="7" style="background-color: #eee;">
+              <span
+                v-if="!ordersWithFullData[order.id]"
+                class="fa fa-spinner fa-spin"
+              >
+              </span>
+              <table
+                class="table"
+                v-if="ordersWithFullData[order.id]"
+              >
+                <tr>
+                  <th colspan="5">
+                    <div  style="justify-content: space-between; display: flex">
+                      <div>
+                        <b>Order Items</b>
+                      </div>
+                      <div>
+                        <button class="btn btn-outline-secondary btn-sm" @click="toggleAddToSelectedOrders(order.id)">
+                          <span class="fa-times-circle fa mr-1"></span>
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </th>
+                </tr>
+                <tr class="tr">
+                  <th>
+                    Image
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Unit Price
+                  </th>
+                  <th>
+                    Quantity In Order
+                  </th>
+                  <th>
+                    Total Price
+                  </th>
+                </tr>
+                <tr v-for="item in ordersWithFullData[order.id].OrderLineNumbers">
+                  <td>
+                    <img height="100px" :src="item.glassDetails.ImgSrc" />
+                  </td>
+                  <td>
+                    {{ item.glassDetails.NameEng }}
+                    {{ item.glassDetails.NameJap }}
+                  </td>
+                  <td>
+                    ¥{{ item.UnitPrice }}
+                  </td>
+                  <td>
+                    ¥{{ item.Quantity }}
+                  </td>
+                  <td>
+                    ¥{{ item.UnitPrice * item.Quantity }}
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="3">
+                  </th>
+                  <th>
+                    <b>Order Total</b>
+                  </th>
+                  <th>
+                    <b>¥{{ordersWithFullData[order.id].TotalPrice}}</b>
+                  </th>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          </template>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

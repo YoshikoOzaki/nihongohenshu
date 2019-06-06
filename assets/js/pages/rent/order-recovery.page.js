@@ -19,7 +19,9 @@ parasails.registerPage('order-recovery', {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
     moment.locale("ja");
+    console.log(this.me);
   },
+
   mounted: async function() {
     //…
   },
@@ -79,7 +81,6 @@ parasails.registerPage('order-recovery', {
             DaysOfUse: recoveredOrder.DaysOfUse,
             OrderIdToIgnore: recoveredOrder.id,
           }
-          console.log(payload);
           if (orderLineNumber.Glass !== null) {
             result = await Cloud.checkCartItemValid(..._.values(payload));
             return result;
