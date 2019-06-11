@@ -1,149 +1,17 @@
 <div id="cart" v-cloak>
   <div class="container mt-3">
     <div class="row">
-      <div class="col-sm-3">
-        <div class="mb-3 card row">
-          <div class="card-header">
-            Dates Required
-          </div>
-          <div class="card-body">
-            <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">Start Date</label>
-                    <input class="form-control" id="date-start" name="date-start" type="date"  :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart" placeholder="0" autocomplete="date-end" >
-                    <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
-                  </div>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">End Date</label>
-                    <input class="form-control" id="date-end" name="date-end" type="date"  :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd" placeholder="0" autocomplete="date-end" >
-                    <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
-                  </div>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">Days of Usage</label>
-                    <input class="form-control" id="days-of-use" name="days-of-use" type="number"  :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse" placeholder="0" autocomplete="days-of-use">
-                    <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
-                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
-                  </div>
-                </div>
-              </div>
-            </ajax-form>
-          </div>
-        </div>
-        <div class="mb-3 card row">
-          <div class="card-header">
-            Shipping
-          </div>
-          <div class="card-body">
-            <ajax-form style="width: 100%"
-              :syncing.sync="syncing"
-              :cloud-error.sync="cloudError"
-              @submitted="submittedForm()"
-              :handle-submitting="handleShippingSubmitting"
-              :handle-parsing="handleParsingShippingForm"
-            >
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">Postcode</label>
-                    <input
-                      class="form-control"
-                      id="postcode"
-                      name="postcode"
-                      type="number"
-                      :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']"
-                      v-model.trim="formDataShipping.Postcode"
-                      autocomplete="postcode"
-                    >
-                    <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter days a postcode.</div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
-                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
-                  </div>
-                </div>
-              </div>
-            </ajax-form>
-            </div>
-          </div>
-        <div class="mb-3 card row">
-        <div class="card-header">
-          Add More Products
-        </div>
-        <div class="card-body">
-          <div
-            v-if="glasses.length === 0"
-            class="fa fa-spinner fa-spin"
-          >
-          </div>
-          <ajax-form
-            @submitted="submittedForm()"
-            :syncing.sync="syncing"
-            :cloud-error.sync="cloudError"
-            :handle-submitting="handleItemSubmitting"
-            :handle-parsing="handleParsingItemForm"
-            v-if="glasses.length > 0"
-          >
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label for="full-name">Choose a glass type</label>
-                  <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id" :class="[formErrorsItems.Id ? 'is-invalid' : '']">
-                    <option disabled value="">Please select one</option>
-                    <option v-for="glass in glasses" :value="glass.id">{{glass.NameEng}} {{glass.NameJap}}</option>
-                  </select>
-                  <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
-                </div>
-              </div>
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label for="full-name">Quantity</label>
-                  <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
-                  <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-12">
-                <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
-                <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
-              </div>
-              <div class="col-sm-12">
-                <div class="form-group text-right">
-                  <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Add</ajax-button>
-                </div>
-              </div>
-            </div>
-          </ajax-form>
-        </div>
-        </div>
+      <div class="col-md-12">
+        <page-header
+        heading="Rental Cart"
+        sub-heading="Add glassware to the cart, check shipping costs"
+        />
       </div>
+
       <div class="col-sm-9">
-        <div class="ml-3 mb-3 card">
+        <div class="mb-3 card">
           <div class="card-header">
-            Cart
+            Rental Cart
           </div>
           <div class="card-body">
           <div v-if="cart.orderIdToIgnore" class="card mb-3">
@@ -153,13 +21,17 @@
                   <div><b>Based on Reserved Order</b></div>
                   <div>Order Number</div>
                   <div class="text-primary">{{cart.orderIdToIgnore}}</div>
-                  <div>Order Keyword</div>
-                  <div class="text-primary">{{cart.reserveOrderKeyword}}</div>
+                  <div>Reserved Order Type</div>
+                  <div class="text-primary">{{cart.reserveOrderKeyword ? 'Guest with keyword' : 'Member'}}</div>
+                  <div v-if="cart.reserveOrderKeyword">
+                    <div>Order Keyword</div>
+                    <div class="text-primary">{{cart.reserveOrderKeyword}}</div>
+                  </div>
                 </div>
                 <div class="col-md-6 text-right">
                   <button @click="clearCart" class="btn btn-sm btn-outline-secondary">
                     <span class="fa fa-times"></span>
-                    Clear cart and remove reserved order
+                    Clear cart
                   </button>
                 </div>
               </div>
@@ -177,77 +49,82 @@
               <div class="row">
                 <div class="col-md-12">
                   <label>Items</label>
-                  <table class="table table-bordered table-sm">
-                    <tr>
-                      <th>
-                        Image
-                      </th>
-                      <th>
-                        Item
-                      </th>
-                      <th>
-                        Available
-                      </th>
-                      <th>
-                        Quantity
-                      </th>
-                      <th>
-                        Price
-                      </th>
-                      <th>
-                        Wash
-                      </th>
-                      <th>
-                        Discount
-                      </th>
-                      <th>
-                        Total
-                      </th>
-                      <th>
-                        Actions
-                      </th>
-                    </tr>
-                    <!-- Seperate this into component so it can do it's own update -->
-                    <tr v-for="(item, index) in cart.items" :key="item.Id">
-                      <td>
-                        <img style="height: 85px" :src="item.ImgSrc" />
-                      </td>
-                      <td>
-                        {{item.NameEng}}
-                      </td>
-                      <td>
-                        <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
-                          <div v-if="item.Available !== 'No date set to evaluate'">
-                            {{item.Available.available}}&nbsp;<br />
-                            <span class="text-muted" v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In Stock</span>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                      <tr>
+                        <th>
+                          Image
+                        </th>
+                        <th>
+                          Item
+                        </th>
+                        <th>
+                          Available
+                        </th>
+                        <th>
+                          Quantity
+                        </th>
+                        <th>
+                          Price
+                        </th>
+                        <th>
+                          Total
+                        </th>
+                        <th>
+                          Actions
+                        </th>
+                      </tr>
+                      <!-- Seperate this into component so it can do it's own update -->
+                      <tr v-for="(item, index) in cart.items" :key="item.Id">
+                        <td>
+                          <img style="height: 85px" :src="item.ImgSrc" />
+                        </td>
+                        <td>
+                          {{item.NameEng}}
+                        </td>
+                        <td>
+                          <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
+                            <div v-if="item.Available !== 'No date set to evaluate'">
+                              {{item.Available.available}}&nbsp;<br />
+                              <span class="text-muted" v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In Stock</span>
+                            </div>
+                            <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
+                              {{item.Available}}
+                            </div>
                           </div>
-                          <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
-                            {{item.Available}}
+                        </td>
+                        <td>
+                          {{item.Quantity}}
+                          <div class="input-group">
+                            <input
+                              class="form-control"
+                              type="number"
+                              v-model.trim="item.Quantity"
+                            />
+                            <button
+                              @click="updateItemRowQuantity(index, item.Quantity)"
+                            >
+                              Update
+                            </button>
                           </div>
-                        </div>
-                      </td>
-                      <td>
-                        {{item.Quantity}}
-                      </td>
-                      <td>
-                        ¥{{item.UnitPrice}}
-                      </td>
-                      <td>
-                        ¥{{item.WashAndPolish}}
-                      </td>
-                      <td>
-                        {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%
-                      </td>
-                      <td>
-                        ¥{{item.DiscountedTotalPrice}}
-                      </td>
-                      <td>
-                        <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-secondary">
-                          <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </table>
+                        </td>
+                        <td>
+                          ¥{{item.UnitPrice}}
+                        </td>
+                        <!-- <td>
+                          {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%
+                        </td> -->
+                        <td>
+                          ¥{{item.DiscountedTotalPrice}}
+                        </td>
+                        <td>
+                          <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-secondary">
+                            <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -255,69 +132,71 @@
           <div class="row">
             <div class="col-md-12">
               <label>Order Totals</label>
-              <table class="table table-bordered">
-                <tr class="tr">
-                  <th>
-                    Pick Up Date
-                  </th>
-                  <th>
-                    Return Date
-                  </th>
-                  <th>
-                    Days of Use
-                  </th>
-                  <th>
-                    Postcode
-                  </th>
-                  <th>
-                    Shipping
-                  </th>
-                  <th>
-                    Total
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
-                  </td>
-                  <td>
-                    {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
-                  </td>
-                  <td>
-                    {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
-                  </td>
-                  <td>
-                    {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}<br />
-                    <small class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
-                  </td>
-                  <td>
-                    ¥{{cart.shipping && cart.shipping.price || 0}}
-                  </td>
-                  <td>
-                    <b>¥{{cart.shipping && (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0 }}</b>
-                  </td>
-                </tr>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-dark">
+                  <tr class="tr">
+                    <th>
+                      Pick Up Date
+                    </th>
+                    <th>
+                      Return Date
+                    </th>
+                    <th>
+                      Days of Use
+                    </th>
+                    <th>
+                      Postcode
+                    </th>
+                    <th>
+                      Shipping
+                    </th>
+                    <th>
+                      Total
+                    </th>
+                  </tr>
+                  <tr>
+                    <td>
+                      {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
+                    </td>
+                    <td>
+                      {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
+                    </td>
+                    <td>
+                      {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
+                    </td>
+                    <td>
+                      {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}<br />
+                      <small class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                    </td>
+                    <td>
+                      ¥{{cart.shipping && cart.shipping.price || 0}}
+                    </td>
+                    <td>
+                      <b>¥{{cart.shipping && (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0 }}</b>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0 mt-2">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-6 mb-2">
                 <button class="btn btn-outline-secondary mr-2" @click="clearCart">
                   <span class="fa fa-times"></span>
                     Clear Cart
                 </button>
               </div>
-              <div class="col-md-6 text-right">
+              <div class="col-md-6 text-md-right">
                 <span class="mr-2">
                   <a href="../checkout/reserve-prompt">
                     <button class="btn btn-outline-primary account-settings-button" :disabled="!checkoutEnabled">
-                      Reserve Order
+                      Reserve Your Order
                     </button>
                   </a>
                 </span>
                 <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
-                  Create Order
+                  Place Your Order
                 </button>
               </div>
             </div>
@@ -325,6 +204,145 @@
           </div>
         </div>
       </div>
+      <div class="col-sm-3">
+          <div class="mb-3 card">
+            <div class="card-header">
+              Dates Required
+            </div>
+            <div class="card-body">
+              <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="full-name">Start Date</label>
+                      <input class="form-control" id="date-start" name="date-start" type="date"  :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart" placeholder="0" autocomplete="date-end" >
+                      <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="full-name">End Date</label>
+                      <input class="form-control" id="date-end" name="date-end" type="date"  :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd" placeholder="0" autocomplete="date-end" >
+                      <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="full-name">Days of Usage</label>
+                      <input class="form-control" id="days-of-use" name="days-of-use" type="number"  :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse" placeholder="0" autocomplete="days-of-use">
+                      <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
+                    <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group text-right">
+                      <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
+                    </div>
+                  </div>
+                </div>
+              </ajax-form>
+            </div>
+          </div>
+          <div class="mb-3 card">
+            <div class="card-header">
+              Shipping Estimation
+            </div>
+            <div class="card-body">
+              <ajax-form style="width: 100%"
+                :syncing.sync="syncing"
+                :cloud-error.sync="cloudError"
+                @submitted="submittedForm()"
+                :handle-submitting="handleShippingSubmitting"
+                :handle-parsing="handleParsingShippingForm"
+              >
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="full-name">Postcode</label>
+                      <input
+                        class="form-control"
+                        id="postcode"
+                        name="postcode"
+                        type="number"
+                        :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']"
+                        v-model.trim="formDataShipping.Postcode"
+                        autocomplete="postcode"
+                      >
+                      <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter days a postcode.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
+                    <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group text-right">
+                      <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Update</ajax-button>
+                    </div>
+                  </div>
+                </div>
+              </ajax-form>
+              </div>
+            </div>
+          <div class="mb-3 card">
+          <div class="card-header">
+            Add More Products
+          </div>
+          <div class="card-body">
+            <div
+              v-if="glasses.length === 0"
+              class="fa fa-spinner fa-spin"
+            >
+            </div>
+            <ajax-form
+              @submitted="submittedForm()"
+              :syncing.sync="syncing"
+              :cloud-error.sync="cloudError"
+              :handle-submitting="handleItemSubmitting"
+              :handle-parsing="handleParsingItemForm"
+              v-if="glasses.length > 0"
+            >
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Choose a glass type</label>
+                    <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id" :class="[formErrorsItems.Id ? 'is-invalid' : '']">
+                      <option disabled value="">Please select one</option>
+                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameEng}} {{glass.NameJap}}</option>
+                    </select>
+                    <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Quantity</label>
+                    <input class="form-control" id="quantity" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
+                    <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">Add</ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
+          </div>
+          </div>
+        </div>
     </div>
   </div>
 </div>

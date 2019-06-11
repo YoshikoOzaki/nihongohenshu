@@ -1,13 +1,13 @@
 <div id="reserve-guest" v-cloak>
   <div class="container">
-    <div class="row pt-3">
+    <div class="row">
       <div class="col-md-6 offset-md-3">
-        <div class="text-muted">
-        <i>Show cart orders details here</i>
+        <div>
+          <page-header
+          heading="Guest Reserve Order"
+          sub-heading="Reserve an order without being logged in"
+          />
         </div>
-        <p>Add a recovery keyword to reserve your order</p>
-      </div>
-      <div class="col-md-6 offset-md-3">
         <ajax-form
           @submitted="submittedForm()"
           :syncing.sync="syncing"

@@ -2,13 +2,16 @@
   <div class="container">
     <div class="row pt-3">
       <div class="col-md-6 offset-md-3">
-        <p>Input a recovery keyword and order id to retrieve your order</p>
+        <page-header
+          heading="Reserved Order Recovery"
+          sub-heading="User your order id and keyword to recall a reserved order as a guest"
+        />
       </div>
-      <div class="col-md-6 offset-md-3">
+      <div class="col-md-4 offset-md-3">
         <ajax-form @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError"
           :handle-submitting="submitForm" :handle-parsing="handleParsingForm">
           <div class="form-group">
-            <label for="orderId">Order Id</label>
+            <div for="orderId">Order Id</div>
             <input class="form-control" id="orderId" name="orderId" type="string"
               :class="[formErrors.OrderId ? 'is-invalid' : '']" v-model.trim="formData.OrderId"
               placeholder="Enter an Order Id">
@@ -17,7 +20,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="keyword">Customer Selected Keyword</label>
+            <div for="keyword">Customer Selected Keyword</div>
             <input class="form-control" id="keyword" name="keyword" type="string"
               :class="[formErrors.Keyword ? 'is-invalid' : '']" v-model.trim="formData.Keyword"
               placeholder="Enter a Keyword">
@@ -25,8 +28,8 @@
               Please enter a keyword.
             </div>
           </div>
-          <div class="form-group text-right">
-            <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+          <div class="form-group">
+            <ajax-button type="submit" :syncing="syncing" class="btn btn-primary">
               Recover Order
             </ajax-button>
           </div>
@@ -34,7 +37,7 @@
       </div>
     </div>
     <div class="row" v-if="newCart.items">
-      <div class="col-md-12 p-0 card">
+      <div class="col-md-6 offset-md-3 p-0 card">
         <div class="card-header">
           Recovered Order
         </div>

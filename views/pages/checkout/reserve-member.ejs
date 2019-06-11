@@ -5,7 +5,11 @@
         <div class="text-muted">
         <i>Show cart orders details here</i>
         </div>
-        <p>Add a recovery keyword to reserve your order</p>
+        <p>
+          Would you like to reserve this order?
+          </br>
+          Reserved orders will expire in 3 days
+        </p>
       </div>
       <div class="col-md-6 offset-md-3">
         <ajax-form
@@ -15,11 +19,13 @@
           :handle-submitting="submitReserveOrder"
           :handle-parsing="handleParsingReserveForm"
         >
-          <div class="col-sm-12">
-            <div class="form-group text-right">
-              <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
-                Reserve Order
-              </ajax-button>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+                  Reserve Order
+                </ajax-button>
+              </div>
             </div>
           </div>
         </ajax-form>

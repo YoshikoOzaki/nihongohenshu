@@ -1,21 +1,29 @@
-<div id="selection">
+<div id="selection" v-cloak>
   <div class="container">
     <div class="row">
-      <div class="row">
-        <div
-          v-for="(glass, index) in glasses"
-          :key="index"
-          class="col-lg-3 col-md-6 mb-3"
-        >
-          <item-adder
-            :product="glass"
-            :index="index"
-            :handle-submitting="handleItemSubmitting"
-            :handleParsing="handleParsingItemForm"
-            :cloud-error.sync="cloudError"
-            :syncing="syncing"
-            />
-        </div>
+      <div class="col-md-12">
+        <page-header
+          heading="Product Selection"
+          sub-heading="ご希望のグラスと数量を選んで下さい"
+        />
+      </div>
+      <div v-if="_.isEmpty(glasses)" class="col-md-12 mb-3">
+        <spinner />
+      </div>
+      <div
+        v-for="(glass, index) in glasses"
+        :key="index"
+        class="col-lg-2 col-md-3 mb-3"
+        v-cloak
+      >
+        <item-adder
+          :product="glass"
+          :index="index"
+          :handle-submitting="handleItemSubmitting"
+          :handleParsing="handleParsingItemForm"
+          :cloud-error.sync="cloudError"
+          :syncing="syncing"
+          />
       </div>
     </div>
   </div>

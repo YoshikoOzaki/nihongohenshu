@@ -74,7 +74,7 @@ module.exports.bootstrap = async function(done) {
 
   await Glass.createEach([
     {
-      NameEng: 'Handmade Vintage WHITE',
+      NameEng: 'Handmade Vintage',
       NameJap: '北海道札幌市',
       TotalQuantityInSystem: 10000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-large/pluh3320a_3_plumm-large.jpg',
@@ -83,7 +83,7 @@ module.exports.bootstrap = async function(done) {
       RackCapacity: 10,
     },
     {
-      NameEng: 'Handmade Glass WHITE',
+      NameEng: 'Handmade Red',
       NameJap: '東京都新島村',
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_6_plumm-large.jpg',
@@ -92,7 +92,7 @@ module.exports.bootstrap = async function(done) {
       RackCapacity: 10,
     },
     {
-      NameEng: 'Handmade Glass RED',
+      NameEng: 'Handmade White',
       NameJap: '東京都新島村',
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluo6660rw/plumm-large/pluo6660rw_3_plumm-large.jpg',
@@ -101,7 +101,7 @@ module.exports.bootstrap = async function(done) {
       RackCapacity: 10,
     },
     {
-      NameEng: 'Vintage WHITEb Retail',
+      NameEng: 'Vintage White',
       NameJap: '東京都新島村',
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluv4420b2/plumm-large/pluv4420b2_6_plumm-large.jpg',
@@ -110,7 +110,7 @@ module.exports.bootstrap = async function(done) {
       RackCapacity: 10,
     },
     {
-      NameEng: 'Handmade Vintage REDb Retail',
+      NameEng: 'Handmade Red',
       NameJap: '東京都新島村',
       TotalQuantityInSystem: 20000,
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3310b/plumm-large/pluh3310b_3_plumm-large.jpg',

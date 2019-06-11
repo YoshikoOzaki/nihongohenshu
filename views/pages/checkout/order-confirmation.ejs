@@ -1,15 +1,20 @@
 <div id="order-confirmation" v-cloak>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12 mt-3 mb-2">
-        <h4>Order Successful</h4>
-      </div>
-    </div>
+  <div class="container mt-3">
     <div class="row">
       <div class="col-md-12">
+        <div>
+          <page-header
+          heading="Reserved Order Confirmation"
+          sub-heading="Your order has been reserved"
+          />
+        </div>
         <div class="card mb-3">
           <div class="card-header">
             User Details
+          </div>
+          <div class="card-body" v-if="orderWithAllData && _.isEmpty(orderWithAllData)">
+            <span><spinner /></span>
+            <span class="ml-1">Fetching Order Details...</span>
           </div>
           <div class="card-body">
             <div class="mb-2" v-if="orderWithAllData && orderWithAllData.User">
@@ -26,10 +31,10 @@
       <div class="col-md-12">
         <div class="card mb-3">
           <div class="card-header">
-            Order Infomation
+            Order
           </div>
           <div class="card-body">
-            <div>
+            <div class="table-responsive">
               <table class="table">
                 <tr>
                   <th>
@@ -62,7 +67,7 @@
                     {{loadedOrder.DaysOfUse}}
                   </td>
                   <td>
-                    {{loadedOrder.createdAt}}
+                    {{moment(loadedOrder.createdAt).format("LLL")}}
                   </td>
                 </tr>
               </table>
@@ -77,50 +82,58 @@
           <div class="card-header">
             Order Items
           </div>
-          <div class="card-body">
-            <table class="table">
-              <tr>
-                <th>
-                </th>
-                <th>
-                  Name
-                </th>
-                <th>
-                  Unit Price
-                </th>
-                <th>
-                  Quantity In Order
-                </th>
-                <th>
-                  Total Price
-                </th>
-              </tr>
-              <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Glass !== null">
-                <td>
-                  <img height="100px" :src="orderLine.glassDetails.ImgSrc" />
-                </td>
-                <td>
-                  {{ orderLine.glassDetails.NameEng }}
-                  {{ orderLine.glassDetails.NameJap }}
-                </td>
-                <td>
-                  ¥{{ orderLine.UnitPrice }}
-                </td>
-                <td>
-                  ¥{{ orderLine.Quantity }}
-                </td>
-                <td>
-                  ¥{{ orderLine.UnitPrice * orderLine.Quantity }}
-                </td>
-              </tr>
-            </table>
-            <div class="row">
-              <div class="col-md-12 text-right">
-                <h4>
-                  <div>Total</div>
-                  <div>¥{{orderWithAllData.TotalPrice}}</div>
-                </h4>
-              </div>
+          <div class="card-body" v-if="orderWithAllData && _.isEmpty(orderWithAllData)">
+            <span><spinner /></span>
+            <span class="ml-1">Fetching Order Rows...</span>
+          </div>
+          <div class="card-body" v-if="orderWithAllData && !_.isEmpty(orderWithAllData)">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tr>
+                  <th>
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Unit Price
+                  </th>
+                  <th>
+                    Quantity In Order
+                  </th>
+                  <th>
+                    Total Price
+                  </th>
+                </tr>
+                <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Glass !== null">
+                  <td>
+                    <img height="100px" :src="orderLine.glassDetails.ImgSrc" />
+                  </td>
+                  <td>
+                    {{ orderLine.glassDetails.NameEng }}
+                    {{ orderLine.glassDetails.NameJap }}
+                  </td>
+                  <td>
+                    ¥{{ orderLine.UnitPrice }}
+                  </td>
+                  <td>
+                    ¥{{ orderLine.Quantity }}
+                  </td>
+                  <td>
+                    ¥{{ orderLine.UnitPrice * orderLine.Quantity }}
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="3">
+                  </th>
+                  <th>
+                    <b>Order Total</b>
+                  </th>
+                  <th>
+                    ¥{{orderWithAllData.TotalPrice}}
+                  </th>
+                </tr>
+              </table>
             </div>
           </div>
         </div>

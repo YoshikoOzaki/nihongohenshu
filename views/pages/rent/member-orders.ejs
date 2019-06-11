@@ -1,11 +1,26 @@
 <div id="member-orders" v-cloak>
   <div class="container">
-    <div class="row pt-3">
+    <div class="row">
       <div class="col-md-12">
+        <div>
+          <page-header
+          heading="Member Orders"
+          sub-heading="Add reserved orders to the cart"
+          />
+        </div>
+        <div v-if="_.isEmpty(orders)" >
+          <span
+            class="fa fa-spinner fa-spin"
+          >
+          </span>
+        </div>
         <table v-if="orders.length > 0" class="table table-bordered">
           <tr>
             <th>
               Order Id
+            </th>
+            <th>
+              Reserved
             </th>
             <th>
               Post Code
@@ -32,6 +47,9 @@
               {{order.id}}
             </td>
             <td>
+              {{order.Reserved ? 'Yes' : 'No'}}
+            </td>
+            <td>
               {{order.Postcode}}
             </td>
             <td>
@@ -48,33 +66,68 @@
             </td>
             <td>
               <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                   <button
                     class="btn btn-outline-primary btn-sm"
                     @click="toggleAddToSelectedOrders(order.id)"
                   >
                     <span class="fa fa-eye mr-1"></span>
-                    View
+                    View Details
                   </button>
-                  <button class="btn btn-outline-success btn-sm" @click="addOrderToCart(order)">
-                    <span class="fa-cart-plus fa mr-1"></span>
-                    Add to Cart
+                  <button
+                    @click="addOrderToCart(order)"
+                    type="submit"
+                    class="btn btn-outline-success btn-sm ajax-button"
+                    :class="[syncing ? 'syncing' : '']"
+                    :disabled="syncing"
+                  >
+                    <span class="button-text" v-if="!syncing">
+                      <slot name="default"><span class="fa-cart-plus fa mr-1"></span>Re-Add to Cart</slot>
+                    </span>
+                    <span class="button-loader clearfix" v-if="syncing">
+                      <slot name="syncing-state">
+                        <div class="loading-dot dot1"></div>
+                        <div class="loading-dot dot2"></div>
+                        <div class="loading-dot dot3"></div>
+                        <div class="loading-dot dot4"></div>
+                      </slot>
+                    </span>
                   </button>
-                </div>
-                <div class="col-md-4 text-right">
-                  <button class="btn btn-outline-danger btn-sm">
-                    <span class="fa-trash fa mr-1"></span>
-                    Delete
+                  <button
+                    @click="deleteReservedOrder(order.id)"
+                    type="submit"
+                    class="btn btn-outline-danger btn-sm ajax-button"
+                    :class="[syncing ? 'syncing' : '']"
+                    :disabled="syncing"
+                  >
+                    <span class="button-text" v-if="!syncing">
+                      <slot name="default"><span class="fa-trash fa mr-1"></span>Delete Order</slot>
+                    </span>
+                    <span class="button-loader clearfix" disabled v-if="syncing">
+                      <slot name="syncing-state">
+                        <div class="loading-dot dot1"></div>
+                        <div class="loading-dot dot2"></div>
+                        <div class="loading-dot dot3"></div>
+                        <div class="loading-dot dot4"></div>
+                      </slot>
+                    </span>
                   </button>
                 </div>
               </div>
             </td>
           </tr>
           <tr v-if="_.includes(selectedOrders, order.id)">
-            <td colspan="7" style="background-color: #eee;">
+            <td
+              colspan="8"
+              style="background-color: #eee;
+                padding-top: 0;
+                padding-left: 0;
+                padding-right: 0;
+              "
+            >
               <span
                 v-if="!ordersWithFullData[order.id]"
-                class="fa fa-spinner fa-spin"
+                class="fa fa-spinner fa-spin ml-3 mt-3"
               >
               </span>
               <table

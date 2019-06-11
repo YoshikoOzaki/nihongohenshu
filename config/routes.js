@@ -65,6 +65,7 @@ module.exports.routes = {
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
   'GET   /api/v1/order/get-order':          { action: 'order/get-order' },
   'GET  /api/v1/order/get-orders':          { action: 'order/get-orders' },
+  'GET  /api/v1/order/delete-order':          { action: 'order/delete-order' },
   'GET   /api/v1/order/recover-reserved-order':          { action: 'order/recover-reserved-order' },
   'POST  /api/v1/order/create-reserve-order':          { action: 'order/create-reserve-order' },
   'POST  /api/v1/order/create-member-reserve-order':          { action: 'order/create-member-reserve-order' },

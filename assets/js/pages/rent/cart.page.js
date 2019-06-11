@@ -195,13 +195,13 @@ parasails.registerPage('cart', {
 
     handleItemSubmitting: async function(data) {
       const getCartWithNewItem = async function(itemData) {
-        oldCart = await parasails.util.getCart();
+        const oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {
           ...data,
           ...oldCart.timePeriod,
         }
 
-        result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+        const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
         const newCart = {
           ...oldCart,
           items: [
@@ -244,6 +244,7 @@ parasails.registerPage('cart', {
     },
 
     removeItemFromCart: async function(data) {
+      // this might not be updating the whole cart total price
       const removeItemFromCart = async function(itemToRemove) {
         oldCart = await parasails.util.getCart();
         oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
@@ -285,6 +286,57 @@ parasails.registerPage('cart', {
         console.log(err);
         toastr.error('Item could not be removed from the cart');
       }
+    },
+
+    updateItemRowQuantity: async function(index, quantity) {
+      if (this.syncing) {
+        return false;
+      }
+      this.syncing = true;
+      try {
+      const oldCart = await parasails.util.getCart();
+      const dataWithTimePeriod = {
+        Id: oldCart.items[index].Id,
+        Quantity: quantity,
+        ...oldCart.timePeriod,
+      }
+
+      const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+
+      const newCart = {
+        ...oldCart,
+      }
+      newCart.items[index] = result;
+
+      // this function can be extracted out, we need some testing set up to do this
+      const getCartWithNewItemAndShippingCalulated = async function(newCart){
+        const postcode = () => {
+          if (newCart.shipping && newCart.shipping.postcode) {
+            return newCart.shipping.postcode;
+          }
+          return 0;
+        }
+        const result = await Cloud.checkShippingPrice(postcode(), newCart);
+        const newCart2 = {
+          ...newCart,
+          shipping: {
+            ...result
+          },
+        };
+        if (result) {
+          return newCart2;
+        }
+      }
+
+      const newCartWithShippingAndTotals = await getCartWithNewItemAndShippingCalulated(newCart);
+      await console.log(newCartWithShippingAndTotals);
+      localStorage.setItem('cart', JSON.stringify(newCartWithShippingAndTotals));
+      toastr.success('Item quantity changed');
+      } catch (err) {
+        console.log(err);
+        toastr.error('Item quantity could not be changed');
+      }
+      this.syncing = false;
     },
 
     handleParsingShippingForm: function() {
