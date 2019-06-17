@@ -91,11 +91,11 @@ parasails.registerPage('cart', {
         "card_number":"4111111111111111",
         "card_expire":"01/20",
         "security_code":"123",
-        "token_api_key":"test-token-api-key",
+        "token_api_key":"0ece37d8-f112-4f66-b57a-0ec8c66d9354",
         "lang":"en",
       }
 
-      fetch('https://api.veritrans.co.jp/4gtoken', {
+      await fetch('https://api.veritrans.co.jp/4gtoken', {
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, cors, *same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -109,11 +109,13 @@ parasails.registerPage('cart', {
           body: JSON.stringify(payload),
         }
       )
-      .then(function(response) {
+      .then(async function(response) {
         return response.json();
       })
-      .then(function(myJson) {
+      .then(async function(myJson) {
         console.log(JSON.stringify(myJson));
+        // then post token to the backend
+        await Cloud.charge(myJson.token);
       });
 
       // order = await Cloud.createOrder(..._.values(payload));
@@ -193,13 +195,13 @@ parasails.registerPage('cart', {
 
     handleItemSubmitting: async function(data) {
       const getCartWithNewItem = async function(itemData) {
-        oldCart = await parasails.util.getCart();
+        const oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {
           ...data,
           ...oldCart.timePeriod,
         }
 
-        result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+        const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
         const newCart = {
           ...oldCart,
           items: [
@@ -242,6 +244,7 @@ parasails.registerPage('cart', {
     },
 
     removeItemFromCart: async function(data) {
+      // this might not be updating the whole cart total price
       const removeItemFromCart = async function(itemToRemove) {
         oldCart = await parasails.util.getCart();
         oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
@@ -283,6 +286,57 @@ parasails.registerPage('cart', {
         console.log(err);
         toastr.error('Item could not be removed from the cart');
       }
+    },
+
+    updateItemRowQuantity: async function(index, quantity) {
+      if (this.syncing) {
+        return false;
+      }
+      this.syncing = true;
+      try {
+      const oldCart = await parasails.util.getCart();
+      const dataWithTimePeriod = {
+        Id: oldCart.items[index].Id,
+        Quantity: quantity,
+        ...oldCart.timePeriod,
+      }
+
+      const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+
+      const newCart = {
+        ...oldCart,
+      }
+      newCart.items[index] = result;
+
+      // this function can be extracted out, we need some testing set up to do this
+      const getCartWithNewItemAndShippingCalulated = async function(newCart){
+        const postcode = () => {
+          if (newCart.shipping && newCart.shipping.postcode) {
+            return newCart.shipping.postcode;
+          }
+          return 0;
+        }
+        const result = await Cloud.checkShippingPrice(postcode(), newCart);
+        const newCart2 = {
+          ...newCart,
+          shipping: {
+            ...result
+          },
+        };
+        if (result) {
+          return newCart2;
+        }
+      }
+
+      const newCartWithShippingAndTotals = await getCartWithNewItemAndShippingCalulated(newCart);
+      await console.log(newCartWithShippingAndTotals);
+      localStorage.setItem('cart', JSON.stringify(newCartWithShippingAndTotals));
+      toastr.success('Item quantity changed');
+      } catch (err) {
+        console.log(err);
+        toastr.error('Item quantity could not be changed');
+      }
+      this.syncing = false;
     },
 
     handleParsingShippingForm: function() {

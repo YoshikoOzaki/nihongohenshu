@@ -36,4 +36,6 @@ module.exports.policies = {
   'order/create-reserve-order': true,
   'order/get-order': true,
   'order/recover-reserved-order': true,
+
+  'veritrans/charge' : true,
 };
