@@ -86,39 +86,66 @@ parasails.registerPage('cart', {
     },
 
     createOrderFromCart: async function() {
-      const cart = await parasails.util.getCart();
-      const payload = {
-        "card_number":"4111111111111111",
-        "card_expire":"01/20",
-        "security_code":"123",
-        "token_api_key":"0ece37d8-f112-4f66-b57a-0ec8c66d9354",
-        "lang":"en",
-      }
+      // const cart = await parasails.util.getCart();
+      // const payload = {
+      //   "card_number":"4111111111111111",
+      //   "card_expire":"01/20",
+      //   "security_code":"123",
+      //   "token_api_key":"0ece37d8-f112-4f66-b57a-0ec8c66d9354",
+      //   "lang":"en",
+      // }
 
-      await fetch('https://api.veritrans.co.jp/4gtoken', {
-          method: 'POST', // *GET, POST, PUT, DELETE, etc.
-          mode: 'cors', // no-cors, cors, *same-origin
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
-          headers: {
-              'Content-Type': 'application/json',
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          redirect: 'follow', // manual, *follow, error
-          referrer: 'no-referrer', // no-referrer, *client
-          body: JSON.stringify(payload),
-        }
-      )
-      .then(async function(response) {
-        return response.json();
-      })
-      .then(async function(myJson) {
-        console.log(JSON.stringify(myJson));
-        // then post token to the backend
-        await Cloud.charge(myJson.token);
-      });
+      // await fetch('https://api.veritrans.co.jp/4gtoken', {
+      //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      //     mode: 'cors', // no-cors, cors, *same-origin
+      //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      //     credentials: 'same-origin', // include, *same-origin, omit
+      //     headers: {
+      //         'Content-Type': 'application/json',
+      //         // 'Content-Type': 'application/x-www-form-urlencoded',
+      //     },
+      //     redirect: 'follow', // manual, *follow, error
+      //     referrer: 'no-referrer', // no-referrer, *client
+      //     body: JSON.stringify(payload),
+      //   }
+      // )
+      // .then(async function(response) {
+      //   return response.json();
+      // })
+      // .then(async function(myJson) {
+      //   console.log(JSON.stringify(myJson));
+      //   // then post token to the backend
+      //   await Cloud.charge(myJson.token);
+      // });
 
       // order = await Cloud.createOrder(..._.values(payload));
+
+      const payload =
+      {"params": {"orderId":"dummy1502869926"
+        ,"amount":"5"
+        ,"jpo":"10"
+        ,"withCapture":"false"
+        ,"payNowIdParam":{"token":"0a812412-682c-4dad-8a5d-720caf23bca0"}
+        ,"txnVersion":"2.0.0"
+        ,"dummyRequest":"1"
+        ,"merchantCcid":"A100000000000001069951cc"
+        }
+        ,"authHash":" xxxxxxxxxxx "
+      };
+
+      await fetch('https://api.veritrans.co.jp:443/test-paynow /v2/Authorize/card', {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, cors, *same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify(payload),
+      });
 
     },
 
