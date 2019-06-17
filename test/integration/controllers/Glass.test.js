@@ -2,12 +2,11 @@ var request = require('supertest'),
     should = require('should');
 
 
-describe('My controller', function () {
+describe('Glass Controller', function () {
 
     before(function (done) {
         done(null, sails);
     });
-
 
     it('should get data', function (done) {
         request(sails.hooks.http.app)
