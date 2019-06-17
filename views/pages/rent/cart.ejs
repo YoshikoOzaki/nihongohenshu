@@ -94,17 +94,17 @@
                           </div>
                         </td>
                         <td>
-                          {{item.Quantity}}
                           <div class="input-group">
                             <input
-                              class="form-control"
+                              class="form-control form-control-sm col-lg-6"
                               type="number"
                               v-model.trim="item.Quantity"
                             />
                             <button
                               @click="updateItemRowQuantity(index, item.Quantity)"
+                              class="btn btn-outline-secondary btn-xs"
                             >
-                              Update
+                              Update Quantity
                             </button>
                           </div>
                         </td>
@@ -119,7 +119,7 @@
                         </td>
                         <td>
                           <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-outline-secondary">
-                            <span class="fa fa-times mr-1"></span><i><small>Remove</small></i>
+                            <span class="fa fa-trash mr-1"></span><i><small>Remove</small></i>
                           </button>
                         </td>
                       </tr>
