@@ -40,6 +40,12 @@ module.exports = {
       example: 'wineorder1234'
     },
 
+    GuestName: {
+      type: 'string',
+      description: 'If customer is a guest it will need a keyword for identification',
+      example: 'wineorder1234'
+    },
+
     Reserved: {
       type: 'boolean',
       description: 'Is this a reserved order',

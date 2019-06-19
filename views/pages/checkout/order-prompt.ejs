@@ -1,25 +1,25 @@
-<div id="reserve-prompt">
+<div id="order-prompt">
   <div class="container">
     <div class="row">
       <div class="col-md-6 offset-md-3 text-center mt-3">
         <div class="card p-3">
-          <a href="../checkout/reserve-guest">
+          <a href="../checkout/purchase-guest">
             <button class="btn btn-outline-primary">
-                Reserve Order as Guest
+              Purchase Order as Guest
             </button>
           </a>
         </div>
       </div>
       <div class="col-md-6 offset-md-3 text-center mt-3">
         <div class="card p-3">
-          <a v-if="loggedIn" href="../checkout/reserve-member">
+          <a v-if="loggedIn" href="../checkout/purchase-member">
             <button class="btn btn-primary">
-                Reserve Order as Member
+              Purchase Order as Member
             </button>
           </a>
-          <a v-if="!loggedIn" href="../checkout/reserve-member">
+          <a v-if="!loggedIn" href="../checkout/purchase-member">
             <button class="btn btn-primary">
-                Reserve Order as Member
+              Purchase Order as Member
             </button>
           </a>
         </div>

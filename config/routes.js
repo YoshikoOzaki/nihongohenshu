@@ -42,6 +42,8 @@ module.exports.routes = {
   'GET /checkout/reserve-prompt':   { action: 'checkout/view-reserve-prompt' },
   'GET /checkout/reserve-member':   { action: 'checkout/view-reserve-member' },
   'GET /checkout/reserve-guest':   { action: 'checkout/view-reserve-guest' },
+  'GET /checkout/order-prompt':   { action: 'checkout/view-order-prompt' },
+  'GET /checkout/purchase-guest':   { action: 'checkout/view-purchase-guest' },
   'GET /checkout/order-confirmation':   { action: 'checkout/view-order-confirmation' },
 
 
@@ -63,6 +65,7 @@ module.exports.routes = {
   'GET   /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
   'GET   /api/v1/glass/get-glass':          { action: 'glass/get-glass' },
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
+  'POST  /api/v1/order/create-guest-order':          { action: 'order/create-guest-order' },
   'GET   /api/v1/order/get-order':          { action: 'order/get-order' },
   'GET  /api/v1/order/get-orders':          { action: 'order/get-orders' },
   'GET  /api/v1/order/delete-order':          { action: 'order/delete-order' },

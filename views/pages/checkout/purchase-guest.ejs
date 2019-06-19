@@ -1,0 +1,233 @@
+<div id="purchase-guest" v-cloak>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <page-header
+        heading="Guest Purchase Order"
+        sub-heading="Purchase an order without being logged in"
+        />
+      </div>
+      <div class="mb-3 col-md-6">
+        <h6>Cart</h6>
+        <cart-display :cart="cart"/>
+      </div>
+      <div class="col-md-6">
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitReserveOrder"
+          :handle-parsing="handleParsingReserveForm"
+        >
+          <h6>Personal Details</h6>
+          <div class="form-group">
+            <div>Name</div>
+            <input
+              class="form-control"
+              id="customerName"
+              name="customerName"
+              type="string"
+              :class="[formErrors.CustomerName ? 'is-invalid' : '']"
+              v-model.trim="formData.CustomerName"
+              placeholder="Enter a Customer Name"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.CustomerName"
+            >
+              Please enter a customer name.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Address Line 1</div>
+            <input
+              class="form-control"
+              id="addressLine1"
+              name="addressLine1"
+              type="string"
+              :class="[formErrors.AddressLine1 ? 'is-invalid' : '']"
+              v-model.trim="formData.AddressLine1"
+              placeholder="Address Line 1"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.AddressLine1"
+            >
+              Enter Address Line 1.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Address Line 2</div>
+            <input
+              class="form-control"
+              id="addressLine2"
+              name="addressLine2"
+              type="string"
+              :class="[formErrors.AddressLine2 ? 'is-invalid' : '']"
+              v-model.trim="formData.AddressLine2"
+              placeholder="Address Line 2"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.AddressLine2"
+            >
+              Enter Address Line 2.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Address Line 3</div>
+            <input
+              class="form-control"
+              id="addressLine3"
+              name="addressLine3"
+              type="string"
+              :class="[formErrors.AddressLine3 ? 'is-invalid' : '']"
+              v-model.trim="formData.AddressLine3"
+              placeholder="Address Line 3"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.AddressLine3"
+            >
+              Enter Address Line 3.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Telephone 1</div>
+            <input
+              class="form-control"
+              id="telephone1"
+              name="telephone1"
+              type="string"
+              :class="[formErrors.telephone1 ? 'is-invalid' : '']"
+              v-model.trim="formData.telephone1"
+              placeholder="Telephone 1"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Telephone1"
+            >
+              Telephone 1.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Email</div>
+            <input
+              class="form-control"
+              id="email1"
+              name="email1"
+              type="string"
+              :class="[formErrors.email1 ? 'is-invalid' : '']"
+              v-model.trim="formData.email1"
+              placeholder="Email 1"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Email1"
+            >
+              Email
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Any Additional Comments</div>
+            <textarea
+              class="form-control"
+              id="comment"
+              name="comment"
+              type="text-area"
+              :class="[formErrors.comment ? 'is-invalid' : '']"
+              v-model.trim="formData.comment"
+              placeholder="Comment"
+            >
+            </textarea>
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Comment"
+            >
+              Comments
+            </div>
+          </div>
+          <hr />
+          <h6>Card Details</h6>
+          <div class="form-group">
+            <div>Card Number</div>
+            <input
+              class="form-control"
+              id="cardNumber"
+              name="cardNumber"
+              type="string"
+              :class="[formErrors.cardNumber ? 'is-invalid' : '']"
+              v-model.trim="formData.cardNumber"
+              placeholder="Card Number"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.cardNumber"
+            >
+              Card Number
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Card Expiry</div>
+            <div class="input-group">
+            <input
+              class="form-control col-md-4"
+              id="cardExpireMonth"
+              name="cardExpireMonth"
+              type="number"
+              :class="[formErrors.cardExpireMonth ? 'is-invalid' : '']"
+              v-model.trim="formData.cardExpireMonth"
+              placeholder="Month"
+              maxLength="2"
+              oninput="this.value=this.value.slice(0,this.maxLength)"
+            >
+            <input
+              class="form-control col-md-4"
+              id="cardExpireYear"
+              name="cardExpireYear"
+              type="number"
+              :class="[formErrors.cardExpire ? 'is-invalid' : '']"
+              v-model.trim="formData.cardExpire"
+              placeholder="Year"
+              oninput="this.value=this.value.slice(0,this.maxLength)"
+              maxlength="2"
+            >
+            </div>
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.cardExpire"
+            >
+              Card Expire
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Security Code</div>
+            <input
+              class="form-control"
+              id="securityCode"
+              name="securityCode"
+              type="string"
+              :class="[formErrors.securityCode ? 'is-invalid' : '']"
+              v-model.trim="formData.securityCode"
+              placeholder="Security Code"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.securityCode"
+            >
+              Security Code
+            </div>
+          </div>
+          <div class="col-sm-12 px-0 mx-0">
+            <div class="form-group text-right">
+              <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+                Purchase Order
+              </ajax-button>
+            </div>
+          </div>
+        </ajax-form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

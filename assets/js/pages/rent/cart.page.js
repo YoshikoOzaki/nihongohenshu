@@ -86,7 +86,8 @@ parasails.registerPage('cart', {
     },
 
     createOrderFromCart: async function() {
-      const cart = await parasails.util.getCart();
+      // this whole function should move to the backend
+      // const cart = await parasails.util.getCart();
       const tokenPayload = {
         "card_number":"4111111111111111",
         "card_expire":"01/20",

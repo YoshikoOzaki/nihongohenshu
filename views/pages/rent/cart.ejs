@@ -8,7 +8,7 @@
         />
       </div>
 
-      <div class="col-sm-9">
+      <div class="col-sm-8">
         <div class="mb-3 card">
           <div class="card-header">
             Rental Cart
@@ -195,16 +195,18 @@
                     </button>
                   </a>
                 </span>
-                <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
-                  Place Your Order
-                </button>
+                <a href="../checkout/order-prompt">
+                  <button class="btn btn-primary account-settings-button" @click="createOrderFromCart" :disabled="!checkoutEnabled">
+                    Place Your Order
+                  </button>
+                </a>
               </div>
             </div>
           </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-3">
+      <div class="col-sm-4">
           <div class="mb-3 card">
             <div class="card-header">
               Dates Required

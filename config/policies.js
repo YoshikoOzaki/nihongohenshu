@@ -32,8 +32,11 @@ module.exports.policies = {
   'checkout/view-reserve-prompt': true,
   'checkout/view-reserve-guest': true,
   'checkout/view-order-confirmation': true,
+  'checkout/view-order-prompt': true,
+  'checkout/view-purchase-guest': true,
 
   'order/create-reserve-order': true,
+  'order/create-guest-order': true,
   'order/get-order': true,
   'order/recover-reserved-order': true,
 
