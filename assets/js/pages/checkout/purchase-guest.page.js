@@ -5,10 +5,11 @@ parasails.registerPage('purchase-guest', {
   data: {
     //…
     syncing: false,
+    syncMessage: '',
     cloudError: '',
     formErrors: { /* … */ },
     formData: { /* … */ },
-    cart: [],
+    cart: {},
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -36,96 +37,154 @@ parasails.registerPage('purchase-guest', {
       // should add the returned item to the cart
       // this.cart = await parasails.util.getCart();
 
-      this.syncing = true;
+      // this.syncing = true;
       // window.location = '/checkout/order-confirmation';
     },
 
-    submitReserveOrder: async function() {
-      // first validate the cart
-      // check that the value of the cart isn't different to a recalulation of the cart
-      // use the result of the check as the value
+    asyncForEach: async function(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    },
 
-      const getToken = async function() {
-        const tokenPayload = {
-          "card_number":"4111111111111111",
-          "card_expire":"01/20",
-          "security_code":"123",
-          "token_api_key":"cd76ca65-7f54-4dec-8ba3-11c12e36a548",
-          "lang":"en",
+    reloadCart: async function() {
+      this.cart = await parasails.util.getCart();
+    },
+
+    createGuestOrder: async function() {
+      this.syncMessage = "Creating Order...";
+      const cart = await parasails.util.getCart();
+      console.log(cart);
+      // need to add address to the order
+      const orderPayload = {
+        DateStart: cart.timePeriod.DateStart,
+        DateEnd: cart.timePeriod.DateEnd,
+        DaysOfUse: cart.timePeriod.DaysOfUse,
+        GuestName: this.formData.CustomerName,
+        Items: _.filter(cart.items, (o) => {
+          return o.Available.available === 'Available';
+        }),
+        Reserved: false,
+        DeliveryCost: cart.shipping.price,
+        Postcode: cart.shipping.postcode,
+      }
+      const order = await Cloud.createGuestOrder(..._.values(orderPayload));
+      // await localStorage.setItem('completedOrder', JSON.stringify(order));
+      this.syncMessage = "";
+      return order;
+    },
+
+    getToken: async function() {
+      this.syncMessage = "Validating Credit Card...";
+      const tokenPayload = {
+        "card_number":"4111111111111111",
+        "card_expire":"01/20",
+        "security_code":"123",
+        "token_api_key":"cd76ca65-7f54-4dec-8ba3-11c12e36a548",
+        "lang":"en",
+      }
+
+      const tokenObj = await fetch('https://api.veritrans.co.jp/4gtoken', {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, cors, *same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+              'Content-Type': 'application/json',
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrer: 'no-referrer', // no-referrer, *client
+          body: JSON.stringify(tokenPayload),
         }
+      )
+      .then(async function(response) {
+        return response.json();
+      })
 
-        const tokenObj = await fetch('https://api.veritrans.co.jp/4gtoken', {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // no-referrer, *client
-            body: JSON.stringify(tokenPayload),
+      // console.log('token: ' + JSON.stringify(tokenObj) );
+      return tokenObj;
+    },
+
+    chargeCard: async function(token, orderId) {
+      this.syncMessage = "Charging Credit Card...";
+      // cant just use the cart details -> they need to be validated
+      const cart = await parasails.util.getCart();
+
+      chargePayload = {
+        token: token.token,
+        orderId: orderId,
+        amount: (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price),
+      }
+
+      try {
+        const chargeResult = await Cloud.charge(..._.values(chargePayload));
+        return chargeResult;
+      } catch(err) {
+        console.log(err);
+      }
+    },
+
+    checkAllCartAvailability: async function() {
+      const newCartItems = [];
+      const cart = await parasails.util.getCart();
+      this.syncMessage = "Checking Cart Items... " + "0/" + cart.items.length;
+      if (cart.items && cart.items.length > 0) {
+        const checkCartItemAvailable = async function(item) {
+          const dataWithTimePeriod = {
+            Id: item.Id,
+            Quantity: item.Quantity,
+            ...cart.timePeriod,
           }
-        )
-        .then(async function(response) {
-          return response.json();
-        })
-
-        // console.log('token: ' + JSON.stringify(tokenObj) );
-        return tokenObj;
+          // TODO: need to add order to ignore if it exists in the cart
+          // so it doesn't double check items
+          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+          return result;
+        };
+        await this.asyncForEach(cart.items, async (o, i) => {
+          this.syncMessage = "Checking Cart Items... " + (i+1) +"/" + cart.items.length;
+          const result = await checkCartItemAvailable(o);
+          newCartItems.push(result);
+        });
       }
-
-      const chargeCard = async function(token) {
-        // cant just use the cart details -> they need to be validated
-        const cart = await parasails.util.getCart();
-
-        chargePayload = {
-          token: token.token,
-          orderId: '',
-          amount: (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price),
+      // await console.log(cart.items);
+      // await console.log(newCartItems);
+      // await console.log(_.isEqual(newCartItems, cart.items));
+      // check if any have changed from available status to not available
+      const changedAvailabilites = [];
+      _.forEach(cart.items, (o, i) => {
+        if (o.Available.available !== newCartItems[i].Available.available) {
+          changedAvailabilites.push(i);
         }
+      })
+      console.log(changedAvailabilites);
 
-        try {
-          const chargeResult = await Cloud.charge(..._.values(chargePayload));
-          return chargeResult;
-        } catch(err) {
-          console.log(err);
-        }
+      if (changedAvailabilites.length > 0) {
+        return false;
       }
+    },
 
-      // create order to get order id - mark as unpaid
-      // charge via api -> if success -> change order to paid
-      // if any steps fail delete order by id
-
-      const createGuestOrder = async function() {
-        console.log('runnning');
-        const cart = await parasails.util.getCart();
-        // need to add address to the order
-        const orderPayload = {
-          DateStart: cart.timePeriod.DateStart,
-          DateEnd: cart.timePeriod.DateEnd,
-          DaysOfUse: cart.timePeriod.DaysOfUse,
-          GuestName: this.formData.customerName,
-          Items: cart.items,
-          Reserved: false,
-          DeliveryCost: cart.shipping.price,
-          Postcode: cart.shipping.postcode,
+    submitReserveOrder: async function() {
+      // check cart valid
+      // get token / check cc valid
+      // create order / get id
+      // charge card with order id
+      try {
+        const cartAvaiable = await this.checkAllCartAvailability();
+        if (cartAvaiable === false) {
+          this.syncMessage = '';
+          toastr.warning('Some cart item availabilities have changed, refresh the cart to see the differences');
+          return;
         }
-
-        try {
-          const order = await Cloud.createGuestOrder(..._.values(orderPayload));
-          await console.log(order);
-          await localStorage.setItem('completedOrder', JSON.stringify(order));
-        } catch(err) {
-          console.log(err);
-        }
+        const ccToken = await this.getToken();
+        const guestOrder = await this.createGuestOrder();
+        const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
+        this.syncMessage = '';
+        return chargeCardResult;
+      } catch(err) {
+        toastr.error('Something went wrong');
+        console.log(err);
       }
-
-      const ccToken = await getToken();
-      const chargeCardResult = await chargeCard(ccToken);
-      console.log(chargeCardResult);
-      // const createGuestOrder = await createGuestOrder();
 
     },
 
@@ -136,8 +195,8 @@ parasails.registerPage('purchase-guest', {
       var argins = this.formData;
       // console.log(argins);
 
-      if(!argins.Keyword) {
-        this.formErrors.Keyword = true;
+      if(!argins.CustomerName) {
+        this.formErrors.CustomerName = true;
       }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be

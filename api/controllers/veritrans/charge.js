@@ -16,6 +16,7 @@ module.exports = {
     },
     orderId: {
       type: 'string',
+      required: true,
     },
     amount: {
       type: 'number',
@@ -37,7 +38,7 @@ module.exports = {
     const ccid = "A100000000000001069951cc";
     const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
     const req = {
-      "orderId":"dummy1503015213",
+      "orderId": inputs.orderId,
       "amount": inputs.amount,
       "jpo":"10",
       "withCapture":"false",

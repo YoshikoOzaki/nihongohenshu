@@ -9,7 +9,7 @@
       </div>
       <div class="mb-3 col-md-6">
         <h6>Cart</h6>
-        <cart-display :cart="cart"/>
+        <cart-display :cart="cart" @cart-updated="reloadCart"/>
       </div>
       <div class="col-md-6">
         <ajax-form
@@ -223,6 +223,9 @@
               <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
                 Purchase Order
               </ajax-button>
+              <div class="mt-2" v-if="syncMessage !== ''">
+                {{syncMessage}}
+              </div>
             </div>
           </div>
         </ajax-form>

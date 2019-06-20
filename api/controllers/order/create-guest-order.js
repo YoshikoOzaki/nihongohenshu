@@ -191,6 +191,8 @@ module.exports = {
       return exits.invalid(err);
     }
 
+    // VALIDATION
+    // There must be some items at least 1
 
     // after we have the line numers, need to add their ids in a collection to the order
 

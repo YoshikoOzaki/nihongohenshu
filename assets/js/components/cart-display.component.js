@@ -5,7 +5,7 @@
  *
  * @type {Component}
  *
- * @event click   [emitted when clicked]
+ * @event cart-updated   [emitted when cart is reset]
  * -----------------------------------------------------------------------------
  */
 
@@ -23,6 +23,7 @@ parasails.registerComponent('cartDisplay', {
   data: function (){
     return {
       moment: moment,
+      syncMessage: '',
     };
   },
 
@@ -55,7 +56,7 @@ parasails.registerComponent('cartDisplay', {
               Total
             </th>
           </tr>
-          <tr v-for="(item, index) in cart.items" :key="item.Id" v-if="item.Available.available === 'Available'">
+          <tr v-for="(item, index) in cart.items" :key="item.Id">
             <td>
               <img style="height: 85px" :src="item.ImgSrc" />
             </td>
@@ -131,6 +132,10 @@ parasails.registerComponent('cartDisplay', {
             </td>
           </tr>
         </table>
+        <button @click="checkAllCartAvailability">Refresh Cart Availablity</button>
+        <div class="mt-2" v-if="syncMessage !== ''">
+          {{syncMessage}}
+        </div>
       </div>
     </div>
     </div>
@@ -154,6 +159,44 @@ parasails.registerComponent('cartDisplay', {
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
+    asyncForEach: async function(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    },
 
+    checkAllCartAvailability: async function() {
+      const newCartItems = [];
+      const cart = await parasails.util.getCart();
+      this.syncMessage = "Checking Cart Items... " + "0/" + cart.items.length;
+      if (cart.items && cart.items.length > 0) {
+        const checkCartItemAvailable = async function(item) {
+          const dataWithTimePeriod = {
+            Id: item.Id,
+            Quantity: item.Quantity,
+            ...cart.timePeriod,
+          }
+          // TODO: need to add order to ignore if it exists so it doesn't double check items
+          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+          return result;
+        };
+        await this.asyncForEach(cart.items, async (o, i) => {
+          this.syncMessage = "Checking Cart Items... " + (i+1) +"/" + cart.items.length;
+          const result = await checkCartItemAvailable(o);
+          newCartItems.push(result);
+        });
+      }
+      if (_.isEqual(newCartItems, cart.items)) {
+        return
+      }
+
+      const newCart = {
+        ...cart,
+        items: newCartItems,
+      };
+      await localStorage.setItem('cart', JSON.stringify(newCart));
+      this.$emit('cart-updated');
+      toastr.success('Cart has been updated');
+    },
   }
 });
