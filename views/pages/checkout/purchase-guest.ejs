@@ -7,11 +7,11 @@
         sub-heading="Purchase an order without being logged in"
         />
       </div>
-      <div class="mb-3 col-md-6">
+      <div class="mb-3 col-md-7">
         <h6>Cart</h6>
         <cart-display :cart="cart" @cart-updated="reloadCart"/>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-5">
         <ajax-form
           @submitted="submittedForm()"
           :syncing.sync="syncing"
@@ -21,7 +21,7 @@
         >
           <h6>Personal Details</h6>
           <div class="form-group">
-            <div>Name</div>
+            <div>Name *</div>
             <input
               class="form-control"
               id="customerName"
@@ -39,7 +39,7 @@
             </div>
           </div>
           <div class="form-group">
-            <div>Address Line 1</div>
+            <div>Address Line 1 *</div>
             <input
               class="form-control"
               id="addressLine1"
@@ -93,15 +93,33 @@
             </div>
           </div>
           <div class="form-group">
-            <div>Telephone 1</div>
+            <div>Postcode</div>
+            <input
+              disabled
+              class="form-control disabled"
+              id="postcode"
+              name="postcode"
+              type="string"
+              :class="[formErrors.Postcode ? 'is-invalid' : '']"
+              :placeholder="cart.shipping.postcode"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Postcode"
+            >
+              Postcode
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Telephone *</div>
             <input
               class="form-control"
               id="telephone1"
               name="telephone1"
               type="string"
-              :class="[formErrors.telephone1 ? 'is-invalid' : '']"
-              v-model.trim="formData.telephone1"
-              placeholder="Telephone 1"
+              :class="[formErrors.Telephone1 ? 'is-invalid' : '']"
+              v-model.trim="formData.Telephone1"
+              placeholder="Telephone"
             >
             <div
               class="invalid-feedback"
@@ -117,8 +135,8 @@
               id="email1"
               name="email1"
               type="string"
-              :class="[formErrors.email1 ? 'is-invalid' : '']"
-              v-model.trim="formData.email1"
+              :class="[formErrors.Email1 ? 'is-invalid' : '']"
+              v-model.trim="formData.Email1"
               placeholder="Email 1"
             >
             <div
@@ -135,8 +153,8 @@
               id="comment"
               name="comment"
               type="text-area"
-              :class="[formErrors.comment ? 'is-invalid' : '']"
-              v-model.trim="formData.comment"
+              :class="[formErrors.Comment ? 'is-invalid' : '']"
+              v-model.trim="formData.Comment"
               placeholder="Comment"
             >
             </textarea>

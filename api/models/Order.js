@@ -72,7 +72,32 @@ module.exports = {
     OrderTransactions: {
       collection: 'Transaction',
       via: 'OrderNumber'
-    }
+    },
+
+    AddressLine1: {
+      type: 'string',
+    },
+
+    AddressLine2: {
+      type: 'string',
+    },
+
+    AddressLine3: {
+      type: 'string',
+    },
+
+    Telephone1: {
+      type: 'string',
+    },
+
+    Email1: {
+      type: 'string',
+      isEmail: true,
+    },
+
+    Comment: {
+      type: 'string',
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

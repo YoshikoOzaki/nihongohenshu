@@ -9,7 +9,11 @@ parasails.registerPage('purchase-guest', {
     cloudError: '',
     formErrors: { /* … */ },
     formData: { /* … */ },
-    cart: {},
+    cart: {
+      shipping: {
+        postcode: '',
+      },
+    },
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -67,6 +71,12 @@ parasails.registerPage('purchase-guest', {
         Reserved: false,
         DeliveryCost: cart.shipping.price,
         Postcode: cart.shipping.postcode,
+        AddressLine1: this.formData.AddressLine1,
+        AddressLine2: this.formData.AddressLine2,
+        AddressLine3: this.formData.AddressLine3,
+        Telephone1: this.formData.Telephone1,
+        Email: this.formData.Email1,
+        Comment: this.formData.Comment,
       }
       const order = await Cloud.createGuestOrder(..._.values(orderPayload));
       // await localStorage.setItem('completedOrder', JSON.stringify(order));
@@ -147,9 +157,6 @@ parasails.registerPage('purchase-guest', {
           newCartItems.push(result);
         });
       }
-      // await console.log(cart.items);
-      // await console.log(newCartItems);
-      // await console.log(_.isEqual(newCartItems, cart.items));
       // check if any have changed from available status to not available
       const changedAvailabilites = [];
       _.forEach(cart.items, (o, i) => {
@@ -169,16 +176,28 @@ parasails.registerPage('purchase-guest', {
       // get token / check cc valid
       // create order / get id
       // charge card with order id
+      // if (formErrors.length > 0) {
+      //   return;
+      // }
       try {
+        // check cart is still available
         const cartAvaiable = await this.checkAllCartAvailability();
         if (cartAvaiable === false) {
           this.syncMessage = '';
           toastr.warning('Some cart item availabilities have changed, refresh the cart to see the differences');
           return;
         }
+        // get cc token
         const ccToken = await this.getToken();
+        // create an unpaid order
         const guestOrder = await this.createGuestOrder();
+        // charge the card
         const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
+        // update the order to paid
+        // ...
+
+        // redirect user to
+
         this.syncMessage = '';
         return chargeCardResult;
       } catch(err) {
@@ -188,15 +207,25 @@ parasails.registerPage('purchase-guest', {
 
     },
 
-    handleParsingReserveForm: async function() {
+    handleParsingReserveForm: function() {
+      // dont make this async or it will fuck up the ajax form
       // Clear out any pre-existing error messages.
-      this.formErrorsOrder = {};
+      this.formErrors = {};
 
       var argins = this.formData;
-      // console.log(argins);
+      console.log(this.formData);
 
       if(!argins.CustomerName) {
         this.formErrors.CustomerName = true;
+      }
+      if(!argins.AddressLine1) {
+        this.formErrors.AddressLine1 = true;
+      }
+      if(!argins.Telephone1) {
+        this.formErrors.Telephone1 = true;
+      }
+      if(!argins.Email1) {
+        this.formErrors.Email1 = true;
       }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be

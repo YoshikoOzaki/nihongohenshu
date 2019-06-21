@@ -61,7 +61,32 @@ module.exports = {
     Postcode: {
       type: 'number',
       description: 'Postcode assigned to the order for shipping'
-    }
+    },
+
+    AddressLine1: {
+      type: 'string',
+    },
+
+    AddressLine2: {
+      type: 'string',
+    },
+
+    AddressLine3: {
+      type: 'string',
+    },
+
+    Telephone1: {
+      type: 'string',
+    },
+
+    Email1: {
+      type: 'string',
+      isEmail: true,
+    },
+
+    Comment: {
+      type: 'string',
+    },
 
   },
 
@@ -92,6 +117,12 @@ module.exports = {
         GuestName: inputs.GuestName,
         Reserved: inputs.Reserved,
         Postcode: inputs.Postcode,
+        AddressLine1: this.formData.AddressLine1,
+        AddressLine2: this.formData.AddressLine2,
+        AddressLine3: this.formData.AddressLine3,
+        Telephone1: this.formData.Telephone1,
+        Email: this.formData.email,
+        Comment: this.formData.comment,
       }
       var newRecord = await Order.create(orderInputs).fetch();
       return newRecord;

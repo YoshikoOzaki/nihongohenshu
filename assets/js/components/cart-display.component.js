@@ -132,7 +132,10 @@ parasails.registerComponent('cartDisplay', {
             </td>
           </tr>
         </table>
-        <button @click="checkAllCartAvailability">Refresh Cart Availablity</button>
+        <button
+          @click="checkAllCartAvailability"
+          class="btn"
+        >Refresh Cart Availablity</button>
         <div class="mt-2" v-if="syncMessage !== ''">
           {{syncMessage}}
         </div>

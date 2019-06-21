@@ -163,7 +163,9 @@ parasails.registerComponent('ajaxForm', {
         // > client-side form validation checks, and do any necessary data transformations
         // > to munge the form data into the format expected by the server.
         argins = this.handleParsing();
+        await console.log(argins);
         if (argins === undefined) {
+          console.log('argins undef');
           // If argins came back undefined, then avast.
           // (This means that parsing the form failed.  Submission will not be attempted.)
           return;
