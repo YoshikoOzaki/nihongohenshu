@@ -100,7 +100,6 @@ module.exports = {
 
   },
 
-
   fn: async function (inputs, exits) {
     // utility looping function
     async function asyncForEach(array, callback) {
@@ -117,12 +116,12 @@ module.exports = {
         GuestName: inputs.GuestName,
         Reserved: inputs.Reserved,
         Postcode: inputs.Postcode,
-        AddressLine1: this.formData.AddressLine1,
-        AddressLine2: this.formData.AddressLine2,
-        AddressLine3: this.formData.AddressLine3,
-        Telephone1: this.formData.Telephone1,
-        Email: this.formData.email,
-        Comment: this.formData.comment,
+        AddressLine1: inputs.AddressLine1,
+        AddressLine2: inputs.AddressLine2,
+        AddressLine3: inputs.AddressLine3,
+        Telephone1: inputs.Telephone1,
+        Email1: inputs.Email1,
+        Comment: inputs.Comment,
       }
       var newRecord = await Order.create(orderInputs).fetch();
       return newRecord;

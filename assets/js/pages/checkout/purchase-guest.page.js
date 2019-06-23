@@ -85,12 +85,21 @@ parasails.registerPage('purchase-guest', {
     },
 
     getToken: async function() {
+      // get details from user form
+      // token api key should come from env variables
       this.syncMessage = "Validating Credit Card...";
+      // const tokenPayload = {
+      //   "card_number":"4111111111111111",
+      //   "card_expire":"01/20",
+      //   "security_code":"123",
+      //   "token_api_key":"cd76ca65-7f54-4dec-8ba3-11c12e36a548",
+      //   "lang":"en",
+      // }
       const tokenPayload = {
-        "card_number":"4111111111111111",
-        "card_expire":"01/20",
-        "security_code":"123",
-        "token_api_key":"cd76ca65-7f54-4dec-8ba3-11c12e36a548",
+        "card_number":  this.formData.CardNumber,
+        "card_expire":  this.formData.CardExpireMonth + "/" + this.formData.CardExpireYear,
+        "security_code":  this.formData.SecurityCode,
+        "token_api_key":  "cd76ca65-7f54-4dec-8ba3-11c12e36a548",
         "lang":"en",
       }
 
@@ -131,6 +140,7 @@ parasails.registerPage('purchase-guest', {
         const chargeResult = await Cloud.charge(..._.values(chargePayload));
         return chargeResult;
       } catch(err) {
+        this.syncMessage = "";
         console.log(err);
       }
     },
@@ -179,32 +189,46 @@ parasails.registerPage('purchase-guest', {
       // if (formErrors.length > 0) {
       //   return;
       // }
+
+      // check cart has some items
+      const cart = await parasails.util.getCart();
+      const cartAvailableItems = _.filter(cart.items, (o) => {
+        return o.Available.available === 'Available';
+      })
+      if (cartAvailableItems.length === 0) {
+        toastr.warning('You have no available items in the cart');
+        return;
+      }
+
+      // check cart items are still available
+      const cartAvaiable = await this.checkAllCartAvailability();
+      if (cartAvaiable === false) {
+        this.syncMessage = '';
+        toastr.error('Some cart item availabilities have changed, refresh the cart to see the differences');
+        return;
+      }
+
       try {
-        // check cart is still available
-        const cartAvaiable = await this.checkAllCartAvailability();
-        if (cartAvaiable === false) {
-          this.syncMessage = '';
-          toastr.warning('Some cart item availabilities have changed, refresh the cart to see the differences');
-          return;
-        }
         // get cc token
         const ccToken = await this.getToken();
+        console.log(ccToken);
+        if (ccToken.status === 'failure') {
+          toastr.error(ccToken.message);
+          return;
+        }
         // create an unpaid order
         const guestOrder = await this.createGuestOrder();
         // charge the card
         const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
         // update the order to paid
         // ...
-
         // redirect user to
-
         this.syncMessage = '';
         return chargeCardResult;
       } catch(err) {
-        toastr.error('Something went wrong');
+        toastr.error(err.message);
         console.log(err);
       }
-
     },
 
     handleParsingReserveForm: function() {
@@ -213,7 +237,6 @@ parasails.registerPage('purchase-guest', {
       this.formErrors = {};
 
       var argins = this.formData;
-      console.log(this.formData);
 
       if(!argins.CustomerName) {
         this.formErrors.CustomerName = true;
@@ -227,6 +250,23 @@ parasails.registerPage('purchase-guest', {
       if(!argins.Email1) {
         this.formErrors.Email1 = true;
       }
+      if(!argins.CardNumber) {
+        this.formErrors.CardNumber = true;
+      }
+      if(!argins.SecurityCode) {
+        this.formErrors.SecurityCode = true;
+      }
+      if(!argins.CardExpireYear || !argins.CardExpireMonth) {
+        this.formErrors.CardExpire = true;
+      }
+
+      console.log(!argins.SecurityCode.length === 3);
+      if(!argins.SecurityCode.length === 3 || !argins.SecurityCode.length === 4) {
+        this.formErrors.SecurityCodeLength = true;
+      }
+
+      argins.CardExpireMonth = String("0" + argins.CardExpireMonth).slice(-2);
+      argins.CardExpireYear = String("0" + argins.CardExpireMonth).slice(-2);
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be
       // cancelled.)

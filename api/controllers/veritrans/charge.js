@@ -35,6 +35,8 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+    const fetch = require("node-fetch");
+
     const ccid = "A100000000000001069951cc";
     const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
     const req = {
@@ -52,7 +54,9 @@ module.exports = {
     const reqString = JSON.stringify(req);
 
     var crypto = require('crypto');
-    var hash = crypto.createHash('sha256').update(reqString).digest('base64');
+    var hash = crypto.createHash('sha256').update(ccid + reqString + password).digest('hex');
+    console.log(ccid + reqString + password);
+    console.log(hash);
 
     // async function sha256(message) {
     //   // console.log(message);
@@ -69,7 +73,7 @@ module.exports = {
     //   const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
     //   return hashHex;
     // }
-    // const getAuthHash = await sha256(ccid + reqString + password);
+    // const hash = await sha256(ccid + reqString + password);
 
     const payload =
     {
@@ -78,8 +82,26 @@ module.exports = {
       },
       "authHash": hash,
     };
-    console.log(JSON.stringify(payload));
-    return exits.success(payload);
+
+    console.log(payload);
+
+    const result = await fetch('https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card', {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      // mode: 'no-cors', // no-cors, cors, *same-origin
+      // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Language': 'ja',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      // redirect: 'follow', // manual, *follow, error
+      // referrer: 'no-referrer', // no-referrer, *client
+      body: JSON.stringify(payload),
+    })
+
+    return exits.success(await result.json());
 
 
     // await vt.transaction.charge(transaction, (err, result) => {

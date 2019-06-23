@@ -12,6 +12,7 @@
     "commander": "^2.20.0",
     "grunt": "1.0.1",
     "moment": "^2.24.0",
+    "node-fetch": "^2.6.0",
     "sails": "^1.2.0",
     "sails-hook-apianalytics": "^2.0.0",
     "sails-hook-grunt": "^3.0.2",

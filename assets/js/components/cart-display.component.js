@@ -135,7 +135,9 @@ parasails.registerComponent('cartDisplay', {
         <button
           @click="checkAllCartAvailability"
           class="btn"
-        >Refresh Cart Availablity</button>
+        >
+          Refresh Cart Availablity
+        </button>
         <div class="mt-2" v-if="syncMessage !== ''">
           {{syncMessage}}
         </div>
@@ -190,6 +192,8 @@ parasails.registerComponent('cartDisplay', {
         });
       }
       if (_.isEqual(newCartItems, cart.items)) {
+        this.syncMessage = "";
+        toastr.success('Cart remains the same');
         return
       }
 
@@ -200,6 +204,7 @@ parasails.registerComponent('cartDisplay', {
       await localStorage.setItem('cart', JSON.stringify(newCart));
       this.$emit('cart-updated');
       toastr.success('Cart has been updated');
+      this.syncMessage = "";
     },
   }
 });

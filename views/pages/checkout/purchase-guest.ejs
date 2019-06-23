@@ -129,7 +129,7 @@
             </div>
           </div>
           <div class="form-group">
-            <div>Email</div>
+            <div>Email *</div>
             <input
               class="form-control"
               id="email1"
@@ -166,7 +166,8 @@
             </div>
           </div>
           <hr />
-          <h6>Card Details</h6>
+          <h6>Card Details *</h6>
+          <small><i>Testing = 4111111111111111</i></small>
           <div class="form-group">
             <div>Card Number</div>
             <input
@@ -174,27 +175,28 @@
               id="cardNumber"
               name="cardNumber"
               type="string"
-              :class="[formErrors.cardNumber ? 'is-invalid' : '']"
-              v-model.trim="formData.cardNumber"
+              :class="[formErrors.CardNumber ? 'is-invalid' : '']"
+              v-model.trim="formData.CardNumber"
               placeholder="Card Number"
             >
             <div
               class="invalid-feedback"
-              v-if="formErrors.cardNumber"
+              v-if="formErrors.CardNumber"
             >
               Card Number
             </div>
           </div>
           <div class="form-group">
-            <div>Card Expiry</div>
+            <div>Card Expiry *</div>
+            <small><i>Testing = 01/20</i></small>
             <div class="input-group">
             <input
               class="form-control col-md-4"
               id="cardExpireMonth"
               name="cardExpireMonth"
               type="number"
-              :class="[formErrors.cardExpireMonth ? 'is-invalid' : '']"
-              v-model.trim="formData.cardExpireMonth"
+              :class="[formErrors.CardExpireMonth ? 'is-invalid' : '']"
+              v-model.trim="formData.CardExpireMonth"
               placeholder="Month"
               maxLength="2"
               oninput="this.value=this.value.slice(0,this.maxLength)"
@@ -204,8 +206,8 @@
               id="cardExpireYear"
               name="cardExpireYear"
               type="number"
-              :class="[formErrors.cardExpire ? 'is-invalid' : '']"
-              v-model.trim="formData.cardExpire"
+              :class="[formErrors.CardExpireYear ? 'is-invalid' : '']"
+              v-model.trim="formData.CardExpireYear"
               placeholder="Year"
               oninput="this.value=this.value.slice(0,this.maxLength)"
               maxlength="2"
@@ -213,27 +215,36 @@
             </div>
             <div
               class="invalid-feedback"
-              v-if="formErrors.cardExpire"
+              v-if="formErrors.CardExpire"
             >
               Card Expire
             </div>
           </div>
           <div class="form-group">
-            <div>Security Code</div>
+            <div>Security Code *</div>
+            <small><i>Testing = 123</i></small>
             <input
               class="form-control"
               id="securityCode"
               name="securityCode"
-              type="string"
-              :class="[formErrors.securityCode ? 'is-invalid' : '']"
-              v-model.trim="formData.securityCode"
+              type="number"
+              :class="[formErrors.SecurityCode ? 'is-invalid' : '']"
+              v-model.trim="formData.SecurityCode"
               placeholder="Security Code"
+              maxLength="4"
+              oninput="this.value=this.value.slice(0,this.maxLength)"
             >
             <div
               class="invalid-feedback"
-              v-if="formErrors.securityCode"
+              v-if="formErrors.SecurityCode"
             >
               Security Code
+            </div>
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.SecurityCodeLength"
+            >
+              Security Code must be 3 or 4 digits
             </div>
           </div>
           <div class="col-sm-12 px-0 mx-0">
