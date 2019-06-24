@@ -223,8 +223,17 @@ parasails.registerPage('purchase-guest', {
         // update the order to paid
         // ...
         // redirect user to
+        // send this updated order back to user land
+        console.log(chargeCardResult);
+        if (chargeCardResult.result.mstatus === 'success') {
+          toastr.success('Order Created ' + chargeCardResult.result.merrMsg);
+          await localStorage.setItem('completedOrder', JSON.stringify(guestOrder));
+        }
+        if (chargeCardResult.result.mstatus === 'failure') {
+          toastr.error('Credit Card Error ' + chargeCardResult.result.merrMsg);
+        }
         this.syncMessage = '';
-        return chargeCardResult;
+
       } catch(err) {
         toastr.error(err.message);
         console.log(err);

@@ -45,6 +45,7 @@ module.exports.routes = {
   'GET /checkout/order-prompt':   { action: 'checkout/view-order-prompt' },
   'GET /checkout/purchase-guest':   { action: 'checkout/view-purchase-guest' },
   'GET /checkout/order-confirmation':   { action: 'checkout/view-order-confirmation' },
+  'GET /checkout/purchase-confirmation':   { action: 'checkout/view-purchase-confirmation' },
 
 
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗

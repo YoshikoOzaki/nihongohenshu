@@ -134,7 +134,7 @@ parasails.registerComponent('cartDisplay', {
         </table>
         <button
           @click="checkAllCartAvailability"
-          class="btn"
+          class="btn btn-outline-secondary"
         >
           Refresh Cart Availablity
         </button>

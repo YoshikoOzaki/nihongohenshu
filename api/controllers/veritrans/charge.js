@@ -55,25 +55,6 @@ module.exports = {
 
     var crypto = require('crypto');
     var hash = crypto.createHash('sha256').update(ccid + reqString + password).digest('hex');
-    console.log(ccid + reqString + password);
-    console.log(hash);
-
-    // async function sha256(message) {
-    //   // console.log(message);
-    //   // encode as UTF-8
-    //   const msgBuffer = new TextEncoder('utf-8').encode(message);
-
-    //   // hash the message
-    //   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-
-    //   // convert ArrayBuffer to Array
-    //   const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-    //   // convert bytes to hex string
-    //   const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
-    //   return hashHex;
-    // }
-    // const hash = await sha256(ccid + reqString + password);
 
     const payload =
     {
@@ -83,7 +64,6 @@ module.exports = {
       "authHash": hash,
     };
 
-    console.log(payload);
 
     const result = await fetch('https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
