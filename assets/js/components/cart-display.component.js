@@ -86,11 +86,9 @@ parasails.registerComponent('cartDisplay', {
           </tr>
         </table>
       </div>
-    </div>
-    <div class="col-md-12 mt-0">
       <div class="table-responsive">
-        <table class="table table-bordered table-dark">
-          <tr class="tr">
+        <table class="table table-bordered table-sm">
+          <thead class="thead-dark">
             <th>
               Pick Up Date
             </th>
@@ -109,7 +107,7 @@ parasails.registerComponent('cartDisplay', {
             <th>
               Total
             </th>
-          </tr>
+          </thead>
           <tr>
             <td>
               {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}

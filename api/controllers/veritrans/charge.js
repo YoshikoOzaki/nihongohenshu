@@ -35,12 +35,15 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+
+    // first validate if the order already exists and if it does return;
+
     const fetch = require("node-fetch");
 
     const ccid = "A100000000000001069951cc";
     const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
     const req = {
-      "orderId": inputs.orderId,
+      "orderId": 100+inputs.orderId,
       "amount": inputs.amount,
       "jpo":"10",
       "withCapture":"false",
@@ -55,6 +58,8 @@ module.exports = {
 
     var crypto = require('crypto');
     var hash = crypto.createHash('sha256').update(ccid + reqString + password).digest('hex');
+    console.log(ccid + reqString + password);
+    console.log(hash);
 
     const payload =
     {

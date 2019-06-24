@@ -404,7 +404,7 @@ parasails.registerPage('cart', {
 
       var argins = this.formDataShipping;
 
-      if(!argins.DateStart) {
+      if(!argins.Postcode) {
         this.formErrorsShipping.Postcode = true;
       }
       if (Object.keys(this.formErrorsShipping).length > 0) {
