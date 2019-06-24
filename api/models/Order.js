@@ -40,6 +40,12 @@ module.exports = {
       example: 'wineorder1234'
     },
 
+    GuestName: {
+      type: 'string',
+      description: 'If customer is a guest it will need a keyword for identification',
+      example: 'wineorder1234'
+    },
+
     Reserved: {
       type: 'boolean',
       description: 'Is this a reserved order',
@@ -66,7 +72,32 @@ module.exports = {
     OrderTransactions: {
       collection: 'Transaction',
       via: 'OrderNumber'
-    }
+    },
+
+    AddressLine1: {
+      type: 'string',
+    },
+
+    AddressLine2: {
+      type: 'string',
+    },
+
+    AddressLine3: {
+      type: 'string',
+    },
+
+    Telephone1: {
+      type: 'string',
+    },
+
+    Email1: {
+      type: 'string',
+      isEmail: true,
+    },
+
+    Comment: {
+      type: 'string',
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
