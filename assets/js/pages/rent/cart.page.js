@@ -86,16 +86,17 @@ parasails.registerPage('cart', {
     },
 
     createOrderFromCart: async function() {
-      const cart = await parasails.util.getCart();
-      const payload = {
+      // this whole function should move to the backend
+      // const cart = await parasails.util.getCart();
+      const tokenPayload = {
         "card_number":"4111111111111111",
         "card_expire":"01/20",
         "security_code":"123",
-        "token_api_key":"0ece37d8-f112-4f66-b57a-0ec8c66d9354",
+        "token_api_key":"cd76ca65-7f54-4dec-8ba3-11c12e36a548",
         "lang":"en",
       }
 
-      await fetch('https://api.veritrans.co.jp/4gtoken', {
+      const tokenObj = await fetch('https://api.veritrans.co.jp/4gtoken', {
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, cors, *same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -106,19 +107,77 @@ parasails.registerPage('cart', {
           },
           redirect: 'follow', // manual, *follow, error
           referrer: 'no-referrer', // no-referrer, *client
-          body: JSON.stringify(payload),
+          body: JSON.stringify(tokenPayload),
         }
       )
       .then(async function(response) {
         return response.json();
       })
-      .then(async function(myJson) {
-        console.log(JSON.stringify(myJson));
-        // then post token to the backend
-        await Cloud.charge(myJson.token);
-      });
+      // .then(async function(myJson) {
+      //   console.log(JSON.stringify(myJson));
+      //   // then post token to the backend
+      //   await Cloud.charge(myJson.token);
+      // });
 
       // order = await Cloud.createOrder(..._.values(payload));
+
+      const ccid = "A100000000000001069951cc";
+      const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
+      const req = {
+        "orderId":"dummy1503015213",
+        "amount":"5",
+        "jpo":"10",
+        "withCapture":"false",
+        "payNowIdParam": {
+          "token": tokenObj.token,
+        },
+        "txnVersion":"2.0.0",
+        "dummyRequest":"1",
+        "merchantCcid": ccid,
+      }
+      const reqString = JSON.stringify(req);
+
+      async function sha256(message) {
+        console.log(message);
+        // encode as UTF-8
+        const msgBuffer = new TextEncoder('utf-8').encode(message);
+
+        // hash the message
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+        // convert ArrayBuffer to Array
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+        // convert bytes to hex string
+        const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+        return hashHex;
+      }
+      const getAuthHash = await sha256(ccid + reqString + password);
+
+      const payload =
+      {
+        "params": {
+          ...req,
+        },
+        "authHash": getAuthHash,
+      };
+      console.log(JSON.stringify(payload));
+
+      // await fetch('https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card', {
+      //   method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      //   mode: 'no-cors', // no-cors, cors, *same-origin
+      //   // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      //   // credentials: 'same-origin', // include, *same-origin, omit
+      //   headers: {
+      //       'Content-Type': 'application/json',
+      //       'Accept': 'application/json',
+      //       'Accept-Language': 'ja',
+      //       // 'Content-Type': 'application/x-www-form-urlencoded',
+      //   },
+      //   // redirect: 'follow', // manual, *follow, error
+      //   // referrer: 'no-referrer', // no-referrer, *client
+      //   body: JSON.stringify(payload),
+      // });
 
     },
 
@@ -345,8 +404,8 @@ parasails.registerPage('cart', {
 
       var argins = this.formDataShipping;
 
-      if(!argins.DateStart) {
-        this.formErrorsTime.Postcode = true;
+      if(!argins.Postcode) {
+        this.formErrorsShipping.Postcode = true;
       }
       if (Object.keys(this.formErrorsShipping).length > 0) {
         return;
