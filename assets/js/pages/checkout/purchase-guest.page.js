@@ -77,6 +77,7 @@ parasails.registerPage('purchase-guest', {
         Telephone1: this.formData.Telephone1,
         Email: this.formData.Email1,
         Comment: this.formData.Comment,
+        Paid: false,
       }
       const order = await Cloud.createGuestOrder(..._.values(orderPayload));
       // await localStorage.setItem('completedOrder', JSON.stringify(order));

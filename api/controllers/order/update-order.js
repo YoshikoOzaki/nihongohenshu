@@ -9,6 +9,10 @@ module.exports = {
 
   inputs: {
 
+    Paid: {
+      type: 'boolean',
+    },
+
   },
 
 

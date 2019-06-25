@@ -67,11 +67,12 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
+    var uniqid = require('uniqid');
     // var newEmailAddress = inputs.emailAddress.toLowerCase();
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    orderInputs = {
+    payload = {
       DateStart: inputs.DateStart,
       DateEnd: inputs.DateEnd,
       DaysOfUse: inputs.DaysOfUse,
@@ -80,7 +81,7 @@ module.exports = {
       Postcode: inputs.Postcode,
     };
 
-    var newRecord = await Order.create(orderInputs).fetch();
+    var newRecord = await Order.create(payload).fetch();
 
     let itemResults = [];
 

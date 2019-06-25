@@ -42,8 +42,9 @@ module.exports = {
 
     const ccid = "A100000000000001069951cc";
     const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
+    // TODO: remove the math floor number here for prod
     const req = {
-      "orderId": 100+inputs.orderId,
+      "orderId": Math.floor(Math.random() * 100) + inputs.orderId,
       "amount": inputs.amount,
       "jpo":"10",
       "withCapture":"false",
@@ -58,8 +59,6 @@ module.exports = {
 
     var crypto = require('crypto');
     var hash = crypto.createHash('sha256').update(ccid + reqString + password).digest('hex');
-    console.log(ccid + reqString + password);
-    console.log(hash);
 
     const payload =
     {
@@ -86,7 +85,24 @@ module.exports = {
       body: JSON.stringify(payload),
     })
 
-    return exits.success(await result.json());
+    // if result is ok, update order id to paid
+    const resultJson = await result.json();
+    let updatedOrder = {};
+
+    if (resultJson.result.mstatus === 'success') {
+      updatedOrder = await Order.update({
+        id: inputs.orderId,
+      }).set({
+        Paid: true,
+      }).fetch();
+    }
+
+    const returnPayload = {
+      order: updatedOrder,
+      ...resultJson,
+    }
+
+    return exits.success(await returnPayload);
 
 
     // await vt.transaction.charge(transaction, (err, result) => {
