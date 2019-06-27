@@ -88,6 +88,10 @@ module.exports = {
       type: 'string',
     },
 
+    Paid: {
+      type: 'boolean',
+    },
+
   },
 
   exits: {

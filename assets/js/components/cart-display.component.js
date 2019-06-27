@@ -178,6 +178,7 @@ parasails.registerComponent('cartDisplay', {
             Id: item.Id,
             Quantity: item.Quantity,
             ...cart.timePeriod,
+            OrderIdToIgnore: cart.orderIdToIgnore,
           }
           // TODO: need to add order to ignore if it exists so it doesn't double check items
           result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));

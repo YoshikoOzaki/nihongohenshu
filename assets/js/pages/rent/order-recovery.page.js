@@ -34,6 +34,7 @@ parasails.registerPage('order-recovery', {
       try {
         await localStorage.setItem('cart', JSON.stringify(this.newCart));
         toastr.success('Added reserved order to the cart');
+        setTimeout(window.location = '/rent/cart', 3000);
       } catch (err) {
         toastr.error('Could not add order to cart');
       }
@@ -42,6 +43,7 @@ parasails.registerPage('order-recovery', {
     submittedForm: async function() {
       // this.syncing = true;
       // window.location = '/checkout/cart';
+      // window.location = '/rent/cart';
     },
 
     submitForm: async function() {

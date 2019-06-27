@@ -29,8 +29,15 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const destroyedRecord = await Order.destroyOne({id: inputs.OrderId});
-      return exits.success(destroyedRecord);
+      const deletedOrderLines = await Transaction.destroy({
+        OrderNumber: inputs.OrderId,
+      });
+      const deletedOrder = await Order.destroyOne({id: inputs.OrderId});
+      const result = {
+        ...deletedOrderLines,
+        ...deletedOrder,
+      };
+      return exits.success(result);
     } catch (err) {
       return exits.invalid(err);
     }

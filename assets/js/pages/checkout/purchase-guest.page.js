@@ -77,6 +77,7 @@ parasails.registerPage('purchase-guest', {
         Telephone1: this.formData.Telephone1,
         Email: this.formData.Email1,
         Comment: this.formData.Comment,
+        Paid: false,
       }
       const order = await Cloud.createGuestOrder(..._.values(orderPayload));
       // await localStorage.setItem('completedOrder', JSON.stringify(order));
@@ -126,6 +127,9 @@ parasails.registerPage('purchase-guest', {
     },
 
     chargeCard: async function(token, orderId) {
+      // maybe i create and delete the order in here
+      // pass in the order and the charge that needs to be made
+      // create -> charge -> delete
       this.syncMessage = "Charging Credit Card...";
       // cant just use the cart details -> they need to be validated
       const cart = await parasails.util.getCart();
@@ -134,15 +138,11 @@ parasails.registerPage('purchase-guest', {
         token: token.token,
         orderId: orderId,
         amount: (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price),
-      }
+        reserveOrderId: cart.orderIdToIgnore,
+      };
 
-      try {
-        const chargeResult = await Cloud.charge(..._.values(chargePayload));
-        return chargeResult;
-      } catch(err) {
-        this.syncMessage = "";
-        console.log(err);
-      }
+      const chargeResult = await Cloud.charge(..._.values(chargePayload));
+      return chargeResult;
     },
 
     checkAllCartAvailability: async function() {
@@ -155,6 +155,7 @@ parasails.registerPage('purchase-guest', {
             Id: item.Id,
             Quantity: item.Quantity,
             ...cart.timePeriod,
+            OrderIdToIgnore: cart.orderIdToIgnore,
           }
           // TODO: need to add order to ignore if it exists in the cart
           // so it doesn't double check items
@@ -182,13 +183,6 @@ parasails.registerPage('purchase-guest', {
     },
 
     submitReserveOrder: async function() {
-      // check cart valid
-      // get token / check cc valid
-      // create order / get id
-      // charge card with order id
-      // if (formErrors.length > 0) {
-      //   return;
-      // }
 
       // check cart has some items
       const cart = await parasails.util.getCart();
@@ -218,23 +212,30 @@ parasails.registerPage('purchase-guest', {
         }
         // create an unpaid order
         const guestOrder = await this.createGuestOrder();
-        // charge the card
+        // charge the card - on success update order to paid
         const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
-        // update the order to paid
-        // ...
-        // redirect user to
-        // send this updated order back to user land
-        console.log(chargeCardResult);
+
+        if (chargeCardResult.result.mstatus === 'failure') {
+          toastr.error('Credit Card Error ' + chargeCardResult.result.merrMsg);
+          // delete newly made order and delete all order rows
+        }
+
         if (chargeCardResult.result.mstatus === 'success') {
           toastr.success('Order Created ' + chargeCardResult.result.merrMsg);
           await localStorage.setItem('completedOrder', JSON.stringify(guestOrder));
+          // window.location = order-confirmation
+          // if (cart.orderIdToIgnore) {
+          //   console.log('delete ' + cart.orderIdToIgnore);
+          //   const deleteResult = await Cloud.deleteOrder(cart.orderIdToIgnore);
+          //   console.log(deleteResult);
+          // }
+          //
         }
-        if (chargeCardResult.result.mstatus === 'failure') {
-          toastr.error('Credit Card Error ' + chargeCardResult.result.merrMsg);
-        }
+
         this.syncMessage = '';
 
       } catch(err) {
+        const deleteResult = await Cloud.deleteOrder(guestOrder.id);
         toastr.error(err.message);
         console.log(err);
       }
@@ -269,7 +270,6 @@ parasails.registerPage('purchase-guest', {
         this.formErrors.CardExpire = true;
       }
 
-      console.log(!argins.SecurityCode.length === 3);
       if(!argins.SecurityCode.length === 3 || !argins.SecurityCode.length === 4) {
         this.formErrors.SecurityCodeLength = true;
       }

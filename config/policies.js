@@ -40,6 +40,7 @@ module.exports.policies = {
   'order/create-guest-order': true,
   'order/get-order': true,
   'order/recover-reserved-order': true,
+  'order/delete-order': true,
 
   'veritrans/charge' : true,
 };

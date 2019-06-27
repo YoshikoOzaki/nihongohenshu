@@ -153,7 +153,7 @@ module.exports.bootstrap = async function(done) {
     {
       id: 40,
       Name: '注文確定',
-      Description: 'Rental order',
+      Description: 'Order Confirmed',
       RecordHandlingGuide: '12',
     },
     {

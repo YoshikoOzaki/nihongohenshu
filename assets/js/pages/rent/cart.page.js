@@ -207,6 +207,7 @@ parasails.registerPage('cart', {
               Id: item.Id,
               Quantity: item.Quantity,
               ...timeValidResult,
+              OrderIdToIgnore: cart.orderIdToIgnore,
             }
             result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
             return result;
