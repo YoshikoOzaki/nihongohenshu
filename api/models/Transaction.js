@@ -11,15 +11,23 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
+    // OrderNumber: {
+    //   collection: 'Order',
+    //   via: 'OrderTransactions',
+    // },
+
     OrderNumber: {
-      collection: 'Order',
-      via: 'OrderTransactions',
+      model: 'Order',
     },
 
-    LineNumber: {
-      collection: 'OrderLineNumber',
-      via: 'Transaction',
+    LineNumber : {
+      model: 'OrderLineNumber',
     },
+
+    // LineNumber: {
+    //   collection: 'OrderLineNumber',
+    //   via: 'Transaction',
+    // },
 
     TransactionType: {
       model: 'TransactionType',
