@@ -105,21 +105,21 @@ module.exports = {
       // delete any old reserve order as the new order replaces it
 
       // maybe get order lines then delete transactions for each order line -> reverse of create
-      const relatedOrderLines = await OrderLineNumber.find({
-        Order: inputs.reserveOrderId,
-      });
-      const relatedOrderLineIds = _.map(relatedOrderLines, 'id');
+      // const relatedOrderLines = await OrderLineNumber.find({
+      //   Order: inputs.reserveOrderId,
+      // });
+      // const relatedOrderLineIds = _.map(relatedOrderLines, 'id');
 
-      await asyncForEach(relatedOrderLineIds, async (orderLine) => {
-        await Transaction.destroy({
-          LineNumber: orderLine,
-          OrderNumber: inputs.reserveOrderId,
-        })
-      });
+      // await asyncForEach(relatedOrderLineIds, async (orderLine) => {
+      //   await Transaction.destroy({
+      //     LineNumber: orderLine,
+      //     OrderNumber: inputs.reserveOrderId,
+      //   })
+      // });
 
-      // await Transaction.destroy({
-      //   OrderNumber: inputs.reserveOrderId
-      // })
+      await Transaction.destroy({
+        OrderNumber: inputs.reserveOrderId
+      })
 
       // _.each(transactionsForOrder, async function(o) {
       //   await Transaction.destroy({
