@@ -13,7 +13,9 @@ parasails.registerPage('cart', {
     formErrorsItems: { /* … */ },
     formErrorsShipping: { /* … */ },
     checkoutEnabled: false,
-    cart: [],
+    cart: {
+      items: [],
+    },
     glasses: [],
     moment: moment,
   },
@@ -52,6 +54,9 @@ parasails.registerPage('cart', {
     },
 
     clearCart: async function() {
+      if (this.syncing) {
+        return;
+      }
       this.cart = {};
       localStorage.removeItem('cart');
     },
@@ -389,8 +394,8 @@ parasails.registerPage('cart', {
       }
 
       const newCartWithShippingAndTotals = await getCartWithNewItemAndShippingCalulated(newCart);
-      await console.log(newCartWithShippingAndTotals);
       localStorage.setItem('cart', JSON.stringify(newCartWithShippingAndTotals));
+      this.cart = newCartWithShippingAndTotals;
       toastr.success('Item quantity changed');
       } catch (err) {
         console.log(err);
