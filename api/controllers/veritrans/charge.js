@@ -102,53 +102,28 @@ module.exports = {
       }).set({
         Paid: true,
       }).fetch();
+
       // delete any old reserve order as the new order replaces it
-
-      // maybe get order lines then delete transactions for each order line -> reverse of create
-      const relatedOrderLines = await OrderLineNumber.find({
-        Order: inputs.reserveOrderId,
-      });
-      const relatedOrderLineIds = _.map(relatedOrderLines, 'id');
-
-      await asyncForEach(relatedOrderLineIds, async (orderLine) => {
-        await Transaction.destroy({
-          LineNumber: orderLine,
-          OrderNumber: inputs.reserveOrderId,
-        })
-      });
-
-      // await Transaction.destroy({
-      //   OrderNumber: inputs.reserveOrderId
-      // })
-
-      // _.each(transactionsForOrder, async function(o) {
-      //   await Transaction.destroy({
-      //     id: o.id,
-      //   });
-      // });
-
-      // remove related order lines
+      await Transaction.destroy({
+        OrderNumber: inputs.reserveOrderId
+      })
       await OrderLineNumber.destroy({
         Order: inputs.reserveOrderId
       });
-      // remove order
       await Order.destroy({
         id: inputs.reserveOrderId
       });
-      // await OrderLineNumber.destroy({
-      //   Order: inputs.reserveOrderId,
-      // });
     }
 
     if (resultJson.result.mstatus === 'failure') {
-      // delete the newly unpaid order
+      // delete the newly unpaid order as it no longer matters
+      await Transaction.destroy({
+        id: inputs.orderId
+      });
       await OrderLineNumber.destroy({
         Order: inputs.orderId,
       });
       await Order.destroy({
-        id: inputs.orderId
-      });
-      await Transaction.destroy({
         id: inputs.orderId
       });
     }

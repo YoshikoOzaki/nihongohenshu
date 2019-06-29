@@ -1,13 +1,9 @@
 <div id="cart" v-cloak>
-  <div class="container mt-3">
+  <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <page-header
-        heading="Rental Cart"
-        sub-heading="Add glassware to the cart, check shipping costs"
-        />
+        <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
-
       <div class="col-sm-8">
         <div class="">
           <div class="">
@@ -27,12 +23,6 @@
                     <div class="text-primary">{{cart.reserveOrderKeyword}}</div>
                   </div>
                 </div>
-                <div class="col-md-6 text-right">
-                  <button @click="clearCart" class="btn btn-sm btn-outline-secondary">
-                    <span class="fa fa-times"></span>
-                    Clear cart
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -40,21 +30,20 @@
             <div class="mb-3" v-if="!cart.items || cart.items.length === 0">
               <div class="row">
                 <div class="col-md-12">
-                  Cart currently empty
+                  <span class="text-info">
+                  <small><i>No items in the rental cart</i></small>
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="text-muted p-1" v-if="cart.items && cart.items.length > 0">
+            <div class="text-muted p-1">
               <div class="row">
                 <div class="col-md-12">
-                  <div class="table-responsive">
+                  <div class="table-responsive" v-if="cart.items && cart.items.length > 0">
                     <table class="table table-bordered table-sm">
                       <thead>
                         <th>
-                          Image
-                        </th>
-                        <th>
-                          Item
+                          Product
                         </th>
                         <th>
                           Available
@@ -75,34 +64,42 @@
                       <!-- Seperate this into component so it can do it's own update -->
                       <tr v-for="(item, index) in cart.items" :key="item.Id">
                         <td>
+                          <div class="d-flex">
                           <img style="height: 85px" :src="item.ImgSrc" />
+                          <div>{{item.NameEng}}</div>
+                          </div>
                         </td>
                         <td>
-                          {{item.NameEng}}
-                        </td>
-                        <td>
-                          <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
+                          <div class="text-success"
+                            v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
                             <div v-if="item.Available !== 'No date set to evaluate'">
                               {{item.Available.available}}&nbsp;<br />
-                              <span class="text-muted" v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In Stock</span>
+                              <span class="text-muted"
+                                v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In
+                                Stock</span>
                             </div>
-                            <div class="text-warning" v-if="item.Available === 'No date set to evaluate'">
+                            <div class="text-info" v-if="item.Available === 'No date set to evaluate'">
                               {{item.Available}}
                             </div>
                           </div>
                         </td>
                         <td>
-                            <input
-                              class="form-control form-control-sm col-lg-12"
-                              type="number"
-                              v-model.trim="item.Quantity"
-                            />
-                            <button
-                              @click="updateItemRowQuantity(index, item.Quantity)"
-                              class="btn btn-outline-secondary btn-xs btn-block mt-1"
-                            >
-                              Update Quantity
-                            </button>
+                          <input class="form-control form-control-sm col-lg-12 mb-1" type="number"
+                            v-model.trim="item.Quantity" />
+                          <button @click="updateItemRowQuantity(index, item.Quantity)" type="submit"
+                            class="btn btn-sm btn-block ajax-button" :class="[syncing ? 'syncing' : '']">
+                            <span class="button-text" v-if="!syncing">
+                              <slot name="default">Update</slot>
+                            </span>
+                            <span class="button-loader clearfix" v-if="syncing">
+                              <slot name="syncing-state">
+                                <div class="loading-dot dot1"></div>
+                                <div class="loading-dot dot2"></div>
+                                <div class="loading-dot dot3"></div>
+                                <div class="loading-dot dot4"></div>
+                              </slot>
+                            </span>
+                          </button>
                         </td>
                         <td>
                           ¥{{item.UnitPrice}}
@@ -114,24 +111,25 @@
                           ¥{{item.DiscountedTotalPrice}}
                         </td>
                         <td>
-                          <button @click="removeItemFromCart({index: index})" class="btn btn-xs btn-block btn-outline-secondary">
+                          <button @click="removeItemFromCart({index: index})"
+                            class="btn btn-xs btn-block btn-outline-secondary">
                             <span class="fa fa-trash mr-1"></span><i><small>Remove</small></i>
                           </button>
                         </td>
                       </tr>
                     </table>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
                     <table class="table table-bordered table-sm mb-0">
                       <thead class="thead-dark">
                         <th>
-                          Pick Up Date
+                          Delivery Date
                         </th>
                         <th>
                           Return Date
                         </th>
                         <th>
-                          Days of Use
+                          Days Used
                         </th>
                         <th>
                           Postcode
@@ -155,7 +153,8 @@
                         </td>
                         <td>
                           {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}<br />
-                          <small class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                          <small
+                            class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
                         </td>
                         <td>
                           ¥{{cart.shipping && cart.shipping.price || 0}}
@@ -174,22 +173,24 @@
             <div class="col-sm-12 mt-2">
               <div class="row">
                 <div class="col-md-6 mb-2">
-                  <button class="btn btn-outline-secondary btn-sm mr-2" @click="clearCart">
+                  <button class="btn btn-outline-secondary btn-sm" @click="clearCart">
                     <span class="fa fa-times"></span>
-                      Clear Cart
+                    Clear Cart
                   </button>
                 </div>
                 <div class="col-md-6 text-lg-right">
                   <span class="mr-2">
                     <a href="../checkout/reserve-prompt">
-                      <button class="btn btn-outline-primary account-settings-button btn-sm" :disabled="!checkoutEnabled">
-                        Reserve Your Order
+                      <button class="btn btn-outline-primary btn-sm"
+                        :disabled="!checkoutEnabled">
+                        Reserve Order
                       </button>
                     </a>
                   </span>
                   <a href="../checkout/order-prompt">
-                    <button class="btn btn-primary account-settings-button btn-sm" @click="createOrderFromCart" :disabled="!checkoutEnabled">
-                      Place Your Order
+                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart"
+                      :disabled="!checkoutEnabled">
+                      Checkout
                     </button>
                   </a>
                 </div>
@@ -199,135 +200,48 @@
         </div>
       </div>
       <div class="col-sm-4">
-          <div class="mb-3">
-            <div class="">
-              <h6>Dates Required</h6>
-            </div>
-            <div class="">
-              <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()" :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="form-group">
-                      <label for="full-name">Start Date</label>
-                      <input class="form-control" id="date-start" name="date-start" type="date"  :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart" placeholder="0" autocomplete="date-end" >
-                      <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
-                    </div>
-                  </div>
-                  <div class="col-sm-12">
-                    <div class="form-group">
-                      <label for="full-name">End Date</label>
-                      <input class="form-control" id="date-end" name="date-end" type="date"  :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd" placeholder="0" autocomplete="date-end" >
-                      <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
-                    </div>
-                  </div>
-                  <div class="col-sm-12">
-                    <div class="form-group">
-                      <label for="full-name">Days of Usage</label>
-                      <input class="form-control" id="days-of-use" name="days-of-use" type="number"  :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse" placeholder="0" autocomplete="days-of-use">
-                      <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12">
-                    <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
-                    <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
-                  </div>
-                  <div class="col-sm-12">
-                    <div class="form-group text-right">
-                      <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Update</ajax-button>
-                    </div>
-                  </div>
-                </div>
-              </ajax-form>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="">
-              <hr />
-              <h6>Shipping Estimation</h6>
-            </div>
-            <div class="">
-              <ajax-form style="width: 100%"
-                :syncing.sync="syncing"
-                :cloud-error.sync="cloudError"
-                @submitted="submittedForm()"
-                :handle-submitting="handleShippingSubmitting"
-                :handle-parsing="handleParsingShippingForm"
-              >
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="form-group">
-                      <label for="full-name">Postcode</label>
-                      <input
-                        class="form-control"
-                        id="postcode"
-                        name="postcode"
-                        type="number"
-                        :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']"
-                        v-model.trim="formDataShipping.Postcode"
-                        autocomplete="postcode"
-                      >
-                      <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter a postcode.</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-12">
-                    <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
-                    <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
-                  </div>
-                  <div class="col-sm-12">
-                    <div class="form-group text-right">
-                      <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Update</ajax-button>
-                    </div>
-                  </div>
-                </div>
-              </ajax-form>
-              </div>
-            </div>
-          <div class="mb-3">
+        <div class="mb-3">
           <div class="">
-            <hr />
             <h6>Add More Products</h6>
           </div>
           <div class="">
-            <div
-              v-if="glasses.length === 0"
-              class="fa fa-spinner fa-spin"
-            >
+            <div v-if="glasses.length === 0">
+              <div style="height: 178px;">
+                <span class="fa fa-spinner fa-spin"> </span>
+              </div>
             </div>
-            <ajax-form
-              @submitted="submittedForm()"
-              :syncing.sync="syncing"
-              :cloud-error.sync="cloudError"
-              :handle-submitting="handleItemSubmitting"
-              :handle-parsing="handleParsingItemForm"
-              v-if="glasses.length > 0"
-            >
+            <ajax-form @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError"
+              :handle-submitting="handleItemSubmitting" :handle-parsing="handleParsingItemForm"
+              v-if="glasses.length > 0">
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Choose a glass type</label>
-                    <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id" :class="[formErrorsItems.Id ? 'is-invalid' : '']">
+                    <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id"
+                      :class="[formErrorsItems.Id ? 'is-invalid' : '']">
                       <option disabled value="">Please select one</option>
                       <option v-for="glass in glasses" :value="glass.id">{{glass.NameEng}} {{glass.NameJap}}</option>
                     </select>
                     <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
                   </div>
                 </div>
-              <div class="col-sm-12">
+                <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Quantity</label>
-                    <input class="form-control" id="quantity" step="20" name="quantity" type="number"  :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity" placeholder="0" autocomplete="quantity">
+                    <input class="form-control" id="quantity" step="20" name="quantity" type="number"
+                      :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity"
+                      placeholder="0" autocomplete="quantity">
                     <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-sm-12">
-                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for that date</p>
-                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for
+                    that date</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
+                    check your information and try again, or <a href="/contact">contact support</a> if the error
+                    persists.</p>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
@@ -337,8 +251,99 @@
               </div>
             </ajax-form>
           </div>
+        </div>
+        <div class="mb-3">
+          <div class="">
+            <hr />
+            <h6>Dates Required</h6>
+          </div>
+          <div class="">
+            <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()"
+              :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Start Date</label>
+                    <input class="form-control" id="date-start" name="date-start" type="date"
+                      :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart"
+                      placeholder="0" autocomplete="date-end">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">End Date</label>
+                    <input class="form-control" id="date-end" name="date-end" type="date"
+                      :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd"
+                      placeholder="0" autocomplete="date-end">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Days of Usage</label>
+                    <input class="form-control" id="days-of-use" name="days-of-use" type="number"
+                      :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse"
+                      placeholder="0" autocomplete="days-of-use">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for
+                    that date</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
+                    check your information and try again, or <a href="/contact">contact support</a> if the error
+                    persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Update</ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
           </div>
         </div>
+        <div class="mb-3">
+          <div class="">
+            <hr />
+            <h6>Shipping Estimation</h6>
+          </div>
+          <div class="">
+            <ajax-form style="width: 100%" :syncing.sync="syncing" :cloud-error.sync="cloudError"
+              @submitted="submittedForm()" :handle-submitting="handleShippingSubmitting"
+              :handle-parsing="handleParsingShippingForm">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Postcode</label>
+                    <input class="form-control" id="postcode" name="postcode" type="number"
+                      :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']"
+                      v-model.trim="formDataShipping.Postcode" autocomplete="postcode">
+                    <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter a postcode.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
+                    check your information and try again, or <a href="/contact">contact support</a> if the error
+                    persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Update</ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
