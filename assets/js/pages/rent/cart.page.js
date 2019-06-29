@@ -259,8 +259,13 @@ parasails.registerPage('cart', {
     },
 
     handleItemSubmitting: async function(data) {
+      // check if it's already in the cart
+      const oldCart = await parasails.util.getCart();
+      if (_.includes(oldCart.items, { id: data.Id })) {
+        console.log('test');
+      };
+
       const getCartWithNewItem = async function(itemData) {
-        const oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {
           ...data,
           ...oldCart.timePeriod,

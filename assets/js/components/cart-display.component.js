@@ -132,9 +132,10 @@ parasails.registerComponent('cartDisplay', {
         </table>
         <button
           @click="checkAllCartAvailability"
-          class="btn btn-outline-secondary"
+          class="btn btn-outline-secondary btn-sm"
         >
-          Refresh Cart Availablity
+          <span class="fa fa-refresh"></span>
+          Refresh Cart Items
         </button>
         <div class="mt-2" v-if="syncMessage !== ''">
           {{syncMessage}}
