@@ -14,6 +14,7 @@ parasails.registerPage('purchase-guest', {
         postcode: '',
       },
     },
+    takuhaiTimeSlots: [],
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -26,6 +27,7 @@ parasails.registerPage('purchase-guest', {
   mounted: async function() {
     //…
     this.cart = await parasails.util.getCart();
+    this.takuhaiTimeSlots = await Cloud.getTakuhaiTimeSlots();
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -58,7 +60,6 @@ parasails.registerPage('purchase-guest', {
     createGuestOrder: async function() {
       this.syncMessage = "Creating Order...";
       const cart = await parasails.util.getCart();
-      console.log(cart);
       // need to add address to the order
       const orderPayload = {
         DateStart: cart.timePeriod.DateStart,
@@ -78,8 +79,15 @@ parasails.registerPage('purchase-guest', {
         Email: this.formData.Email1,
         Comment: this.formData.Comment,
         Paid: false,
+        TakuhaiTimeSlot: this.formData.TakuhaiTimeSlot,
       }
-      const order = await Cloud.createGuestOrder(..._.values(orderPayload));
+      let order = {};
+      try {
+        order = await Cloud.createGuestOrder(..._.values(orderPayload));
+      } catch(err) {
+        console.log(err);
+        this.syncMessage = "";
+      }
       // await localStorage.setItem('completedOrder', JSON.stringify(order));
       this.syncMessage = "";
       return order;

@@ -58,6 +58,37 @@ module.exports.bootstrap = async function(done) {
   }//∞
 
   // By convention, this is a good place to set up fake data during development.
+  await TakuhaiTimeSlot.createEach([
+    {
+      Name: 'A.M.',
+      YuPackCode: '0812',
+    },
+    {
+      Name: '12:00-14:00',
+      YuPackCode: '1214',
+    },
+    {
+      Name: '14:00-16:00',
+      YuPackCode: '1416',
+    },
+    {
+      Name: '16:00-18:00',
+      YuPackCode: '1618',
+    },
+    {
+      Name: '18:00-20:00',
+      YuPackCode: '1820',
+    },
+    {
+      Name: '20:00-21:00',
+      YuPackCode: '2021',
+    },
+    {
+      Name: 'Anytime',
+      YuPackCode: '',
+    },
+  ]);
+
   await WashAndPolish.createEach([
     {
       Name: 'Wash And Polish',

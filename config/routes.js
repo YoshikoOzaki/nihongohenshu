@@ -82,6 +82,8 @@ module.exports.routes = {
   'POST  /api/v1/cart/check-shipping-price':          { action: 'cart/check-shipping-price' },
   'POST  /api/v1/veritrans/charge':          { action: 'veritrans/charge' },
 
+  'GET /api/v1/delivery/get-takuhai-time-slots':   { action: 'delivery/get-takuhai-time-slots' },
+
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗
   //  ║║║║╣ ╠╩╗╠═╣║ ║║ ║╠╩╗╚═╗
