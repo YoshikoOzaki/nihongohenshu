@@ -92,6 +92,11 @@ module.exports = {
       type: 'boolean',
     },
 
+    TakuhaiTimeSlot: {
+      type: 'string',
+      description: ''
+    }
+
   },
 
   exits: {
@@ -126,6 +131,7 @@ module.exports = {
         Telephone1: inputs.Telephone1,
         Email1: inputs.Email1,
         Comment: inputs.Comment,
+        TakuhaiTimeSlot: inputs.TakuhaiTimeSlot,
       }
       var newRecord = await Order.create(orderInputs).fetch();
       return newRecord;

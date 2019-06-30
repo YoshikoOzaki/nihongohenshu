@@ -103,6 +103,11 @@ module.exports = {
       type: 'boolean',
     },
 
+    TakuhaiTimeSlot: {
+      model: 'TakuhaiTimeSlot',
+      description: 'Links order to a time slot, not required for all orders as some use other delivery methods'
+    }
+
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝

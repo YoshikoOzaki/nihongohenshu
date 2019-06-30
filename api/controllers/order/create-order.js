@@ -51,7 +51,7 @@ module.exports = {
     Postcode: {
       type: 'number',
       description: 'Postcode assigned to the order for shipping'
-    }
+    },
 
   },
 
@@ -79,6 +79,7 @@ module.exports = {
       CustomerName: inputs.CustomerName,
       ReserveOnly: inputs.ReserveOnly,
       Postcode: inputs.Postcode,
+      TakuhaiTimeSlot: inputs.TakuhaiTimeSlot,
     };
 
     var newRecord = await Order.create(payload).fetch();

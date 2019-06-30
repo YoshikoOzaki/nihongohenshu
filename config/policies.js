@@ -43,4 +43,6 @@ module.exports.policies = {
   'order/delete-order': true,
 
   'veritrans/charge' : true,
+
+  'delivery/get-takuhai-time-slots' : true,
 };
