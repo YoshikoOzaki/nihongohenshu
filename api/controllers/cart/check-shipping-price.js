@@ -86,12 +86,11 @@ module.exports = {
         await asyncForEach(cartItems, async(cartItem) => {
           const product = await Product.findOne({ id: cartItem.Id });
           const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
-          const partialRacksQuantity = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
-          const partialRacksRequired = partialRacksQuantity > 0 ? 1 : 0;
+          const partialRackItemQuantity = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
+          const partialRacksRequired = partialRackItemQuantity > 0 ? 1 : 0;
           const requiredFullRackHeight = fullRacksRequired * product.RackHeight;
           // const requiredPartialRackHeight = partialRacksRequired * product[0].RackHeight;
           // const totalRacksRequired = fullRacksRequired + partialRacksRequired;
-          const totalFullRackHeightRequired = requiredFullRackHeight;
 
           itemLineRackRequirements.push(
             {
@@ -100,9 +99,8 @@ module.exports = {
               rackHeight: product.RackHeight,
               fullRacksRequired,
               partialRacksRequired,
-              partialRacksQuantity,
+              partialRackItemQuantity,
               requiredFullRackHeight,
-              totalFullRackHeightRequired,
             }
           );
         })
@@ -110,32 +108,47 @@ module.exports = {
           return o.requiredFullRackHeight;
         });
         const totalRequiredFullRacks = _.sum(itemLineRackRequirements, (o) => {
-          return o.totalFullRackHeightRequired;
+          return o.fullRacksRequired;
         });
         const differentRackSizes = _.map(itemLineRackRequirements, (o) => {
           return o.rackCapacity;
         });
+
+        // work out the extra height needed and racks needed for the additional glasses
+        // these can be combined together into minimum height required racks to save adding extra racks
         const leftOverGlassesByRackCapacity = [];
-        _.each(_.unique(differentRackSizes), (o) => {
+        const uniqueRackSizes = _.unique(differentRackSizes);
+
+        _.each(uniqueRackSizes, (rackCapacity) => {
+          const itemsWithMatchingRackSize = _.filter(itemLineRackRequirements, { 'rackCapacity': rackCapacity })
+          const leftOverGlasses = _.sum(itemsWithMatchingRackSize, (i) => {
+            return i.partialRackItemQuantity;
+          });
+          const extraRacksRequired = _.ceil( leftOverGlasses / rackCapacity, 0);
+          const itemsWithMatchingRackSizeRackHeights = _.map(itemsWithMatchingRackSize, 'rackHeight');
+          const minimumRequiredRackHeight = _.max(itemsWithMatchingRackSizeRackHeights);
+          const extraRequiredHeight = minimumRequiredRackHeight * extraRacksRequired;
+
           leftOverGlassesByRackCapacity.push({
-            rackCapacity: o,
-            leftOverGlasses: _.sum(itemLineRackRequirements, (i) => {
-              if (i.rackCapacity === o) {
-                return i.partialRacksQuantity;
-              };
-            }),
+            extraRacksRequired,
+            rackCapacity,
+            leftOverGlasses,
+            minimumRequiredRackHeight,
+            extraRequiredHeight,
           });
         })
+
         console.log(differentRackSizes);
-        console.log(leftOverGlassesByRackCapacity);
         console.log(itemLineRackRequirements);
+        console.log(leftOverGlassesByRackCapacity);
+
         return {
           totalRequiredFullRackHeight,
           totalRequiredFullRacks,
         };
       }
       const totalRacks = await getTotalRacks();
-      await console.log(totalRacks);
+      await console.log(totalRacks); // should be 59 and 20540
       // get total racks ()
       // for each line item in cart
       // const fullRacks = units / product rack capacity;
