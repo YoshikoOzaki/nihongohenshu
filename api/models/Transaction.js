@@ -35,7 +35,7 @@ module.exports = {
     },
 
     Product: {
-      model: 'Glass',
+      model: 'Product',
     },
 
     Quantity: {

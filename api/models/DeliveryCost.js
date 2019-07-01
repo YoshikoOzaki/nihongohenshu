@@ -40,7 +40,7 @@ module.exports = {
 
     Truck_Distance_Factor: {
       type: 'number',
-      description: 'Glass sku code',
+      description: '',
       example: 156,
     },
 

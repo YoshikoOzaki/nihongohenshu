@@ -15,7 +15,7 @@ parasails.registerComponent('itemInfo', {
 
   data: function () {
     return {
-      product: _.find(this.glasses, (o) => { return o.id = this.item.Glass }),
+      product: _.find(this.glasses, (o) => { return o.id = this.item.Product }),
     };
   },
 

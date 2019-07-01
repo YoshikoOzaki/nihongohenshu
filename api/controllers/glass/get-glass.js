@@ -27,7 +27,7 @@ module.exports = {
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    var newRecord = await Glass.findOne({ id: inputs.id });
+    var newRecord = await Product.findOne({ id: inputs.id });
 
     // Since everything went ok, send our 200 response.
     return exits.success(newRecord);

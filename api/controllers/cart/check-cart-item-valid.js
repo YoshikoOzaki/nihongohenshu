@@ -178,7 +178,7 @@ module.exports = {
     };
 
     // find price of items
-    var item =  await Glass.findOne({ id: inputs.Id });
+    var item =  await Product.findOne({ id: inputs.Id });
     // get the days of use from the cart value
 
     // Collect variables
@@ -241,7 +241,7 @@ module.exports = {
     }
 
     // Divide it by the total quantity and add was cost back on to get discounted unit price
-    discountedBasePrice = await getDiscountedBasePrice(
+    const discountedBasePrice = await getDiscountedBasePrice(
       basePrice,
       daysOfUseDiscountFactor,
       quantityFactorForFullRack,
@@ -268,7 +268,7 @@ module.exports = {
 
     discountedInputs = {
       Id: inputs.Id,
-      NameEng: item.NameEng,
+      NameE: item.NameE,
       Quantity: inputs.Quantity,
       UnitPrice: item.UnitPrice,
       ImgSrc: item.ImgSrc,

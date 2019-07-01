@@ -103,52 +103,70 @@ module.exports.bootstrap = async function(done) {
     { emailAddress: 'richard@email.com', fullName: 'Richard', isSuperAdmin: false, password: await sails.helpers.passwords.hashPassword('abc123') },
   ]);
 
-  await Glass.createEach([
+  await Product.createEach([
     {
-      NameEng: 'Handmade Vintage',
-      NameJap: '北海道札幌市',
-      TotalQuantityInSystem: 10000,
+      NameE: 'Rental Plumm Glass Flute',
+      NameJ: '北海道札幌市',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-large/pluh3320a_3_plumm-large.jpg',
-      Sku: 160,
+      Id: 161,
       UnitPrice: 100,
-      RackCapacity: 10,
+      RackCapacity: 36,
+      RackHeight: 340,
     },
     {
-      NameEng: 'Handmade Red',
-      NameJap: '東京都新島村',
-      TotalQuantityInSystem: 20000,
+      NameE: 'Rental Plumm Glass MultiRed',
+      NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_6_plumm-large.jpg',
-      Sku: 161,
+      Id: 189,
       UnitPrice: 120,
-      RackCapacity: 10,
+      RackCapacity: 25,
+      RackHeight: 340,
     },
     {
-      NameEng: 'Handmade White',
-      NameJap: '東京都新島村',
-      TotalQuantityInSystem: 20000,
+      NameE: 'Rental Plumm Glass Red A (Stemless)',
+      NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluo6660rw/plumm-large/pluo6660rw_3_plumm-large.jpg',
-      Sku: 162,
+      Id: 173,
       UnitPrice: 120,
-      RackCapacity: 10,
+      RackCapacity: 16,
+      RackHeight: 380,
     },
     {
-      NameEng: 'Vintage White',
-      NameJap: '東京都新島村',
-      TotalQuantityInSystem: 20000,
+      NameE: 'Rental Plumm Glass Red or White',
+      NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluv4420b2/plumm-large/pluv4420b2_6_plumm-large.jpg',
-      Sku: 162,
+      Id: 164,
       UnitPrice: 120,
-      RackCapacity: 10,
+      RackCapacity: 25,
+      RackHeight: 340,
     },
     {
-      NameEng: 'Handmade Red',
-      NameJap: '東京都新島村',
-      TotalQuantityInSystem: 20000,
+      NameE: 'Handmade Red',
+      NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3310b/plumm-large/pluh3310b_3_plumm-large.jpg',
-      Sku: 162,
+      Id: 165,
       UnitPrice: 120,
-      RackCapacity: 10,
+      RackCapacity: 25,
+      RackHeight: 340,
     },
+    {
+      NameE: 'Rental Delivery and Pickup',
+      NameJ: 'ﾚﾝﾀﾙ用配達と引き取り',
+      Id: 160,
+      UnitPrice: 3000,
+    },
+    {
+      NameE: 'Rental Delivery by Courier. Return not included',
+      NameJ: 'ﾚﾝﾀﾙ用宅配料金(お届けのみ）',
+      Id: 210,
+      UnitPrice: 1,
+    },
+    {
+      NameE: 'Rental Freight (Delivery and Return Included)',
+      NameJ: 'ﾚﾝﾀﾙ用宅配料金(往復）',
+      Id: 211,
+      UnitPrice: 1,
+    }
   ]);
 
   await DeliveryCost.createEach([
@@ -168,6 +186,16 @@ module.exports.bootstrap = async function(done) {
       Place: '秋田県鹿角市',
       Truck_OK: 0,
       Takuhai_Factor: '1',
+      OFFSET: 2,
+      ZIP_VALUE: 100000,
+      OFFSET_CALC: 1,
+    },
+    {
+      LowZip: '0200000',
+      HighZip: '0285422',
+      Place: '秋田県鹿角市',
+      Truck_OK: 1,
+      Takuhai_Factor: '0',
       OFFSET: 2,
       ZIP_VALUE: 100000,
       OFFSET_CALC: 1,
@@ -221,82 +249,13 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
-  // await Order.createEach([
-  //   {
-  //     DateStart: '2019-05-01',
-  //     DateEnd: '2019-05-10',
-  //     DaysOfUse: '6',
-  //     User: '2',
-  //     Reserved: false,
-  //   },
-  //   {
-  //     DateStart: '2019-05-01',
-  //     DateEnd: '2019-05-10',
-  //     DaysOfUse: '6',
-  //     User: '3',
-  //     Reserved: false,
-  //   },
-  //   {
-  //     DateStart: '2019-05-01',
-  //     DateEnd: '2019-05-10',
-  //     DaysOfUse: '6',
-  //     CustomerKeyword: 'wineorder1234',
-  //     Reserved: true,
-  //   },
-  // ]);
-
-  // await OrderLineNumber.createEach([
-  //   {
-  //     Quantity: '1000',
-  //     Glass: '1',
-  //     Order: '1',
-  //     UnitPrice: '100'
-  //   },
-  //   {
-  //     Quantity: '1000',
-  //     Glass: '2',
-  //     Order: '1',
-  //     UnitPrice: '100'
-  //   },
-  //   {
-  //     Quantity: '1000',
-  //     Glass: '3',
-  //     Order: '1',
-  //     UnitPrice: '100'
-  //   },
-  //   {
-  //     Quantity: '500',
-  //     Glass: '1',
-  //     Order: '2',
-  //     UnitPrice: '100'
-  //   },
-  //   {
-  //     Quantity: '500',
-  //     Glass: '2',
-  //     Order: '2',
-  //     UnitPrice: '100'
-  //   },
-  //   {
-  //     Quantity: '1',
-  //     Order: '2',
-  //     UnitPrice: '3000',
-  //     Glass: '60',
-  //   },
-  //   {
-  //     Quantity: '1',
-  //     Order: '1',
-  //     UnitPrice: '3000',
-  //     Glass: '60',
-  //   },
-  // ]);
-
   // these should actually be different orders or a few orders updating
   // over time into different states
   await Transaction.createEach([
     {
       TransactionType: '10',
       Product: '1',
-      Quantity: '1000',
+      Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
       Date: '2019-04-01',
@@ -304,7 +263,7 @@ module.exports.bootstrap = async function(done) {
     {
       TransactionType: '10',
       Product: '2',
-      Quantity: '1000',
+      Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
       Date: '2019-04-01',
@@ -312,65 +271,27 @@ module.exports.bootstrap = async function(done) {
     {
       TransactionType: '10',
       Product: '3',
-      Quantity: '1000',
+      Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
       Date: '2019-04-01',
     },
-    // {
-    //   TransactionType: '40',
-    //   Product: '1',
-    //   Quantity: '1000',
-    //   UnitPrice: '100',
-    //   Warehouse: '60',
-    //   Comment: 'rental order',
-    //   Date: '2019-05-01',
-    // },
-    // {
-    //   TransactionType: '40',
-    //   Product: '1',
-    //   Quantity: '1000',
-    //   UnitPrice: '100',
-    //   Warehouse: '60',
-    //   Comment: 'rental order',
-    //   Date: '2019-05-01',
-    // },
-    // {
-    //   TransactionType: '44',
-    //   Product: '1',
-    //   Quantity: '100',
-    //   UnitPrice: '100',
-    //   Warehouse: '60',
-    //   Comment: 'return planned',
-    //   Date: '2019-05-03',
-    // },
-    // {
-    //   TransactionType: '55',
-    //   Product: '1',
-    //   Quantity: '1000',
-    //   UnitPrice: '100',
-    //   Warehouse: '60',
-    //   Comment: 'order returned',
-    //   Date: '2019-05-05',
-    // },
-    // {
-    //   TransactionType: '57',
-    //   Product: '1',
-    //   Quantity: '1000',
-    //   UnitPrice: '100',
-    //   Warehouse: '60',
-    //   Comment: 'washed and restocked',
-    //   Date: '2019-05-05',
-    // },
-    // {
-    //   TransactionType: '40',
-    //   Product: '1',
-    //   Quantity: '15000',
-    //   UnitPrice: '100',
-    //   Warehouse: '60',
-    //   Comment: 'rental order',
-    //   Date: '2019-05-06',
-    // },
+    {
+      TransactionType: '10',
+      Product: '4',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '10',
+      Product: '5',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
   ]);
 
   await TakuhaiUnitCharge.createEach([

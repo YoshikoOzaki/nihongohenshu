@@ -9,14 +9,14 @@ parasails.registerUtility('convertOrderToCartSyntax', async function convertOrde
     // also need to not include any order lines that are from this order
     const checkCartItemAvailable = async function(orderLineNumber) {
       const payload = {
-        Id: orderLineNumber.Glass,
+        Id: orderLineNumber.Product,
         Quantity: orderLineNumber.Quantity,
         DateStart: recoveredOrder.DateStart,
         DateEnd: recoveredOrder.DateEnd,
         DaysOfUse: recoveredOrder.DaysOfUse,
         OrderIdToIgnore: recoveredOrder.id,
       }
-      if (orderLineNumber.Glass !== null) {
+      if (orderLineNumber.Product !== null) {
         result = await Cloud.checkCartItemValid(..._.values(payload));
         return result;
       }
@@ -27,7 +27,7 @@ parasails.registerUtility('convertOrderToCartSyntax', async function convertOrde
       }
     }
     await asyncForEach(recoveredOrder.OrderLineNumbers, async (o) => {
-      if (o.Glass !== null) {
+      if (o.Product !== null) {
         const result = await checkCartItemAvailable(o);
         newCartItems.push(result);
       }
@@ -42,7 +42,7 @@ parasails.registerUtility('convertOrderToCartSyntax', async function convertOrde
 
   // Add the shipping details
   // Check the shipping
-  const shippingTransactionLine = _.find(recoveredOrder.OrderLineNumbers, { 'Glass': null });
+  const shippingTransactionLine = _.find(recoveredOrder.OrderLineNumbers, { 'Product': null });
 
   const newCartShipping = {
     postcode: recoveredOrder.Postcode,

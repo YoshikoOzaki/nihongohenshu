@@ -21,8 +21,8 @@ module.exports = {
       + 'non compulsary as some order lines do other things',
     },
 
-    Glass: {
-      model: 'Glass',
+    Product: {
+      model: 'Product',
     },
 
     Order: {
