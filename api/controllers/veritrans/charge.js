@@ -104,15 +104,17 @@ module.exports = {
       }).fetch();
 
       // delete any old reserve order as the new order replaces it
-      await Transaction.destroy({
-        OrderNumber: inputs.reserveOrderId
-      })
-      await OrderLineNumber.destroy({
-        Order: inputs.reserveOrderId
-      });
-      await Order.destroy({
-        id: inputs.reserveOrderId
-      });
+      if (inputs.reserveOrderId) {
+        await Transaction.destroy({
+          OrderNumber: inputs.reserveOrderId
+        })
+        await OrderLineNumber.destroy({
+          Order: inputs.reserveOrderId
+        });
+        await Order.destroy({
+          id: inputs.reserveOrderId
+        });
+      }
     }
 
     if (resultJson.result.mstatus === 'failure') {
