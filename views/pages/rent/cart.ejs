@@ -66,7 +66,7 @@
                         <td>
                           <div class="d-flex">
                           <img style="height: 85px" :src="item.ImgSrc" />
-                          <div>{{item.NameEng}}</div>
+                          <div>{{item.NameE}}</div>
                           </div>
                         </td>
                         <td>
@@ -220,7 +220,7 @@
                     <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id"
                       :class="[formErrorsItems.Id ? 'is-invalid' : '']">
                       <option disabled value="">Please select one</option>
-                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameEng}} {{glass.NameJap}}</option>
+                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameE}} {{glass.NameJ}}</option>
                     </select>
                     <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
                   </div>
@@ -228,7 +228,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Quantity</label>
-                    <input class="form-control" id="quantity" step="20" name="quantity" type="number"
+                    <input class="form-control" id="quantity" name="quantity" type="number"
                       :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity"
                       placeholder="0" autocomplete="quantity">
                     <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>

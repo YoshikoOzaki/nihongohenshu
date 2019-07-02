@@ -44,6 +44,12 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
+    // utility looping function
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
     // from the cart items and the post code, return the shipping cost
 
     // some japanese will have a '-' in them that needs to be cleared probably before here though
@@ -65,14 +71,153 @@ module.exports = {
     // calculate price based on factor record and cart contents
     // from shipping factor get tak factor & truck factor
     // is truck or tak ? ->
-    const vehicleTypeRequired = ShippingFactorRecord.Truck_Ok === 1 ? 'truck' : 'takuhai';
+    const vehicleTypeRequired = ShippingFactorRecord.Truck_OK === 1 ? 'truck' : 'takuhai';
+
+    if (vehicleTypeRequired === 'truck') {
+      const cartItems = inputs.Cart.items;
+
+      const getRacks = async function() {
+        const itemLineRackRequirements = [];
+        await asyncForEach(cartItems, async(cartItem) => {
+          const product = await Product.findOne({ id: cartItem.Id });
+          const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
+          const partialRackItemQuantity = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
+          const partialRacksRequired = partialRackItemQuantity > 0 ? 1 : 0;
+          const requiredFullRackHeight = fullRacksRequired * product.RackHeight;
+          // const requiredPartialRackHeight = partialRacksRequired * product[0].RackHeight;
+          // const totalRacksRequired = fullRacksRequired + partialRacksRequired;
+
+          itemLineRackRequirements.push(
+            {
+              productId: product.id,
+              rackCapacity: product.RackCapacity,
+              rackHeight: product.RackHeight,
+              fullRacksRequired,
+              partialRacksRequired,
+              partialRackItemQuantity,
+              requiredFullRackHeight,
+            }
+          );
+        })
+        const totalRequiredFullRackHeight = _.sum(itemLineRackRequirements, (o) => {
+          return o.requiredFullRackHeight;
+        });
+        const totalRequiredFullRacks = _.sum(itemLineRackRequirements, (o) => {
+          return o.fullRacksRequired;
+        });
+        const differentRackSizes = _.map(itemLineRackRequirements, (o) => {
+          return o.rackCapacity;
+        });
+
+        // work out the extra height needed and racks needed for the additional glasses
+        // these can be combined together into minimum height required racks to save adding extra racks
+        const leftOverGlassesByRackCapacity = [];
+        const uniqueRackSizes = _.unique(differentRackSizes);
+
+        _.each(uniqueRackSizes, (rackCapacity) => {
+          const itemsWithMatchingRackSize = _.filter(itemLineRackRequirements, { 'rackCapacity': rackCapacity })
+          const leftOverGlasses = _.sum(itemsWithMatchingRackSize, (i) => {
+            return i.partialRackItemQuantity;
+          });
+          const extraRacksRequired = _.ceil( leftOverGlasses / rackCapacity, 0);
+          const itemsWithMatchingRackSizeRackHeights = _.map(itemsWithMatchingRackSize, 'rackHeight');
+          const minimumRequiredRackHeight = _.max(itemsWithMatchingRackSizeRackHeights);
+          const extraRequiredHeight = minimumRequiredRackHeight * extraRacksRequired;
+
+          leftOverGlassesByRackCapacity.push({
+            extraRacksRequired,
+            rackCapacity,
+            leftOverGlasses,
+            minimumRequiredRackHeight,
+            extraRequiredHeight,
+          });
+        })
+
+        console.log(differentRackSizes);
+        console.log(itemLineRackRequirements);
+        console.log(leftOverGlassesByRackCapacity);
+
+        const extraRacksRequiredTotal = _.sum(leftOverGlassesByRackCapacity, 'extraRacksRequired');
+        const extraHeightRequiredTotal = _.sum(leftOverGlassesByRackCapacity, 'extraRequiredHeight');
+        const totalHeight = totalRequiredFullRackHeight + extraHeightRequiredTotal;
+        const totalRacks = totalRequiredFullRacks + extraRacksRequiredTotal;
+
+        const allRackHeights = _.map(itemLineRackRequirements, 'rackHeight');
+        const tallestRack = _.max(allRackHeights);
+
+        return {
+          totalHeight,
+          totalRacks,
+          tallestRack,
+        };
+      }
+
+      const racks = await getRacks();
+      await console.log(racks);
+
+      const maxHeightAllowablePerDolly = 1646;
+      const quantityOfDollys = _.ceil(racks.totalHeight / maxHeightAllowablePerDolly, 0);
+      const remainingHeight = racks.totalHeight % maxHeightAllowablePerDolly;
+
+      const calcExtraRacksFirstDolly = () => {
+        if (racks.totalHeight >= maxHeightAllowablePerDolly) {
+          return 4;
+        }
+        return _.ceil(racks.totalHeight / maxHeightAllowablePerDolly, 0) - 1;
+        // the minus 1 is to make sure we leave one dolly for the calculation below
+      }
+      const extraRacksFirstDolly = calcExtraRacksFirstDolly();
+
+      const extraDollysExceptLast = quantityOfDollys - 2;
+      const remainingHeightLastDolly = racks.totalHeight - (1 + extraDollysExceptLast) * maxHeightAllowablePerDolly;
+
+      const tallestRackHeight = racks.tallestRack;
+
+      const getRacksOnLastDolly = () => {
+        if (tallestRackHeight === 0) {
+          return 0;
+        }
+        return _.ceil(remainingHeightLastDolly/tallestRackHeight, 0);
+      }
+      const racksOnLastDolly = getRacksOnLastDolly();
+
+      // get these from db
+      const truckDistanceFactor = 200; // use to look up the ones below
+      const minimumChargePer500x500ForTruck = 2200;
+      const chargePerExtraRackFirstDolly = 600;
+      const chargePerExtraDolly = 1000
+      const chargeExtraRackFrom2ndDolly = 200;
+
+      const chargeFirstDolly = minimumChargePer500x500ForTruck + (chargePerExtraRackFirstDolly * extraRacksFirstDolly);
+      const chargeExtraDollies = extraDollysExceptLast * chargePerExtraDolly;
+      const chargeLastDollies = _.min([chargePerExtraDolly, (racksOnLastDolly * chargeExtraRackFrom2ndDolly)]);
+
+      const totalCalculatedDeliveryCharge = _.sum([chargeFirstDolly, chargeExtraDollies, chargeLastDollies]);
+      const maxTruckDeliveryCharge = 10000; // get from db or set at top or env variable
+      const actualTruckDeliveryCharge = _.min([totalCalculatedDeliveryCharge, maxTruckDeliveryCharge]);
+
+      const response = {
+        postcode: inputs.Postcode,
+        price: actualTruckDeliveryCharge,
+        shippingPossible: true,
+        shippingType: 'truck',
+      };
+
+      return exits.success(response);
+
+      console.log('breakpoint');
+      // total
+      // Charge First Dolly + Charge Extra Dollies + Charge Last Dolly =
+      // Total Calculated Truck Delivery Charge
+      // if Total Calculated Truck Delivery Charge > maxDeliveryCharge then delivery is 10k
+    }
 
     if (vehicleTypeRequired === 'takuhai') {
 
       // currently this returns [] if there is no ShippingFactorRecord which happens if user hasn't added a postcode yet
       // wip
       // need to async get this value
-      TakuhaiUnitChargeObject = await TakuhaiUnitCharge.findOne({ 'TakuhaiFactor':
+      const TakuhaiUnitChargeObject = await TakuhaiUnitCharge.findOne({ 'TakuhaiFactor':
         ShippingFactorRecord.Takuhai_Factor || 1
       });
 
@@ -82,15 +227,15 @@ module.exports = {
         let cartItemsCalculation = [];
 
         for (const cartItem of cartItems) {
-          var product = await Glass.find({ id: inputs.Id }).limit(1);
+          var product = await Product.findOne({ id: cartItem.Id });
 
-          const fullRacksRequired = Math.floor(cartItem.Quantity / product[0].RackCapacity);
-          const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product[0].RackCapacity);
+          const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
+          const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
 
           const newCartItem = {
             productCode: cartItem.Id,
             quantityOfItems: cartItem.Quantity,
-            rackCapactity: product[0].RackCapacity,
+            rackCapactity: product.RackCapacity,
             fullRacksRequired,
             quantityInPartialRacks,
           };

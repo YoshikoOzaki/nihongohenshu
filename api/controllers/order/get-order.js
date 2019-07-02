@@ -53,7 +53,7 @@ module.exports = {
       };
 
       await asyncForEach(recordWithNonGlassItemsRemoved.OrderLineNumbers, async (item, i) => {
-        glassDetailsForItem = await Glass.find({ id: item.Glass });
+        glassDetailsForItem = await Product.find({ id: item.Glass });
 
         recordWithNonGlassItemsRemoved.OrderLineNumbers[i].glassDetails = glassDetailsForItem[0];
       });

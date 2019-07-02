@@ -89,7 +89,7 @@ module.exports = {
     _.forEach(inputs.Items, async (item, i) => {
       const itemInputs = {
         Quantity: item.Quantity,
-        Glass: Number(item.Id),
+        Product: Number(item.Id),
         Order: Number(newRecord.id),
       }
 

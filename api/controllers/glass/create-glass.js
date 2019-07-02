@@ -80,7 +80,7 @@ module.exports = {
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    var newRecord = await Glass.create(inputs).fetch();
+    var newRecord = await Product.create(inputs).fetch();
 
     // Since everything went ok, send our 200 response.
     return exits.success();

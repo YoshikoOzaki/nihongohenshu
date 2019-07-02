@@ -103,7 +103,7 @@ module.exports = {
         const itemInputs = {
           Quantity: Number(item.Quantity),
           UnitPrice: Number(item.UnitPrice),
-          Glass: Number(item.Id),
+          Product: Number(item.Id),
           Order: Number(order.id),
         }
 
@@ -130,7 +130,7 @@ module.exports = {
           OrderNumber: order.id,
           LineNumber: orderLine.id,
           TransactionType: 40, // rental order
-          Product: orderLine.Glass,
+          Product: orderLine.Product,
           Quantity: orderLine.Quantity,
           UnitPrice: orderLine.UnitPrice,
           Warehouse: 60,
@@ -141,7 +141,7 @@ module.exports = {
           OrderNumber: order.id,
           LineNumber: orderLine.id,
           TransactionType: 44, // return planned
-          Product: orderLine.Glass,
+          Product: orderLine.Product,
           Quantity: orderLine.Quantity,
           UnitPrice: orderLine.UnitPrice,
           Warehouse: 60,
