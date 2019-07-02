@@ -75,13 +75,8 @@ module.exports = {
 
     if (vehicleTypeRequired === 'truck') {
       const cartItems = inputs.Cart.items;
-      // get these from db
-      const truckDistanceFactor = 200;
-      const chargeFirst = 2200;
-      const chargePerExtraDolly = 1000
-      const chargeExtraRack = 200;
 
-      const getTotalRacks = async function() {
+      const getRacks = async function() {
         const itemLineRackRequirements = [];
         await asyncForEach(cartItems, async(cartItem) => {
           const product = await Product.findOne({ id: cartItem.Id });
@@ -142,54 +137,75 @@ module.exports = {
         console.log(itemLineRackRequirements);
         console.log(leftOverGlassesByRackCapacity);
 
+        const extraRacksRequiredTotal = _.sum(leftOverGlassesByRackCapacity, 'extraRacksRequired');
+        const extraHeightRequiredTotal = _.sum(leftOverGlassesByRackCapacity, 'extraRequiredHeight');
+        const totalHeight = totalRequiredFullRackHeight + extraHeightRequiredTotal;
+        const totalRacks = totalRequiredFullRacks + extraRacksRequiredTotal;
+
+        const allRackHeights = _.map(itemLineRackRequirements, 'rackHeight');
+        const tallestRack = _.max(allRackHeights);
+
         return {
-          totalRequiredFullRackHeight,
-          totalRequiredFullRacks,
+          totalHeight,
+          totalRacks,
+          tallestRack,
         };
       }
-      const totalRacks = await getTotalRacks();
-      await console.log(totalRacks); // should be 59 and 20540
-      // get total racks ()
-      // for each line item in cart
-      // const fullRacks = units / product rack capacity;
-      // const partialRackQuantity = units - (fullRacks * rackCapacity)
-      // const partialRacks = partialRackQuantity > 0 ? 1 : 0;
-      // cont totalFullRackHeight = fullRacks * rackHeight;
-      // const totalPartialRackHeight = partialRacks * rackHeight;
-      // add to an array of itemLineRackRequirements
-      // add total rack height of each item and rack quantity
 
-      // get total rack height ()
-      // add all the racks and partial racks' heights from itemLineRackRequirements[]
+      const racks = await getRacks();
+      await console.log(racks);
 
-      // get max allowable height per dolly ()
-      // set variable
+      const maxHeightAllowablePerDolly = 1646;
+      const quantityOfDollys = _.ceil(racks.totalHeight / maxHeightAllowablePerDolly, 0);
+      const remainingHeight = racks.totalHeight % maxHeightAllowablePerDolly;
 
-      // get quantity of required dollys ()
-      // totalRackHeightRequired / maxAllowedDollyHeight (round up to nearest 1)
-      // leftOverHeightRequired = totalRackHeightRequired % maxAllowedDollyHeight (mod operation gives remainder after divide)
+      const calcExtraRacksFirstDolly = () => {
+        if (racks.totalHeight >= maxHeightAllowablePerDolly) {
+          return 4;
+        }
+        return _.ceil(racks.totalHeight / maxHeightAllowablePerDolly, 0) - 1;
+        // the minus 1 is to make sure we leave one dolly for the calculation below
+      }
+      const extraRacksFirstDolly = calcExtraRacksFirstDolly();
 
-      // Get Extra Racks First Dolly ()
-      // I think the first dolly is partially full
-      // If (Total Height>=Max.Height Allowable per Dolly then 4
-      // else CEILING(Total Height/Max.Height Allowable per Dolly,0)-1)
-      // Comment: the minus 1 is to make sure we leave one dolly for the calculation below)
+      const extraDollysExceptLast = quantityOfDollys - 2;
+      const remainingHeightLastDolly = racks.totalHeight - (1 + extraDollysExceptLast) * maxHeightAllowablePerDolly;
 
-      // Extra Dollies Except Last
-      // MAX(0,Quantity of Dollys-2)
-      // Quantity of Dollys-2
+      const tallestRackHeight = racks.tallestRack;
 
-      // get Remaining Height Last Dolly ()
-      // Total Height-(1+Extra Dollies Except Last)*Max Height Allowable per Dolly
+      const getRacksOnLastDolly = () => {
+        if (tallestRackHeight === 0) {
+          return 0;
+        }
+        return _.ceil(remainingHeightLastDolly/tallestRackHeight, 0);
+      }
+      const racksOnLastDolly = getRacksOnLastDolly();
 
-      // Max Rack Height
-      // Get the heightest of all the different rack types
-      // looks like rack types should have their own table potentially
-      // =MAX(max_height_6x6;max_height_5x5;max_height_4x4;max_height_3x3;max_height_2)
+      // get these from db
+      const truckDistanceFactor = 200; // use to look up the ones below
+      const minimumChargePer500x500ForTruck = 2200;
+      const chargePerExtraRackFirstDolly = 600;
+      const chargePerExtraDolly = 1000
+      const chargeExtraRackFrom2ndDolly = 200;
 
-      // Racks on Last Dolly
-      // IF Max Rack Height=0 then 0 else @CEILING(Remaining Height Last Dolly/Max Rack Height;1))
+      const chargeFirstDolly = minimumChargePer500x500ForTruck + (chargePerExtraRackFirstDolly * extraRacksFirstDolly);
+      const chargeExtraDollies = extraDollysExceptLast * chargePerExtraDolly;
+      const chargeLastDollies = _.min([chargePerExtraDolly, (racksOnLastDolly * chargeExtraRackFrom2ndDolly)]);
 
+      const totalCalculatedDeliveryCharge = _.sum([chargeFirstDolly, chargeExtraDollies, chargeLastDollies]);
+      const maxTruckDeliveryCharge = 10000; // get from db or set at top or env variable
+      const actualTruckDeliveryCharge = _.min([totalCalculatedDeliveryCharge, maxTruckDeliveryCharge]);
+
+      const response = {
+        postcode: inputs.Postcode,
+        price: actualTruckDeliveryCharge,
+        shippingPossible: true,
+        shippingType: 'truck',
+      };
+
+      return exits.success(response);
+
+      console.log('breakpoint');
       // total
       // Charge First Dolly + Charge Extra Dollies + Charge Last Dolly =
       // Total Calculated Truck Delivery Charge
@@ -211,15 +227,15 @@ module.exports = {
         let cartItemsCalculation = [];
 
         for (const cartItem of cartItems) {
-          var product = await Product.find({ id: cartItem.Id }).limit(1);
+          var product = await Product.findOne({ id: cartItem.Id });
 
-          const fullRacksRequired = Math.floor(cartItem.Quantity / product[0].RackCapacity);
-          const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product[0].RackCapacity);
+          const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
+          const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
 
           const newCartItem = {
             productCode: cartItem.Id,
             quantityOfItems: cartItem.Quantity,
-            rackCapactity: product[0].RackCapacity,
+            rackCapactity: product.RackCapacity,
             fullRacksRequired,
             quantityInPartialRacks,
           };

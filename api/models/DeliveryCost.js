@@ -26,7 +26,6 @@ module.exports = {
 
     Place: {
       type: 'string',
-      required: true,
       description: 'Name of region',
       example: 555
     },
@@ -46,28 +45,24 @@ module.exports = {
 
     Takuhai_Factor: {
       type: 'number',
-      required: false,
       description: '',
       example: 4
     },
 
     OFFSET: {
       type: 'number',
-      required: true,
       description: '',
       example: 36
     },
 
     ZIP_VALUE: {
       type: 'number',
-      required: true,
       description: '',
       example: 1000511
     },
 
     OFFSET_CALC: {
       type: 'number',
-      required: true,
       description: '',
       example: 1000511
     }

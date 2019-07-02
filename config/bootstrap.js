@@ -9,7 +9,7 @@
  * https://sailsjs.com/config/bootstrap
  */
 
-module.exports.bootstrap = async function(done) {
+module.exports.bootstrap = async function (done) {
   // Import dependencies
   var path = require('path');
 
@@ -30,22 +30,22 @@ module.exports.bootstrap = async function(done) {
   if (sails.config.models.migrate !== 'drop' && sails.config.environment !== 'test') {
     // If this is _actually_ a production environment (real or simulated), or we have
     // `migrate: safe` enabled, then prevent accidentally removing all data!
-    if (process.env.NODE_ENV==='production' || sails.config.models.migrate === 'safe') {
-      sails.log.warn('Since we are running with migrate: \'safe\' and/or NODE_ENV=production (in the "'+sails.config.environment+'" Sails environment, to be precise), skipping the rest of the bootstrap to avoid data loss...');
+    if (process.env.NODE_ENV === 'production' || sails.config.models.migrate === 'safe') {
+      sails.log.warn('Since we are running with migrate: \'safe\' and/or NODE_ENV=production (in the "' + sails.config.environment + '" Sails environment, to be precise), skipping the rest of the bootstrap to avoid data loss...');
       return done();
     }//•
 
     // Compare bootstrap version from code base to the version that was last run
     var lastRunBootstrapInfo = await sails.helpers.fs.readJson(bootstrapLastRunInfoPath)
-    .tolerate('doesNotExist');// (it's ok if the file doesn't exist yet-- just keep going.)
+      .tolerate('doesNotExist');// (it's ok if the file doesn't exist yet-- just keep going.)
 
     if (lastRunBootstrapInfo && lastRunBootstrapInfo.lastRunVersion === HARD_CODED_DATA_VERSION) {
-      sails.log('Skipping v'+HARD_CODED_DATA_VERSION+' bootstrap script...  (because it\'s already been run)');
-      sails.log('(last run on this computer: @ '+(new Date(lastRunBootstrapInfo.lastRunAt))+')');
+      sails.log('Skipping v' + HARD_CODED_DATA_VERSION + ' bootstrap script...  (because it\'s already been run)');
+      sails.log('(last run on this computer: @ ' + (new Date(lastRunBootstrapInfo.lastRunAt)) + ')');
       return done();
     }//•
 
-    sails.log('Running v'+HARD_CODED_DATA_VERSION+' bootstrap script...  ('+(lastRunBootstrapInfo ? 'before this, the last time the bootstrap ran on this computer was for v'+lastRunBootstrapInfo.lastRunVersion+' @ '+(new Date(lastRunBootstrapInfo.lastRunAt)) : 'looks like this is the first time the bootstrap has run on this computer')+')');
+    sails.log('Running v' + HARD_CODED_DATA_VERSION + ' bootstrap script...  (' + (lastRunBootstrapInfo ? 'before this, the last time the bootstrap ran on this computer was for v' + lastRunBootstrapInfo.lastRunVersion + ' @ ' + (new Date(lastRunBootstrapInfo.lastRunAt)) : 'looks like this is the first time the bootstrap has run on this computer') + ')');
   }
   else {
     sails.log('Running bootstrap script because it was forced...  (either `--drop` or `--environment=test` was used)');
@@ -98,9 +98,9 @@ module.exports.bootstrap = async function(done) {
   ]);
 
   await User.createEach([
-    { emailAddress: 'jarodccrowe@gmail.com', fullName: 'Harry', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123') },
-    { emailAddress: 'j@crowe.com', fullName: 'Jarod Crowe', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123') },
-    { emailAddress: 'richard@email.com', fullName: 'Richard', isSuperAdmin: false, password: await sails.helpers.passwords.hashPassword('abc123') },
+    {emailAddress: 'jarodccrowe@gmail.com', fullName: 'Harry', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123')},
+    {emailAddress: 'j@crowe.com', fullName: 'Jarod Crowe', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123')},
+    {emailAddress: 'richard@email.com', fullName: 'Richard', isSuperAdmin: false, password: await sails.helpers.passwords.hashPassword('abc123')},
   ]);
 
   await Product.createEach([
@@ -108,7 +108,7 @@ module.exports.bootstrap = async function(done) {
       NameE: 'Rental Plumm Glass Flute',
       NameJ: '北海道札幌市',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-large/pluh3320a_3_plumm-large.jpg',
-      Id: 161,
+      id: 161,
       UnitPrice: 100,
       RackCapacity: 36,
       RackHeight: 340,
@@ -117,7 +117,7 @@ module.exports.bootstrap = async function(done) {
       NameE: 'Rental Plumm Glass MultiRed',
       NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3320b/plumm-large/pluh3320b_6_plumm-large.jpg',
-      Id: 189,
+      id: 189,
       UnitPrice: 120,
       RackCapacity: 25,
       RackHeight: 340,
@@ -126,7 +126,7 @@ module.exports.bootstrap = async function(done) {
       NameE: 'Rental Plumm Glass Red A (Stemless)',
       NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluo6660rw/plumm-large/pluo6660rw_3_plumm-large.jpg',
-      Id: 173,
+      id: 173,
       UnitPrice: 120,
       RackCapacity: 16,
       RackHeight: 380,
@@ -135,7 +135,7 @@ module.exports.bootstrap = async function(done) {
       NameE: 'Rental Plumm Glass Red or White',
       NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluv4420b2/plumm-large/pluv4420b2_6_plumm-large.jpg',
-      Id: 164,
+      id: 164,
       UnitPrice: 120,
       RackCapacity: 25,
       RackHeight: 340,
@@ -144,7 +144,7 @@ module.exports.bootstrap = async function(done) {
       NameE: 'Handmade Red',
       NameJ: '東京都新島村',
       ImgSrc: 'https://www.plumm.com/globalassets/productassets/pluh3310b/plumm-large/pluh3310b_3_plumm-large.jpg',
-      Id: 165,
+      id: 165,
       UnitPrice: 120,
       RackCapacity: 25,
       RackHeight: 340,
@@ -152,55 +152,24 @@ module.exports.bootstrap = async function(done) {
     {
       NameE: 'Rental Delivery and Pickup',
       NameJ: 'ﾚﾝﾀﾙ用配達と引き取り',
-      Id: 160,
+      id: 160,
       UnitPrice: 3000,
     },
     {
       NameE: 'Rental Delivery by Courier. Return not included',
       NameJ: 'ﾚﾝﾀﾙ用宅配料金(お届けのみ）',
-      Id: 210,
+      id: 210,
       UnitPrice: 1,
     },
     {
       NameE: 'Rental Freight (Delivery and Return Included)',
       NameJ: 'ﾚﾝﾀﾙ用宅配料金(往復）',
-      Id: 211,
+      id: 211,
       UnitPrice: 1,
     }
   ]);
 
-  await DeliveryCost.createEach([
-    {
-      LowZip: '0010010',
-      HighZip: '0070895',
-      Place: '北海道札幌市',
-      Truck_OK: 0,
-      Takuhai_Factor: '4',
-      OFFSET: 1,
-      ZIP_VALUE: 10010,
-      OFFSET_CALC: 0,
-    },
-    {
-      LowZip: '0100000',
-      HighZip: '0185422',
-      Place: '秋田県鹿角市',
-      Truck_OK: 0,
-      Takuhai_Factor: '1',
-      OFFSET: 2,
-      ZIP_VALUE: 100000,
-      OFFSET_CALC: 1,
-    },
-    {
-      LowZip: '0200000',
-      HighZip: '0285422',
-      Place: '秋田県鹿角市',
-      Truck_OK: 1,
-      Takuhai_Factor: '0',
-      OFFSET: 2,
-      ZIP_VALUE: 100000,
-      OFFSET_CALC: 1,
-    },
-  ]);
+
 
   await TransactionType.createEach([
     {
@@ -237,8 +206,8 @@ module.exports.bootstrap = async function(done) {
       id: 57,
       Name: '洗浄済み転記可',
       Description: 'Wash Completed, post to accounts receivable. If payment already received, ' +
-      'it will be recorded in the independent accounts receivable package. Lotus posts across' +
-      ' the systems, but this could be handled as a separately developed batch op.',
+        'it will be recorded in the independent accounts receivable package. Lotus posts across' +
+        ' the systems, but this could be handled as a separately developed batch op.',
       RecordHandlingGuide: '22',
     },
     {
@@ -254,7 +223,7 @@ module.exports.bootstrap = async function(done) {
   await Transaction.createEach([
     {
       TransactionType: '10',
-      Product: '1',
+      Product: '161',
       Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
@@ -262,7 +231,7 @@ module.exports.bootstrap = async function(done) {
     },
     {
       TransactionType: '10',
-      Product: '2',
+      Product: '189',
       Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
@@ -270,7 +239,7 @@ module.exports.bootstrap = async function(done) {
     },
     {
       TransactionType: '10',
-      Product: '3',
+      Product: '173',
       Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
@@ -278,7 +247,7 @@ module.exports.bootstrap = async function(done) {
     },
     {
       TransactionType: '10',
-      Product: '4',
+      Product: '164',
       Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
@@ -286,7 +255,7 @@ module.exports.bootstrap = async function(done) {
     },
     {
       TransactionType: '10',
-      Product: '5',
+      Product: '165',
       Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
@@ -317,6 +286,741 @@ module.exports.bootstrap = async function(done) {
     },
   ]);
 
+  await DeliveryCost.createEach(
+    [
+      {
+        "LowZip": 4104,
+        "HighZip": 70895,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 32768,
+        "HighZip": 185422,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 185501,
+        "HighZip": 185501,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 185511,
+        "HighZip": 192742,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 65536,
+        "HighZip": 295701,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 98377,
+        "HighZip": 395346,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 131073,
+        "HighZip": 996506,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 1000000,
+        "HighZip": 1000014,
+        "Truck_OK": 1,
+        "Truck_Distance_Factor": 200,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1000100,
+        "HighZip": 1000212,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1000301,
+        "HighZip": 1000301,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1000400,
+        "HighZip": 1000402,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1000511,
+        "HighZip": 1000511,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1000601,
+        "HighZip": 1000601,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1001100,
+        "HighZip": 1001213,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1001301,
+        "HighZip": 1001301,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1001400,
+        "HighZip": 1001623,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1001701,
+        "HighZip": 1001701,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1002100,
+        "HighZip": 1002211,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 1006001,
+        "HighZip": 2088585,
+        "Truck_OK": 1,
+        "Truck_Distance_Factor": 200,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 2100000,
+        "HighZip": 2591335,
+        "Truck_OK": 1,
+        "Truck_Distance_Factor": 200,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 2600000,
+        "HighZip": 2995506,
+        "Truck_OK": 1,
+        "Truck_Distance_Factor": 200,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3000000,
+        "HighZip": 3193705,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3200001,
+        "HighZip": 3294425,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3300000,
+        "HighZip": 3691998,
+        "Truck_OK": 1,
+        "Truck_Distance_Factor": 200,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3700000,
+        "HighZip": 3792398,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3800801,
+        "HighZip": 3840096,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3840097,
+        "HighZip": 3840097,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3840301,
+        "HighZip": 3890115,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3890121,
+        "HighZip": 3890121,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 3890192,
+        "HighZip": 3999601,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 4000000,
+        "HighZip": 4093898,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 4100000,
+        "HighZip": 4314112,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 4314121,
+        "HighZip": 4314121,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 4314195,
+        "HighZip": 4398651,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 4400001,
+        "HighZip": 4970058,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 4980000,
+        "HighZip": 4980823,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 5000000,
+        "HighZip": 5099298,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 5100000,
+        "HighZip": 5195835,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 5200000,
+        "HighZip": 5200363,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 5200461,
+        "HighZip": 5200465,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 5200471,
+        "HighZip": 5291892,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 5300000,
+        "HighZip": 5630373,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 5630801,
+        "HighZip": 5630801,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 5638567,
+        "HighZip": 5998531,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6000000,
+        "HighZip": 6170857,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6180000,
+        "HighZip": 6180024,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6180071,
+        "HighZip": 6180091,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6188503,
+        "HighZip": 6188589,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6190200,
+        "HighZip": 6293579,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6300000,
+        "HighZip": 6300267,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6300271,
+        "HighZip": 6300272,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6301101,
+        "HighZip": 6393809,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6400000,
+        "HighZip": 6471235,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6471271,
+        "HighZip": 6471271,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6471321,
+        "HighZip": 6471325,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 6471581,
+        "HighZip": 6471584,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6471700,
+        "HighZip": 6480263,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6480300,
+        "HighZip": 6480309,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6480401,
+        "HighZip": 6480405,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6490100,
+        "HighZip": 6497216,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6500000,
+        "HighZip": 6795654,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 2
+      },
+      {
+        "LowZip": 6800000,
+        "HighZip": 6840075,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 6840100,
+        "HighZip": 6850435,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 6890100,
+        "HighZip": 6895673,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 6900000,
+        "HighZip": 6995637,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 7000000,
+        "HighZip": 7193814,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 7200001,
+        "HighZip": 7398616,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 7400000,
+        "HighZip": 7596614,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 7600000,
+        "HighZip": 7692992,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 7700000,
+        "HighZip": 7795453,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 7800000,
+        "HighZip": 7891992,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 7900001,
+        "HighZip": 7993772,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 3
+      },
+      {
+        "LowZip": 8000000,
+        "HighZip": 8114393,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8115100,
+        "HighZip": 8115757,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8120000,
+        "HighZip": 8168666,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8170000,
+        "HighZip": 8172333,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8180000,
+        "HighZip": 8391415,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8391421,
+        "HighZip": 8391421,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8391493,
+        "HighZip": 8398540,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8400001,
+        "HighZip": 8480146,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8480400,
+        "HighZip": 8480408,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8488501,
+        "HighZip": 8498588,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8500000,
+        "HighZip": 8596415,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8600001,
+        "HighZip": 8696405,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8700001,
+        "HighZip": 8708691,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8710000,
+        "HighZip": 8710208,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8710226,
+        "HighZip": 8710226,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8710295,
+        "HighZip": 8710795,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8710801,
+        "HighZip": 8710993,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8718501,
+        "HighZip": 8797885,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8800000,
+        "HighZip": 8894602,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 8900000,
+        "HighZip": 8998608,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 4
+      },
+      {
+        "LowZip": 9000000,
+        "HighZip": 9071801,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 9
+      },
+      {
+        "LowZip": 9100001,
+        "HighZip": 9192392,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9200000,
+        "HighZip": 9220673,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9220679,
+        "HighZip": 9220679,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9220801,
+        "HighZip": 9292392,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9300001,
+        "HighZip": 9390156,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9390171,
+        "HighZip": 9390171,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9390192,
+        "HighZip": 9398650,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9400000,
+        "HighZip": 9594636,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9600000,
+        "HighZip": 9793204,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9800000,
+        "HighZip": 9896941,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      },
+      {
+        "LowZip": 9900000,
+        "HighZip": 9998531,
+        "Truck_OK": 0,
+        "Truck_Distance_Factor": 0,
+        "Takuhai_Factor": 1
+      }
+    ]
+
+
+  );
+
   // Save new bootstrap version
   await sails.helpers.fs.writeJson.with({
     destination: bootstrapLastRunInfoPath,
@@ -326,9 +1030,9 @@ module.exports.bootstrap = async function(done) {
     },
     force: true
   })
-  .tolerate((err)=>{
-    sails.log.warn('For some reason, could not write bootstrap version .json file.  This could be a result of a problem with your configured paths, or, if you are in production, a limitation of your hosting provider related to `pwd`.  As a workaround, try updating app.js to explicitly pass in `appPath: __dirname` instead of relying on `chdir`.  Current sails.config.appPath: `'+sails.config.appPath+'`.  Full error details: '+err.stack+'\n\n(Proceeding anyway this time...)');
-  });
+    .tolerate((err) => {
+      sails.log.warn('For some reason, could not write bootstrap version .json file.  This could be a result of a problem with your configured paths, or, if you are in production, a limitation of your hosting provider related to `pwd`.  As a workaround, try updating app.js to explicitly pass in `appPath: __dirname` instead of relying on `chdir`.  Current sails.config.appPath: `' + sails.config.appPath + '`.  Full error details: ' + err.stack + '\n\n(Proceeding anyway this time...)');
+    });
 
   // Don't forget to trigger `done()` when this bootstrap function's logic is finished.
   // (otherwise your server will never lift, since it's waiting on the bootstrap)
