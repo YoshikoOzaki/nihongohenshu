@@ -117,7 +117,7 @@ module.exports.bootstrap = async function (done) {
       {
         "id": 161,
         "NameJ1": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ",
-        "NameJ2": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ",
+        "NameJ2": "ﾌﾙｰﾄ",
         "NameE1": "Rental Plumm Glass",
         "NameE2": "Flute",
         "UnitPrice": 120,
@@ -129,7 +129,7 @@ module.exports.bootstrap = async function (done) {
       {
         "id": 162,
         "NameJ1": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ",
-        "NameJ2": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾎﾜｲﾄA",
+        "NameJ2": "ﾎﾜｲﾄA",
         "NameE1": "Rental Plumm Glass",
         "NameE2": "White A",
         "UnitPrice": 170,
@@ -141,7 +141,7 @@ module.exports.bootstrap = async function (done) {
       {
         "id": 163,
         "NameJ1": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ",
-        "NameJ2": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾎﾜｲﾄB",
+        "NameJ2": "ﾎﾜｲﾄB",
         "NameE1": "Rental Plumm Glass",
         "NameE2": "White B",
         "UnitPrice": 230,
@@ -153,7 +153,7 @@ module.exports.bootstrap = async function (done) {
       {
         "id": 164,
         "NameJ1": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ",
-        "NameJ2": "ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ RW",
+        "NameJ2": "RW",
         "NameE1": "Rental Plumm Glass",
         "NameE2": "Red or White",
         "UnitPrice": 170,
