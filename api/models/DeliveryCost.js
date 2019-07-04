@@ -38,7 +38,7 @@ module.exports = {
     },
 
     Truck_Distance_Factor: {
-      type: 'number',
+      type: 'string',
       description: '',
       example: 156,
     },

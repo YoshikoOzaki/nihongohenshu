@@ -8,10 +8,9 @@ describe('Glass Controller', function () {
         done(null, sails);
     });
 
-    it('should get data', function (done) {
+    it('get glasses', function (done) {
         request(sails.hooks.http.app)
             .get('/api/v1/glass/get-glasses')
-            .send({id: 123, someOtherParam: "something"})
             .expect(200)
             .end(function (err, res) {
                 if (err) return done(err);

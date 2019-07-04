@@ -45,4 +45,5 @@ module.exports.policies = {
   'veritrans/charge' : true,
 
   'delivery/get-takuhai-time-slots' : true,
+  'delivery/get-truck-distance-factor-costing' : true,
 };
