@@ -484,7 +484,7 @@ module.exports.bootstrap = async function (done) {
         "NameE1": "Rental Plumm",
         "NameE2": "Banner",
         "UnitPrice": 1,
-        "Type": "Addon"
+        "Type": "Addon",
       },
       {
         "id": 241,
