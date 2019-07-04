@@ -43,13 +43,15 @@ parasails.registerComponent('itemAdder', {
         />
       </div>
       <div class="col-md-12 text-center">
-        <div class="mb-3">
-          <h6 class="text-center">Plumm</h6>
-          <div>{{ product.NameEng }}</div>
+        <div class="mb-1">
+          <h6 class="text-center">{{ product.NameE1 }}</h6>
+          <h6 class="text-center">{{ product.NameJ1 }}</h6>
+          <div>{{ product.NameE2 }}</div>
+          <div>{{ product.NameJ2 }}</div>
           <small>¥{{ product.UnitPrice }}</small>
         </div>
         <input
-          class="form-control mb-3"
+          class="form-control mb-1"
           id="quantity"
           name="quantity"
           type="number"
@@ -87,7 +89,8 @@ parasails.registerComponent('itemAdder', {
             <span>&times;</span>
           </button>
           <h5 class="modal-title">
-            {{ product.NameEng }}
+            {{ product.NameE1 }}
+            {{ product.NameJ1 }}
           </h5>
         </div>
         <div class="modal-body">
@@ -97,14 +100,12 @@ parasails.registerComponent('itemAdder', {
               :src="product.ImgSrc"
               @click="clickProductImage"
             />
-            <h6>Plumm</h6>
-            <div>{{ product.NameEng }}</div>
-            <div>{{ product.NameJap }}</div>
-            <small>Total Count: {{ product.TotalQuantityInSystem }}</small>
+            <h6>{{ product.NameE1 }}</h6>
+            <h6>{{ product.NameJ1 }}</h6>
+            <div>{{ product.NameE2 }}</div>
+            <div>{{ product.NameJ2 }}</div>
             <br />
-            <small>Sku: {{ product.Sku }}</small>
-            <br />
-            <small>Id: {{ product.id }}</small>
+            <small>Sku: {{ product.id }}</small>
             <br />
             <small>¥{{ product.UnitPrice }}</small>
           </div>

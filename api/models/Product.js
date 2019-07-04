@@ -11,7 +11,7 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    NameE: {
+    NameE1: {
       type: 'string',
       required: true,
       description: 'Full representation of the glass\'es name in english',
@@ -19,7 +19,21 @@ module.exports = {
       example: 'Plumm Glass Flute (Handmade)'
     },
 
-    NameJ: {
+    NameE2: {
+      type: 'string',
+      description: 'Full representation of the glass\'es name in english',
+      maxLength: 120,
+      example: 'Plumm Glass Flute (Handmade)'
+    },
+
+    NameJ1: {
+      type: 'string',
+      description: 'Full representation of the glass\'es name in japanese',
+      maxLength: 120,
+      example: 'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ'
+    },
+
+    NameJ2: {
       type: 'string',
       description: 'Full representation of the glass\'es name in japanese',
       maxLength: 120,
@@ -56,6 +70,11 @@ module.exports = {
     RackHeight: {
       type: 'number',
       description: 'in mm',
+    },
+
+    Type: {
+      type: 'string',
+      description: 'Glassware Delivery Addon...',
     },
 
     OrderLineNumbers: {

@@ -34,7 +34,8 @@ parasails.registerPage('selection', {
 
     this.cart = await parasails.util.getCart();
 
-    this.glasses = await Cloud.getGlasses();
+    const products = await Cloud.getGlasses();
+    this.glasses = _.filter(products, { 'Type': 'Glassware' });
   },
 
   mounted: async function() {
@@ -48,27 +49,6 @@ parasails.registerPage('selection', {
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
-
-    createGlass: async function() {
-      // console.log(Cloud);
-      result = await Cloud.createGlass(
-        'Rental Plumm Glass Flute',
-        'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ',
-        '555',
-        'https://www.plumm.com/globalassets/productassets/pluh3320a/plumm-listing/pluh3320a_1_plumm-listing.jpg',
-        '167',
-        '120',
-        '36',
-      );
-      // console.log(result);
-    },
-
-    getGlasses: async function() {
-      // result = await io.socket.get('/glass?sort=createdAt DESC');
-      result = await Cloud.getGlasses();
-      this.glasses = result;
-    },
-
     createOrderFromCart: async function() {
       const cart = await parasails.util.getCart();
       const payload = {

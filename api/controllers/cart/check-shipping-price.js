@@ -52,6 +52,8 @@ module.exports = {
     }
     // from the cart items and the post code, return the shipping cost
 
+    // check for items
+
     // some japanese will have a '-' in them that needs to be cleared probably before here though
     const ShippingFactorRecord = await DeliveryCost.findOne({
       LowZip: { '<=': inputs.Postcode },
@@ -133,10 +135,6 @@ module.exports = {
           });
         })
 
-        console.log(differentRackSizes);
-        console.log(itemLineRackRequirements);
-        console.log(leftOverGlassesByRackCapacity);
-
         const extraRacksRequiredTotal = _.sum(leftOverGlassesByRackCapacity, 'extraRacksRequired');
         const extraHeightRequiredTotal = _.sum(leftOverGlassesByRackCapacity, 'extraRequiredHeight');
         const totalHeight = totalRequiredFullRackHeight + extraHeightRequiredTotal;
@@ -153,9 +151,8 @@ module.exports = {
       }
 
       const racks = await getRacks();
-      await console.log(racks);
 
-      const maxHeightAllowablePerDolly = 1646;
+      const maxHeightAllowablePerDolly = 1646; // env variable
       const quantityOfDollys = _.ceil(racks.totalHeight / maxHeightAllowablePerDolly, 0);
       const remainingHeight = racks.totalHeight % maxHeightAllowablePerDolly;
 
@@ -182,11 +179,13 @@ module.exports = {
       const racksOnLastDolly = getRacksOnLastDolly();
 
       // get these from db
-      const truckDistanceFactor = 200; // use to look up the ones below
-      const minimumChargePer500x500ForTruck = 2200;
-      const chargePerExtraRackFirstDolly = 600;
-      const chargePerExtraDolly = 1000
-      const chargeExtraRackFrom2ndDolly = 200;
+      const TruckDistanceFactor = ShippingFactorRecord.Truck_Distance_Factor; // use to look up the ones below
+      const TruckDistanceFactorCostResult = await TruckDistanceFactorCosting.findOne({ TruckDistanceFactor: TruckDistanceFactor });
+
+      const minimumChargePer500x500ForTruck = TruckDistanceFactorCostResult.ChargeFirst500x500mm;
+      const chargePerExtraRackFirstDolly = 600; // env variable
+      const chargePerExtraDolly = TruckDistanceFactorCostResult.ChargePerExtraDolly
+      const chargeExtraRackFrom2ndDolly = TruckDistanceFactorCostResult.ChargePerExtraRackFromSecondDolly;
 
       const chargeFirstDolly = minimumChargePer500x500ForTruck + (chargePerExtraRackFirstDolly * extraRacksFirstDolly);
       const chargeExtraDollies = extraDollysExceptLast * chargePerExtraDolly;
@@ -198,9 +197,10 @@ module.exports = {
 
       const response = {
         postcode: inputs.Postcode,
-        price: actualTruckDeliveryCharge,
+        price: actualTruckDeliveryCharge < 0  ? 0 : actualTruckDeliveryCharge,
         shippingPossible: true,
         shippingType: 'truck',
+        totalCalculatedDeliveryCharge,
       };
 
       return exits.success(response);
@@ -303,7 +303,6 @@ module.exports = {
                         shippingPossible: ShippingFactorRecord,
                         result2,
                       };
-
                       return exits.success(returnPayload);
                     }
                   )
