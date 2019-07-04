@@ -227,7 +227,7 @@ module.exports = {
         let cartItemsCalculation = [];
 
         for (const cartItem of cartItems) {
-          var product = await Product.findOne({ id: cartItem.Id });
+          let product = await Product.findOne({ id: cartItem.Id });
 
           const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
           const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);

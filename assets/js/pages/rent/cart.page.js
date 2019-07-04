@@ -28,7 +28,8 @@ parasails.registerPage('cart', {
     _.extend(this, SAILS_LOCALS);
     moment.locale("ja");
     this.cart = await parasails.util.getCart();
-    this.glasses = await Cloud.getGlasses();
+    const products = await Cloud.getGlasses();
+    this.glasses = _.filter(products, { Type: 'Glassware' });
   },
 
   mounted: async function() {
