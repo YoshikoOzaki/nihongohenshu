@@ -267,10 +267,9 @@ module.exports = {
     const totalPriceWithWash = (basePrice +  washAndPolishConstant) * Quantity;
 
     discountedInputs = {
+      ...item,
       Id: inputs.Id,
-      NameE: item.NameE,
       Quantity: inputs.Quantity,
-      UnitPrice: item.UnitPrice,
       ImgSrc: item.ImgSrc,
       WashAndPolish: washAndPolishConstant,
       TotalPrice: totalPrice,

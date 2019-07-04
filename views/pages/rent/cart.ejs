@@ -43,6 +43,9 @@
                     <table class="table table-bordered table-sm">
                       <thead>
                         <th>
+                          Image
+                        </th>
+                        <th>
                           Product
                         </th>
                         <th>
@@ -64,10 +67,11 @@
                       <!-- Seperate this into component so it can do it's own update -->
                       <tr v-for="(item, index) in cart.items" :key="item.Id">
                         <td>
-                          <div class="d-flex">
-                          <img style="height: 85px" :src="item.ImgSrc" />
-                          <div>{{item.NameE}}</div>
-                          </div>
+                          <img style="height: 120px" :src="item.ImgSrc" />
+                        </td>
+                        <td>
+                          <div>{{item.NameJ1}}</div>
+                          <div>{{item.NameJ2}}</div>
                         </td>
                         <td>
                           <div class="text-success"
@@ -220,7 +224,7 @@
                     <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id"
                       :class="[formErrorsItems.Id ? 'is-invalid' : '']">
                       <option disabled value="">Please select one</option>
-                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameE}} {{glass.NameJ}}</option>
+                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameJ1}} {{glass.NameJ2}}</option>
                     </select>
                     <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
                   </div>
