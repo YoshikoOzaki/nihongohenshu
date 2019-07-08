@@ -61,19 +61,6 @@ parasails.registerPage('selection', {
       order = await Cloud.createOrder(..._.values(payload));
     },
 
-    sendOrderToStripe: async function() {
-      const cart = await parasails.util.getCart();
-      const payload = {
-        DateStart: cart.timePeriod.DateStart,
-        DateEnd: cart.timePeriod.DateEnd,
-        DaysOfUse: cart.timePeriod.DaysOfUse,
-        Items: cart.items,
-      }
-
-      parasails.util.openStripeCheckout("pk_test_IqoHBVhDOCbe2kBaZCbjk3Ow", "jarodccrowe@gmail.com");
-      // gets token if cc + details are valid - use token to charge the card
-    },
-
     submittedForm: async function() {
       // Redirect to the account page on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--
@@ -152,6 +139,7 @@ parasails.registerPage('selection', {
         const dataWithTimePeriod = {
           ...data,
           ...oldCart.timePeriod,
+          Cart: oldCart,
         }
 
         result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
@@ -168,13 +156,23 @@ parasails.registerPage('selection', {
       }
 
       const getCartWithNewItemAndShippingCalulated = async function(newCart){
-        const postcode = () => {
+        const getPostcode = () => {
           if (newCart.shipping && newCart.shipping.postcode) {
             return newCart.shipping.postcode;
           }
           return 0;
         }
-        result = await Cloud.checkShippingPrice(postcode(), newCart);
+        const getPostcodeRaw = () => {
+          if (newCart.shipping && newCart.shipping.postcodeRaw) {
+            return newCart.shipping.postcodeRaw;
+          }
+          return 0;
+        }
+        result = await Cloud.checkShippingPrice(
+          getPostcode(),
+          getPostcodeRaw(),
+          newCart
+        );
         const newCart2 = {
           ...newCart,
           shipping: {

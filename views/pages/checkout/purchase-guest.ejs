@@ -25,7 +25,7 @@
             <label for="full-name">Choose a Takuhai Delivery Window</label>
             <select class="form-control" v-model.trim="formData.TakuhaiTimeSlot" id="takuhaiTimeSlot" name="takuhaiTimeSlot"
               :class="[formErrors.TakuhaiTimeSlot ? 'is-invalid' : '']">
-              <option disabled value="">Please select one</option>
+              <option disabled value="">1つを選択してください</option>
               <option v-for="timeSlot in takuhaiTimeSlots" :value="timeSlot.id">{{timeSlot.Name}}</option>
             </select>
             <div class="invalid-feedback" v-if="formErrors.TakuhaiTimeSlot">Please enter a Takuhai Time Slot.</div>

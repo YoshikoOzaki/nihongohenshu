@@ -58,6 +58,12 @@
                           Price
                         </th>
                         <th>
+                          Price
+                        </th>
+                        <th>
+                          Discount
+                        </th>
+                        <th>
                           Total
                         </th>
                         <th>
@@ -108,23 +114,43 @@
                         <td>
                           ¥{{item.UnitPrice}}
                         </td>
-                        <!-- <td>
-                          {{100 - item.DiscountedUnitPrice/item.UnitPrice * 100}}%
-                        </td> -->
+                        <td>
+                          ¥{{item.DiscountedUnitPrice}}
+                        </td>
+                        <td>
+                          <span v-if="Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100) > 1">
+                            {{Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100)}}%
+                          </span>
+                          <span v-if="!(Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100) > 1)">
+                            0%
+                          </span>
+                        </td>
                         <td>
                           ¥{{item.DiscountedTotalPrice}}
                         </td>
                         <td>
-                          <button @click="removeItemFromCart({index: index})"
+                          <!-- <button @click="removeItemFromCart({index: index})"
                             class="btn btn-xs btn-block btn-outline-secondary">
                             <span class="fa fa-trash mr-1"></span><i><small>Remove</small></i>
+                          </button> -->
+                          <button @click="removeItemFromCart({ index: index })" type="submit"
+                            class="btn btn-sm btn-block ajax-button" :class="[syncing ? 'syncing' : '']">
+                            <span class="button-text" v-if="!syncing">
+                              <slot name="default">Remove</slot>
+                            </span>
+                            <span class="button-loader clearfix" v-if="syncing">
+                              <slot name="syncing-state">
+                                <div class="loading-dot dot1"></div>
+                                <div class="loading-dot dot2"></div>
+                              </slot>
+                            </span>
                           </button>
                         </td>
                       </tr>
                     </table>
                   </div>
                   <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
-                    <table class="table table-bordered table-sm mb-0">
+                    <table class="table table-bordered table-sm">
                       <thead class="thead-dark">
                         <th>
                           Delivery Date
@@ -137,6 +163,12 @@
                         </th>
                         <th>
                           Postcode
+                        </th>
+                        <th>
+                          Shipping Method
+                        </th>
+                        <th>
+                          Area
                         </th>
                         <th>
                           Shipping
@@ -156,9 +188,15 @@
                           {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
                         </td>
                         <td>
-                          {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}<br />
+                          {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
                           <small
                             class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                        </td>
+                        <td>
+                          {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
+                        </td>
+                        <td>
+                          {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
                         </td>
                         <td>
                           ¥{{cart.shipping && cart.shipping.price || 0}}
@@ -223,7 +261,7 @@
                     <label for="full-name">Choose a glass type</label>
                     <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id"
                       :class="[formErrorsItems.Id ? 'is-invalid' : '']">
-                      <option disabled value="">Please select one</option>
+                      <option disabled value="">1つを選択してください</option>
                       <option v-for="glass in glasses" :value="glass.id">{{glass.NameJ1}} {{glass.NameJ2}}</option>
                     </select>
                     <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
@@ -238,6 +276,7 @@
                     <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
                   </div>
                 </div>
+                <div class="text-danger " v-if="formErrorsItems.Duplicate">Item is already in cart, edit in cart</div>
               </div>
               <div class="row">
                 <div class="col-sm-12">
@@ -323,10 +362,10 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Postcode</label>
-                    <input class="form-control" id="postcode" name="postcode" type="number"
-                      :class="[formErrorsShipping.Postcode ? 'is-invalid' : '']"
-                      v-model.trim="formDataShipping.Postcode" autocomplete="postcode">
-                    <div class="invalid-feedback" v-if="formErrorsShipping.Postcode">Please enter a postcode.</div>
+                    <input class="form-control" id="postcode" name="postcode"
+                      :class="[formErrorsShipping.PostcodeRaw ? 'is-invalid' : '']"
+                      v-model.trim="formDataShipping.PostcodeRaw" autocomplete="postcode">
+                      <div class="invalid-feedback" v-if="formErrorsShipping.PostcodeRaw">Please enter a postcode in the format of 111-1111.</div>
                   </div>
                 </div>
               </div>
