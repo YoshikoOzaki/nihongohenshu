@@ -40,7 +40,10 @@ module.exports = {
     },
 
     Items: {
-      type: [{Id: "string", Quantity: "string"}]
+      type: [{
+        id: "string",
+        Quantity: "string"
+      }]
     },
 
     ReserveOnly: {
@@ -89,7 +92,7 @@ module.exports = {
     _.forEach(inputs.Items, async (item, i) => {
       const itemInputs = {
         Quantity: item.Quantity,
-        Product: Number(item.Id),
+        Product: Number(item.id),
         Order: Number(newRecord.id),
       }
 

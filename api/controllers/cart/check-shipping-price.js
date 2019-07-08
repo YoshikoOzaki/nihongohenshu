@@ -88,7 +88,7 @@ module.exports = {
       const getRacks = async function() {
         const itemLineRackRequirements = [];
         await asyncForEach(cartItems, async(cartItem) => {
-          const product = await Product.findOne({ id: cartItem.Id });
+          const product = await Product.findOne({ id: cartItem.id });
           const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
           const partialRackItemQuantity = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
           const partialRacksRequired = partialRackItemQuantity > 0 ? 1 : 0;
@@ -237,13 +237,13 @@ module.exports = {
 
         for (const cartItem of cartItems) {
           try {
-          const product = await Product.findOne({ id: cartItem.Id });
+          const product = await Product.findOne({ id: cartItem.id });
 
           const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
           const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
 
           const newCartItem = {
-            productCode: cartItem.Id,
+            productCode: cartItem.id,
             quantityOfItems: cartItem.Quantity,
             rackCapactity: product.RackCapacity,
             fullRacksRequired,

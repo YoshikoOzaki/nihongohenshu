@@ -56,7 +56,7 @@ parasails.registerComponent('cartDisplay', {
               Total
             </th>
           </tr>
-          <tr v-for="(item, index) in cart.items" :key="item.Id">
+          <tr v-for="(item, index) in cart.items" :key="item.id">
             <td>
               <img style="height: 85px" :src="item.ImgSrc" />
             </td>
@@ -176,7 +176,7 @@ parasails.registerComponent('cartDisplay', {
       if (cart.items && cart.items.length > 0) {
         const checkCartItemAvailable = async function(item) {
           const dataWithTimePeriod = {
-            Id: item.Id,
+            Id: item.id,
             Quantity: item.Quantity,
             ...cart.timePeriod,
             OrderIdToIgnore: cart.orderIdToIgnore,

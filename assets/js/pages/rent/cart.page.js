@@ -279,7 +279,7 @@ parasails.registerPage('cart', {
       const getCartWithNewItem = async function(itemData) {
         // this is a decent example of sending I think
         const itemPayload = {
-          Id: data.Id,
+          Id: data.id,
           Quantity: data.Quantity,
           DateStart: oldCart.timePeriod.DateStart,
           DateEnd: oldCart.timePeriod.DateEnd,
@@ -408,7 +408,7 @@ parasails.registerPage('cart', {
       try {
       const oldCart = await parasails.util.getCart();
       const dataWithTimePeriod = {
-        Id: oldCart.items[index].Id,
+        Id: oldCart.items[index].id,
         Quantity: quantity,
         ...oldCart.timePeriod,
         Cart: oldCart,

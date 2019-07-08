@@ -160,7 +160,7 @@ parasails.registerPage('purchase-guest', {
       if (cart.items && cart.items.length > 0) {
         const checkCartItemAvailable = async function(item) {
           const dataWithTimePeriod = {
-            Id: item.Id,
+            Id: item.id,
             Quantity: item.Quantity,
             ...cart.timePeriod,
             OrderIdToIgnore: cart.orderIdToIgnore,

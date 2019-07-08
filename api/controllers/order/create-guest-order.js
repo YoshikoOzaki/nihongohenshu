@@ -41,7 +41,7 @@ module.exports = {
 
     Items: {
       type: [{
-        Id: "number",
+        id: "number",
         Quantity: "number",
         UnitPrice: "number"
       }]
@@ -143,7 +143,7 @@ module.exports = {
         const itemInputs = {
           Quantity: Number(item.Quantity),
           UnitPrice: Number(item.UnitPrice),
-          Product: Number(item.Id),
+          Product: Number(item.id),
           Order: Number(order.id),
         }
 
