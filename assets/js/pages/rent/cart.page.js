@@ -264,8 +264,9 @@ parasails.registerPage('cart', {
     },
 
     handleItemSubmitting: async function(data) {
+      await console.log(data);
       // check if it's already in the cart
-      const oldCart = await parasails.util.getCart();
+      const cart = await parasails.util.getCart();
 
       // console.log(cart.items)
       // console.log(Number(argins.Id))
@@ -279,19 +280,19 @@ parasails.registerPage('cart', {
       const getCartWithNewItem = async function(itemData) {
         // this is a decent example of sending I think
         const itemPayload = {
-          Id: data.id,
+          Id: data.Id,
           Quantity: data.Quantity,
-          DateStart: oldCart.timePeriod.DateStart,
-          DateEnd: oldCart.timePeriod.DateEnd,
-          DaysOfUse: oldCart.timePeriod.DaysOfUse,
-          OrderIdToIgnore: oldCart.OrderIdToIgnore,
+          DateStart: cart.timePeriod.DateStart,
+          DateEnd: cart.timePeriod.DateEnd,
+          DaysOfUse: cart.timePeriod.DaysOfUse,
+          OrderIdToIgnore: cart.OrderIdToIgnore,
         }
         const itemCheckResult = await Cloud.checkCartItemValid(..._.values(itemPayload));
 
         const newCart = {
-          ...oldCart,
+          ...cart,
           items: [
-            ...oldCart.items,
+            ...cart.items,
             itemCheckResult
           ],
         };

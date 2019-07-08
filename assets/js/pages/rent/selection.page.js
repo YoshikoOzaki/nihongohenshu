@@ -78,19 +78,19 @@ parasails.registerPage('selection', {
         const dataWithTimePeriod = {
           ...data,
           ...oldCart.timePeriod,
-          Cart: oldCart,
         }
 
         try {
-        result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-        const newCart = {
-          ...oldCart,
-          items: [
-            ...oldCart.items,
-            result
-          ],
-        };
-        return newCart;
+          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+          const newCart = {
+            ...oldCart,
+            items: [
+              ...oldCart.items,
+              result
+            ],
+          };
+          return newCart;
+          this.syncing = false;
         } catch (err) {
           toastr.error('Item could not be added to cart');
           console.log(err);
@@ -124,6 +124,7 @@ parasails.registerPage('selection', {
             },
           };
           return newCart2;
+          this.syncing = false;
         } catch (err) {
           toastr.error('Item could not be added to cart');
           console.log(err);
