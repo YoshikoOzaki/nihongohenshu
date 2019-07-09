@@ -406,18 +406,20 @@ parasails.registerPage('cart', {
       }
       this.syncing = true;
       try {
-      const oldCart = await parasails.util.getCart();
+      const cart = await parasails.util.getCart();
       const dataWithTimePeriod = {
-        Id: oldCart.items[index].id,
+        Id: cart.items[index].id,
         Quantity: quantity,
-        ...oldCart.timePeriod,
-        Cart: oldCart,
+        DateStart: cart.timePeriod.DateStart,
+        DateEnd: cart.timePeriod.DateEnd,
+        DaysOfUse: cart.timePeriod.DaysOfUse,
+        OrderIdToIgnore: cart.OrderIdToIgnore,
       }
 
       const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
 
       const newCart = {
-        ...oldCart,
+        ...cart,
       }
       newCart.items[index] = result;
 
