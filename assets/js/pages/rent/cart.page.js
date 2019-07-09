@@ -78,13 +78,12 @@ parasails.registerPage('cart', {
       parametersRequired.cartItemsAreValid = cart.items && _.each(cart.items, (o) => {
         return o.Available.available === 'Available';
       }).length === cart.items.length;
-      parametersRequired.shippingCodeEntered = cart.shipping && cart.shipping.Postcode > 0;
+      parametersRequired.shippingCodeEntered = cart.shipping && cart.shipping.Postcode;
       parametersRequired.shippingCodeValid = cart.shipping && cart.shipping.shippingPossible !== false;
       parametersRequired.datesEntered = cart.timePeriod && !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
       parametersRequired.daysOfUseEntered = cart.timePeriod && cart.timePeriod.DaysOfUse > 0;
-      if (
-        _.includes(parametersRequired, false)
-      ) {
+      console.log(parametersRequired);
+      if (_.includes(parametersRequired, false)) {
         this.checkoutEnabled = false;
         return;
       }

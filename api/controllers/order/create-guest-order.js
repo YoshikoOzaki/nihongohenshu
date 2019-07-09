@@ -88,10 +88,6 @@ module.exports = {
       type: 'string',
     },
 
-    Paid: {
-      type: 'boolean',
-    },
-
     TakuhaiTimeSlot: {
       type: 'string',
       description: ''

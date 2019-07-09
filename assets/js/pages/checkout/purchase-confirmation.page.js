@@ -20,8 +20,19 @@ parasails.registerPage('purchase-confirmation', {
   },
   mounted: async function() {
 
+    try {
     this.loadedOrder = await parasails.util.getCompletedOrder();
-    this.orderWithAllData = await Cloud.getOrder(this.loadedOrder.id);
+    } catch (err) {
+      toastr.error(err);
+    }
+    try {
+      const payload = {
+        Id: this.loadedOrder.id,
+      }
+      this.orderWithAllData = await Cloud.getOrder(..._.values(payload));
+    } catch (err) {
+      toastr.error(err);
+    }
 
   },
 

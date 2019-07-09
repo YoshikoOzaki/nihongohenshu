@@ -61,7 +61,12 @@ parasails.registerComponent('cartDisplay', {
               <img style="height: 85px" :src="item.ImgSrc" />
             </td>
             <td>
-              {{item.NameEng}}
+              <div>
+                {{item.NameJ1}}
+              </div>
+              <div>
+                {{item.NameJ2}}
+              </div>
             </td>
             <td>
               <div class="text-success" v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
