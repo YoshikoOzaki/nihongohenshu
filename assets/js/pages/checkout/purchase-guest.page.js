@@ -61,6 +61,9 @@ parasails.registerPage('purchase-guest', {
       this.syncMessage = "Creating Order...";
       const cart = await parasails.util.getCart();
       // need to add address to the order
+      // any created orders will go in as unpaid
+      // only backend can change to paid
+      // this should really be included in charge though
       const orderPayload = {
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
@@ -78,14 +81,13 @@ parasails.registerPage('purchase-guest', {
         Telephone1: this.formData.Telephone1,
         Email: this.formData.Email1,
         Comment: this.formData.Comment,
-        Paid: false,
         TakuhaiTimeSlot: this.formData.TakuhaiTimeSlot,
       }
       let order = {};
       try {
         order = await Cloud.createGuestOrder(..._.values(orderPayload));
       } catch(err) {
-        console.log(err);
+        toastr.error(err);
         this.syncMessage = "";
       }
       // await localStorage.setItem('completedOrder', JSON.stringify(order));
@@ -138,6 +140,7 @@ parasails.registerPage('purchase-guest', {
       // maybe i create and delete the order in here
       // pass in the order and the charge that needs to be made
       // create -> charge -> delete
+      // no this should all be done on the api...
       this.syncMessage = "Charging Credit Card...";
       // cant just use the cart details -> they need to be validated
       const cart = await parasails.util.getCart();
@@ -149,8 +152,13 @@ parasails.registerPage('purchase-guest', {
         reserveOrderId: cart.orderIdToIgnore,
       };
 
-      const chargeResult = await Cloud.charge(..._.values(chargePayload));
-      return chargeResult;
+      try {
+        const chargeResult = await Cloud.charge(..._.values(chargePayload));
+        return chargeResult;
+      } catch (err) {
+        toastr.error(err);
+        return;
+      }
     },
 
     checkAllCartAvailability: async function() {
@@ -160,7 +168,7 @@ parasails.registerPage('purchase-guest', {
       if (cart.items && cart.items.length > 0) {
         const checkCartItemAvailable = async function(item) {
           const dataWithTimePeriod = {
-            Id: item.Id,
+            Id: item.id,
             Quantity: item.Quantity,
             ...cart.timePeriod,
             OrderIdToIgnore: cart.orderIdToIgnore,
@@ -183,7 +191,6 @@ parasails.registerPage('purchase-guest', {
           changedAvailabilites.push(i);
         }
       })
-      console.log(changedAvailabilites);
 
       if (changedAvailabilites.length > 0) {
         return false;
@@ -210,43 +217,29 @@ parasails.registerPage('purchase-guest', {
         return;
       }
 
-      try {
-        // get cc token
-        const ccToken = await this.getToken();
-        console.log(ccToken);
-        if (ccToken.status === 'failure') {
-          toastr.error(ccToken.message);
-          return;
-        }
-        // create an unpaid order
-        const guestOrder = await this.createGuestOrder();
-        // charge the card - on success update order to paid
-        const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
-
-        if (chargeCardResult.result.mstatus === 'failure') {
-          toastr.error('Credit Card Error ' + chargeCardResult.result.merrMsg);
-          // delete newly made order and delete all order rows
-        }
-
-        if (chargeCardResult.result.mstatus === 'success') {
-          toastr.success('Order Created ' + chargeCardResult.result.merrMsg);
-          await localStorage.setItem('completedOrder', JSON.stringify(guestOrder));
-          // window.location = order-confirmation
-          // if (cart.orderIdToIgnore) {
-          //   console.log('delete ' + cart.orderIdToIgnore);
-          //   const deleteResult = await Cloud.deleteOrder(cart.orderIdToIgnore);
-          //   console.log(deleteResult);
-          // }
-          //
-        }
-
-        this.syncMessage = '';
-
-      } catch(err) {
-        const deleteResult = await Cloud.deleteOrder(guestOrder.id);
-        toastr.error(err.message);
-        console.log(err);
+      // get cc token
+      const ccToken = await this.getToken();
+      if (ccToken.status === 'failure') {
+        toastr.error(ccToken.message);
+        return;
       }
+      // create an unpaid order
+      const guestOrder = await this.createGuestOrder();
+
+      // charge card and update order to paid
+      const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
+
+      if (chargeCardResult.charge.result.mstatus === 'failure') {
+        toastr.error('Credit Card Error ' + chargeCardResult.charge.result.merrMsg);
+      }
+
+      if (chargeCardResult.charge.result.mstatus === 'success') {
+        toastr.success('Order Created ' + chargeCardResult.charge.result.merrMsg);
+        await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
+        // window.location = order-confirmation
+      }
+
+      this.syncMessage = '';
     },
 
     handleParsingReserveForm: function() {

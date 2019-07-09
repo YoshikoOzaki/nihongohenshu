@@ -131,7 +131,14 @@ module.exports = {
     }
 
     const returnPayload = {
-      ...resultJson,
+      charge: {
+        ...resultJson,
+      },
+      order: {
+        ...await Order.findOne({
+          id: inputs.orderId,
+        }).populate('TakuhaiTimeSlot'),
+      }
     }
 
     return exits.success(await returnPayload);

@@ -67,11 +67,25 @@ module.exports = {
       'parameters should have been validated/coerced _before_ they were sent.'
     },
 
+    duplicateItem: {
+      responseType: 'badRequest',
+      description: 'This item is already in the cart',
+      extendedDescription: 'This item is already in the cart, please update the' +
+      ' cart quantitiy rather than adding the same item again'
+    },
+
   },
 
 
   fn: async function (inputs, exits) {
     // check availability and add available to each item that is checked
+    // const result = _.findIndex(inputs.Cart.items, { 'id': Number(inputs.Id) });
+    // console.log(result);
+    // if (_.findIndex(inputs.Cart.items, { 'id': Number(inputs.Id) }) >= 0) {
+    //   return exits.duplicateItem('This item is already in the cart, please update the' +
+    //   ' cart quantitiy rather than adding the same item again');
+    // }
+
     async function getAvailability () {
       if (!inputs.DateEnd || !inputs.DateStart) {
         return 'No date set to evaluate';
@@ -192,9 +206,16 @@ module.exports = {
     const fullRacksRoundedDown = Math.floor(fullRacks);
     const quantityInFullRacks = RackCapacity * fullRacksRoundedDown;
     const quantityInPartiallyFullRack = Quantity - quantityInFullRacks;
+    const partiallyFullRacks = quantityInPartiallyFullRack > 0 ? 1 : 0;
 
-    const quantityFactorForFullRack = 0.9;
-    const quantityFactorForPartialRack = 0.9;
+    // const quantityFactorForFullRack = 0.46+0.551/1.04^(_.max([0, fullRacksRoundedDown -3]));
+    const racksToThePowerOf = _.max([0, fullRacksRoundedDown + partiallyFullRacks -3]);
+    // const quantityFactorForFullRack = Math.pow(0.46 + ( 0.551 / 1.04 ), racksToThePowerOf);
+    const quantityFactorForFullRackRaw = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
+    const quantityFactorForFullRack = quantityFactorForFullRackRaw > 1 ? 1 : quantityFactorForFullRackRaw;
+    // const quantityFactorForFullRack = Math.pow((racksToThePowerOf), 0.46 + ( 0.551 / 1.04 ));
+
+    const quantityFactorForPartialRack = quantityFactorForFullRack;
 
     // Create Prices
     // ------
@@ -250,16 +271,7 @@ module.exports = {
       quantityInPartiallyFullRack,
     );
 
-    console.log(
-      basePrice,
-      daysOfUseDiscountFactor,
-      quantityFactorForFullRack,
-      quantityInFullRacks,
-      quantityFactorForPartialRack,
-      quantityInPartiallyFullRack
-    );
-
-    const discountedUnitPrice = discountedBasePrice / Quantity;
+    const discountedUnitPrice = Math.round(discountedBasePrice / Quantity);
     const discountedUnitPriceWithWash = discountedUnitPrice + washAndPolishConstant;
 
     // Use the new discounted unit price to calculate the discounted total cost
@@ -268,7 +280,6 @@ module.exports = {
 
     discountedInputs = {
       ...item,
-      Id: inputs.Id,
       Quantity: inputs.Quantity,
       ImgSrc: item.ImgSrc,
       WashAndPolish: washAndPolishConstant,
@@ -279,6 +290,7 @@ module.exports = {
       DiscountedUnitPriceWithWash: discountedUnitPriceWithWash,
       DiscountedTotalPrice: discountedTotalPrice,
       Available: await getAvailability(),
+      quantityFactorForFullRack,
     }
 
     return exits.success(discountedInputs);

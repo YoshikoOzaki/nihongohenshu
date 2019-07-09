@@ -61,19 +61,6 @@ parasails.registerPage('selection', {
       order = await Cloud.createOrder(..._.values(payload));
     },
 
-    sendOrderToStripe: async function() {
-      const cart = await parasails.util.getCart();
-      const payload = {
-        DateStart: cart.timePeriod.DateStart,
-        DateEnd: cart.timePeriod.DateEnd,
-        DaysOfUse: cart.timePeriod.DaysOfUse,
-        Items: cart.items,
-      }
-
-      parasails.util.openStripeCheckout("pk_test_IqoHBVhDOCbe2kBaZCbjk3Ow", "jarodccrowe@gmail.com");
-      // gets token if cc + details are valid - use token to charge the card
-    },
-
     submittedForm: async function() {
       // Redirect to the account page on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--
@@ -82,67 +69,6 @@ parasails.registerPage('selection', {
       // window.location = '/rent/selection';
       // should add the returned item to the cart
       this.cart = await parasails.util.getCart();
-    },
-
-    handleTimeSubmitting: async function(data) {
-      // check all the logic for order time & update cart
-      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
-
-      oldCart = await parasails.util.getCart();
-
-      // check each item to update if available - START -
-      // remove all if you want to remove function
-      const newCartItems = [];
-      if (oldCart.items && oldCart.items.length > 0) {
-        const checkCartItemAvailable = async function(item) {
-          const dataWithTimePeriod = {
-            Id: item.Id,
-            Quantity: item.Quantity,
-            ...oldCart.timePeriod,
-          }
-          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-          return result;
-        };
-        async function asyncForEach(array, callback) {
-          for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-          }
-        }
-        await asyncForEach(oldCart.items, async (o) => {
-          const result = await checkCartItemAvailable(o);
-          newCartItems.push(result);
-        });
-      }
-      // check each item to update if available - END
-
-      const newCart = {
-        ...oldCart,
-        items: newCartItems,
-        timePeriod: {...timeValidResult},
-      };
-
-      if (result) {
-        localStorage.setItem('cart', JSON.stringify(newCart));
-      }
-    },
-
-    handleShippingSubmitting: async function(data) {
-      // check all the logic for order time & update cart
-      oldCart = await parasails.util.getCart();
-
-      // push in shipping code and current cart to check shipping function
-      result = await Cloud.checkShippingPrice(..._.values(data), oldCart);
-
-      const newCart = {
-        ...oldCart,
-        shipping: {
-          ...result
-        },
-      };
-
-      if (result) {
-        localStorage.setItem('cart', JSON.stringify(newCart));
-      }
     },
 
     handleItemSubmitting: async function(data) {
@@ -154,38 +80,59 @@ parasails.registerPage('selection', {
           ...oldCart.timePeriod,
         }
 
-        result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-        const newCart = {
-          ...oldCart,
-          items: [
-            ...oldCart.items,
-            result
-          ],
-        };
-        if (result) {
+        try {
+          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+          const newCart = {
+            ...oldCart,
+            items: [
+              ...oldCart.items,
+              result
+            ],
+          };
           return newCart;
+          this.syncing = false;
+        } catch (err) {
+          toastr.error('Item could not be added to cart');
+          console.log(err);
+          this.syncing = false;
         }
       }
 
       const getCartWithNewItemAndShippingCalulated = async function(newCart){
-        const postcode = () => {
+        const getPostcode = () => {
           if (newCart.shipping && newCart.shipping.postcode) {
             return newCart.shipping.postcode;
           }
           return 0;
         }
-        result = await Cloud.checkShippingPrice(postcode(), newCart);
-        const newCart2 = {
-          ...newCart,
-          shipping: {
-            ...result
-          },
-        };
-        if (result) {
+        const getPostcodeRaw = () => {
+          if (newCart.shipping && newCart.shipping.postcodeRaw) {
+            return newCart.shipping.postcodeRaw;
+          }
+          return 0;
+        }
+        try {
+          result = await Cloud.checkShippingPrice(
+            getPostcode(),
+            getPostcodeRaw(),
+            newCart
+          );
+          const newCart2 = {
+            ...newCart,
+            shipping: {
+              ...result
+            },
+          };
           return newCart2;
+          this.syncing = false;
+        } catch (err) {
+          toastr.error('Item could not be added to cart');
+          console.log(err);
+          this.syncing = false;
         }
       }
 
+      // TODO: fix this to proper async await try catch
       getCartWithNewItem(data).then(
         result => {
           getCartWithNewItemAndShippingCalulated(result).then(
@@ -207,7 +154,7 @@ parasails.registerPage('selection', {
       const removeItemFromCart = async function(itemToRemove) {
         oldCart = await parasails.util.getCart();
         oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item) => {
-          return item.Id !== data.Id;
+          return item.id !== data.id;
         });
         const newCart = {
           ...oldCart,
@@ -301,8 +248,8 @@ parasails.registerPage('selection', {
       var argins = this.formDataItem;
       console.log(argins);
       // Validate id:
-      if(!argins.Id) {
-        this.formErrorsItems.Id = true;
+      if(!argins.id) {
+        this.formErrorsItems.id = true;
       }
       if(!argins.Quantity) {
         this.formErrorsItems.Quantity = true;

@@ -11,7 +11,7 @@ module.exports = {
   `Returns specific order`,
 
   inputs: {
-    id: {
+    Id: {
       description: 'The order id',
       example: '1',
       required: true
@@ -41,28 +41,28 @@ module.exports = {
     try {
       var recordWithItems = await Order.findOne(
         {
-          id: inputs.id,
+          id: inputs.Id,
         }
       ).populate('OrderLineNumbers').populate('User');
 
       const recordWithNonGlassItemsRemoved = {
         ...recordWithItems,
         OrderLineNumbers: _.filter(recordWithItems.OrderLineNumbers, (o) => {
-          return o.Glass !== null;
+          return o.Product !== null;
         }),
       };
 
       await asyncForEach(recordWithNonGlassItemsRemoved.OrderLineNumbers, async (item, i) => {
-        glassDetailsForItem = await Product.find({ id: item.Glass });
+        glassDetailsForItem = await Product.findOne({ id: item.Product });
 
-        recordWithNonGlassItemsRemoved.OrderLineNumbers[i].glassDetails = glassDetailsForItem[0];
+        recordWithNonGlassItemsRemoved.OrderLineNumbers[i].glassDetails = glassDetailsForItem;
       });
 
       async function getTotalOrderPrice() {
         const costs = [];
         const washCost = await WashAndPolish.findOne({ Name: "Wash And Polish"  });
         await asyncForEach(recordWithNonGlassItemsRemoved.OrderLineNumbers, async (item, i) => {
-          if (item.Glass !== null) {
+          if (item.Product !== null) {
             const itemCost = (item.UnitPrice + washCost.Price) * item.Quantity;
             costs.push(itemCost);
             return;

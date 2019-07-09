@@ -17,6 +17,12 @@ module.exports = {
       description: 'The postcode of the item to be checked',
     },
 
+    PostcodeRaw:  {
+      type: 'string',
+      example: '111-1111',
+      description: 'The raw postcode value to be displayed to users',
+    },
+
     Cart: {
       type: {},
       required: true,
@@ -64,6 +70,7 @@ module.exports = {
     if (ShippingFactorRecord === undefined) {
       const returnPayload = {
         postcode: inputs.Postcode,
+        postcodeRaw: inputs.PostcodeRaw,
         price: 0,
         shippingPossible: false,
       };
@@ -81,7 +88,7 @@ module.exports = {
       const getRacks = async function() {
         const itemLineRackRequirements = [];
         await asyncForEach(cartItems, async(cartItem) => {
-          const product = await Product.findOne({ id: cartItem.Id });
+          const product = await Product.findOne({ id: cartItem.id });
           const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
           const partialRackItemQuantity = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
           const partialRacksRequired = partialRackItemQuantity > 0 ? 1 : 0;
@@ -197,10 +204,12 @@ module.exports = {
 
       const response = {
         postcode: inputs.Postcode,
+        postcodeRaw: inputs.PostcodeRaw,
         price: actualTruckDeliveryCharge < 0  ? 0 : actualTruckDeliveryCharge,
         shippingPossible: true,
         shippingType: 'truck',
         totalCalculatedDeliveryCharge,
+        shippingFactorRecord: ShippingFactorRecord,
       };
 
       return exits.success(response);
@@ -228,13 +237,13 @@ module.exports = {
 
         for (const cartItem of cartItems) {
           try {
-          const product = await Product.findOne({ id: cartItem.Id });
+          const product = await Product.findOne({ id: cartItem.id });
 
           const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
           const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
 
           const newCartItem = {
-            productCode: cartItem.Id,
+            productCode: cartItem.id,
             quantityOfItems: cartItem.Quantity,
             rackCapactity: product.RackCapacity,
             fullRacksRequired,
@@ -303,8 +312,11 @@ module.exports = {
                       const totalPrice = totalNumberOfPackages * TakuhaiUnitChargeObject.TakuhaiUnitCharge // look this up from tak factor on other data
                       const returnPayload = {
                         postcode: inputs.Postcode,
+                        postcodeRaw: inputs.PostcodeRaw,
                         price: totalPrice,
-                        shippingPossible: ShippingFactorRecord,
+                        shippingFactorRecord: ShippingFactorRecord,
+                        shippingPossible: true,
+                        shippingType: 'takuhai',
                         result2,
                       };
                       return exits.success(returnPayload);

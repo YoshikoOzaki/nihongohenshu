@@ -22,7 +22,7 @@ describe('Shipping Testing', function () {
               },
               "items":[
                 {
-                    "Id":"161",
+                    "id":"161",
                     "NameE":"Rental Plumm Glass Flute",
                     "Quantity":"400",
                     "UnitPrice":100,
@@ -41,7 +41,7 @@ describe('Shipping Testing', function () {
                     }
                 },
                 {
-                    "Id":"189",
+                    "id":"189",
                     "NameE":"Rental Plumm Glass MultiRed",
                     "Quantity":"600",
                     "UnitPrice":120,
@@ -60,7 +60,7 @@ describe('Shipping Testing', function () {
                     }
                 },
                 {
-                    "Id":"173",
+                    "id":"173",
                     "NameE":"Rental Plumm Glass Red A (Stemless)",
                     "Quantity":"200",
                     "UnitPrice":120,
@@ -79,7 +79,7 @@ describe('Shipping Testing', function () {
                     }
                 },
                 {
-                    "Id":"164",
+                    "id":"164",
                     "NameE":"Rental Plumm Glass Red or White",
                     "Quantity":"150",
                     "UnitPrice":120,
@@ -98,7 +98,7 @@ describe('Shipping Testing', function () {
                     }
                 },
                 {
-                    "Id":"164",
+                    "id":"164",
                     "NameE":"Rental Plumm Glass Red or White",
                     "Quantity":"150",
                     "UnitPrice":120,
