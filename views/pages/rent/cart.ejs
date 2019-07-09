@@ -81,7 +81,7 @@
                         </td>
                         <td>
                           <div class="text-success"
-                            v-bind:class="{ 'text-danger': item.Available.available === 'Not Available' }">
+                            v-bind:class="{ 'text-info': item.Available.available === 'Not Available' }">
                             <div v-if="item.Available !== 'No date set to evaluate'">
                               {{item.Available.available}}&nbsp;<br />
                               <span class="text-muted"
@@ -190,7 +190,7 @@
                         <td>
                           {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
                           <small
-                            class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                            class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
                         </td>
                         <td>
                           {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />

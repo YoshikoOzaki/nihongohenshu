@@ -510,53 +510,169 @@ module.exports.bootstrap = async function (done) {
     ]
   );
 
-
-
   await TransactionType.createEach([
-    {
-      id: 10,
-      Name: '確定',
-      Description: 'Stock in',
-      RecordHandlingGuide: '11',
-    },
-    {
-      id: 40,
-      Name: '注文確定',
-      Description: 'Order Confirmed',
-      RecordHandlingGuide: '12',
-    },
-    {
-      id: 53,
-      Name: 'ﾚﾝﾀﾙ中',
-      Description: 'With the renter',
-      RecordHandlingGuide: '22',
-    },
-    {
-      id: 44,
-      Name: 'ﾚﾝﾀﾙ中',
-      Description: 'Rental return planned',
-      RecordHandlingGuide: '22',
-    },
-    {
-      id: 55,
-      Name: '返却済み',
-      Description: 'Rental Return Confirmed',
-      RecordHandlingGuide: '22',
-    },
-    {
-      id: 57,
-      Name: '洗浄済み転記可',
-      Description: 'Wash Completed, post to accounts receivable. If payment already received, ' +
-        'it will be recorded in the independent accounts receivable package. Lotus posts across' +
-        ' the systems, but this could be handled as a separately developed batch op.',
-      RecordHandlingGuide: '22',
-    },
-    {
-      id: 60,
-      Name: '洗浄済み転記可',
-      Description: 'Sale - also used for delivery costs',
-      RecordHandlingGuide: '11',
-    },
+      {
+        "Name": "確定",
+        "id": 10,
+        "Description": "Stock In(note:currently entered manually)",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "破損 倉庫内",
+        "id": 21,
+        "Description": "Breakage In Warehouse",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "破損 配達中",
+        "id": 22,
+        "Description": "Breakage During Delivery",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "破損 再配送中",
+        "id": 23,
+        "Description": "Breakage During Re-delivery (of previous breakage)",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "破損 ﾚﾝﾀﾙ中",
+        "id": 24,
+        "Description": "Breakage During Rental",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "破損 返却中",
+        "id": 25,
+        "Description": "Breakage During Pickup",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "破損 洗浄中",
+        "id": 26,
+        "Description": "Breakage During Washing",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "不良品",
+        "id": 27,
+        "Description": "Defect Glass Discovered After Purchase",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "協賛",
+        "id": 28,
+        "Description": "Donation",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "注文確定",
+        "id": 40,
+        "Description": "Rental Order",
+        "RecordHandlingGuide": 12
+      },
+      {
+        "Name": "仮押さえ",
+        "id": 41,
+        "Description": "Temporary Reservation",
+        "RecordHandlingGuide": 12
+      },
+      {
+        "Name": "見積中",
+        "id": 42,
+        "Description": "Under Tender",
+        "RecordHandlingGuide": 12
+      },
+      {
+        "Name": "詳細確定待ち",
+        "id": 43,
+        "Description": "Order received, awaiting details",
+        "RecordHandlingGuide": 12
+      },
+      {
+        "Name": "",
+        "id": 44,
+        "Description": "Rental Return Planned",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "取消",
+        "id": 49,
+        "Description": "Full Cancellation",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "出荷準備完了",
+        "id": 50,
+        "Description": "Ready to Deliver",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "宅配中",
+        "id": 51,
+        "Description": "In Courier Service",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "",
+        "id": 52,
+        "Description": "Null",
+        "RecordHandlingGuide": ""
+      },
+      {
+        "Name": "ﾚﾝﾀﾙ中",
+        "id": 53,
+        "Description": "With the Renter",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "",
+        "id": 54,
+        "Description": "Null",
+        "RecordHandlingGuide": ""
+      },
+      {
+        "Name": "返却済み",
+        "id": 55,
+        "Description": "Rental Return Confirmed",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "返却延滞",
+        "id": 56,
+        "Description": "Rental Return Overdue",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "洗浄済み転記可",
+        "id": 57,
+        "Description": "Wash Completed, post to accounts receivable. If payment already received, it will be recorded in the independent accounts receivable package. Lotus posts across the systems, but this could be handled as a separately developed batch op.",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "洗浄済み転記禁止",
+        "id": 58,
+        "Description": "Wash Completed but don't post to accounts receivable yet",
+        "RecordHandlingGuide": 22
+      },
+      {
+        "Name": "",
+        "id": 59,
+        "Description": "Null",
+        "RecordHandlingGuide": ""
+      },
+      {
+        "Name": "販売",
+        "id": 60,
+        "Description": "Sale",
+        "RecordHandlingGuide": 11
+      },
+      {
+        "Name": "",
+        "id": "05",
+        "Description": "Message Only",
+        "RecordHandlingGuide": 11
+      }
   ]);
 
   // these should actually be different orders or a few orders updating

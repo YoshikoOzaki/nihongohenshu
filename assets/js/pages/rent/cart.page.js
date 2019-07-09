@@ -62,6 +62,35 @@ parasails.registerPage('cart', {
       localStorage.removeItem('cart');
     },
 
+    calculateNewCart: async function(newCart){
+      const getPostcode = () => {
+        if (newCart.shipping && newCart.shipping.postcode) {
+          return newCart.shipping.postcode;
+        }
+        return 0;
+      }
+      const getPostcodeRaw = () => {
+        if (newCart.shipping && newCart.shipping.postcodeRaw) {
+          return newCart.shipping.postcodeRaw;
+        }
+        return 0;
+      }
+      const result = await Cloud.checkShippingPrice(
+        getPostcode(),
+        getPostcodeRaw(),
+        newCart
+      );
+      const newCart2 = {
+        ...newCart,
+        shipping: {
+          ...result
+        },
+      };
+      if (result) {
+        return newCart2;
+      }
+    },
+
     checkIfCheckoutEnabled: async function() {
       const cart = await parasails.util.getCart();
 
@@ -82,7 +111,6 @@ parasails.registerPage('cart', {
       parametersRequired.shippingCodeValid = cart.shipping && cart.shipping.shippingPossible !== false;
       parametersRequired.datesEntered = cart.timePeriod && !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
       parametersRequired.daysOfUseEntered = cart.timePeriod && cart.timePeriod.DaysOfUse > 0;
-      console.log(parametersRequired);
       if (_.includes(parametersRequired, false)) {
         this.checkoutEnabled = false;
         return;
@@ -91,7 +119,7 @@ parasails.registerPage('cart', {
     },
 
     createOrderFromCart: async function() {
-      // this whole function should move to the backend
+      // this whole function should move to the backend except token
       // const cart = await parasails.util.getCart();
       const tokenPayload = {
         "card_number":"4111111111111111",
@@ -118,13 +146,6 @@ parasails.registerPage('cart', {
       .then(async function(response) {
         return response.json();
       })
-      // .then(async function(myJson) {
-      //   console.log(JSON.stringify(myJson));
-      //   // then post token to the backend
-      //   await Cloud.charge(myJson.token);
-      // });
-
-      // order = await Cloud.createOrder(..._.values(payload));
 
       const ccid = "A100000000000001069951cc";
       const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
@@ -167,23 +188,6 @@ parasails.registerPage('cart', {
         "authHash": getAuthHash,
       };
       console.log(JSON.stringify(payload));
-
-      // await fetch('https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card', {
-      //   method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      //   mode: 'no-cors', // no-cors, cors, *same-origin
-      //   // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      //   // credentials: 'same-origin', // include, *same-origin, omit
-      //   headers: {
-      //       'Content-Type': 'application/json',
-      //       'Accept': 'application/json',
-      //       'Accept-Language': 'ja',
-      //       // 'Content-Type': 'application/x-www-form-urlencoded',
-      //   },
-      //   // redirect: 'follow', // manual, *follow, error
-      //   // referrer: 'no-referrer', // no-referrer, *client
-      //   body: JSON.stringify(payload),
-      // });
-
     },
 
     handleTimeSubmitting: async function(data) {
@@ -263,18 +267,16 @@ parasails.registerPage('cart', {
     },
 
     handleItemSubmitting: async function(data) {
-      await console.log(data);
       // check if it's already in the cart
       const cart = await parasails.util.getCart();
 
-      // console.log(cart.items)
-      // console.log(Number(argins.Id))
-      // console.log(_.findIndex(cart.items, { 'id': Number(argins.Id) }))
-
-      // if(_.findIndex(oldCart.items, { 'id': Number(argins.Id) }) >= 0) {
-      //   this.formErrorsItems.Duplicate = true;
-      //   return;
-      // }
+      // this is a hack, it should be validated in one large function
+      // probably with the rest of the cart logic
+      const existingCartItemIndex = _.findIndex(cart.items, { id: data.Id });
+      if (existingCartItemIndex >= 0) {
+        toastr.warning('Item is already in the cart, please update it there');
+        return;
+      }
 
       const getCartWithNewItem = async function(itemData) {
         // this is a decent example of sending I think
@@ -299,43 +301,15 @@ parasails.registerPage('cart', {
           return newCart;
         }
       }
-      const getCartWithNewItemAndShippingCalulated = async function(newCart){
-        const getPostcode = () => {
-          if (newCart.shipping && newCart.shipping.postcode) {
-            return newCart.shipping.postcode;
-          }
-          return 0;
-        }
-        const getPostcodeRaw = () => {
-          if (newCart.shipping && newCart.shipping.postcodeRaw) {
-            return newCart.shipping.postcodeRaw;
-          }
-          return 0;
-        }
-        result = await Cloud.checkShippingPrice(
-          getPostcode(),
-          getPostcodeRaw(),
-          newCart
-        );
-        const newCart2 = {
-          ...newCart,
-          shipping: {
-            ...result
-          },
-        };
-        if (result) {
-          return newCart2;
-        }
-      }
 
       try {
         const result = await getCartWithNewItem(data);
-        const result2 = await getCartWithNewItemAndShippingCalulated(result);
+        const result2 = await this.calculateNewCart(result);
         await localStorage.setItem('cart', JSON.stringify(result2));
         toastr.success('Item added to the cart');
       } catch (err) {
         console.log(err);
-        toastr.error('Item could not be added to the cart');
+        toastr.error('Item could not be added to the cart' + err);
       }
     },
 
@@ -357,38 +331,9 @@ parasails.registerPage('cart', {
         return newCart;
       }
 
-      const getCartWithRemovedItemAndShippingCalculated = async function(newCart) {
-        const getPostcode = () => {
-          if (newCart.shipping && newCart.shipping.postcode) {
-            return newCart.shipping.postcode;
-          }
-          return 0;
-        }
-        const getPostcodeRaw = () => {
-          if (newCart.shipping && newCart.shipping.postcodeRaw) {
-            return newCart.shipping.postcodeRaw;
-          }
-          return 0;
-        }
-        result = await Cloud.checkShippingPrice(
-          getPostcode(),
-          getPostcodeRaw(),
-          newCart
-        );
-        const newCart2 = {
-          ...newCart,
-          shipping: {
-            ...result
-          },
-        };
-        if (result) {
-          return newCart2;
-        }
-      }
-
       try {
         const result = await removeItemFromCart(data);
-        const result2 = await getCartWithRemovedItemAndShippingCalculated(result);
+        const result2 = await this.calculateNewCart(result);
         localStorage.setItem('cart', JSON.stringify(result2));
         this.cart = result2;
         toastr.success('Item removed from the cart');
@@ -423,37 +368,7 @@ parasails.registerPage('cart', {
       }
       newCart.items[index] = result;
 
-      // this function can be extracted out, we need some testing set up to do this
-      const getCartWithNewItemAndShippingCalulated = async function(newCart){
-        const getPostcode = () => {
-          if (newCart.shipping && newCart.shipping.postcode) {
-            return newCart.shipping.postcode;
-          }
-          return 0;
-        }
-        const getPostcodeRaw = () => {
-          if (newCart.shipping && newCart.shipping.postcodeRaw) {
-            return newCart.shipping.postcodeRaw;
-          }
-          return 0;
-        }
-        const result = await Cloud.checkShippingPrice(
-          getPostcode(),
-          getPostcodeRaw(),
-          newCart
-        );
-        const newCart2 = {
-          ...newCart,
-          shipping: {
-            ...result
-          },
-        };
-        if (result) {
-          return newCart2;
-        }
-      }
-
-      const newCartWithShippingAndTotals = await getCartWithNewItemAndShippingCalulated(newCart);
+      const newCartWithShippingAndTotals = await this.calculateNewCart(newCart);
       localStorage.setItem('cart', JSON.stringify(newCartWithShippingAndTotals));
       this.cart = newCartWithShippingAndTotals;
       toastr.success('Item quantity changed');

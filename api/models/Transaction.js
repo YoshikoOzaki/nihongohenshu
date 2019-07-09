@@ -63,12 +63,6 @@ module.exports = {
       example: 'Customer requested return one day later',
     },
 
-    RecordHandlingGuide: {
-      type: 'number',
-      description: 'This number shows what should happen with this sort of transaction',
-      example: '11',
-    },
-
     Date: {
       // type: 'ref',
       // columnType: 'datetime',
