@@ -153,7 +153,7 @@ parasails.registerComponent('itemAdder', {
       var result;
       try {
         result = await this.handleSubmitting({
-          id: this.product.id,
+          Id: this.product.id,
           Quantity: this.quantity,
         })
       } catch (err) {

@@ -73,6 +73,15 @@ parasails.registerPage('selection', {
 
     handleItemSubmitting: async function(data) {
       this.syncing = true;
+      console.log(data);
+
+      const cart = await parasails.util.getCart();
+      if (_.findIndex(cart.items, { id: data.Id }) >= 0) {
+        toastr.warning('Item is already in the cart, please change the quantity instead');
+        this.syncing = false;
+        return;
+      }
+
       const getCartWithNewItem = async function(itemData) {
         oldCart = await parasails.util.getCart();
         const dataWithTimePeriod = {
@@ -246,10 +255,9 @@ parasails.registerPage('selection', {
       this.formErrorsItems = {};
 
       var argins = this.formDataItem;
-      console.log(argins);
       // Validate id:
-      if(!argins.id) {
-        this.formErrorsItems.id = true;
+      if(!argins.Id) {
+        this.formErrorsItems.Id = true;
       }
       if(!argins.Quantity) {
         this.formErrorsItems.Quantity = true;
