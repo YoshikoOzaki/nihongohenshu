@@ -19,7 +19,7 @@ describe('Glass Controller', function () {
                 body[1].should.containDeep(
                   {
                     id: 161,
-                    NameE: 'Rental Plumm Glass Flute',
+                    NameE2: 'Flute',
                   }
                 );
                 should.exist(res.body);
