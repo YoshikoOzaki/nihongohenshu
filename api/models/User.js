@@ -37,6 +37,33 @@ module.exports = {
       example: 'Lisa Microwave van der Jenny'
     },
 
+    Postcode: {
+      type: 'number',
+      description: 'Added for reserving orders',
+      example: 600000,
+    },
+
+    AddressLine1: {
+      type: 'string',
+    },
+
+    AddressLine2: {
+      type: 'string',
+    },
+
+    AddressLine3: {
+      type: 'string',
+    },
+
+    Telephone1: {
+      type: 'string',
+    },
+
+    Email1: {
+      type: 'string',
+      isEmail: true,
+    },
+
     isSuperAdmin: {
       type: 'boolean',
       description: 'Whether this user is a "super admin" with extra permissions, etc.',

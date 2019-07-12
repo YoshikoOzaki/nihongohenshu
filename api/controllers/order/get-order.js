@@ -48,7 +48,7 @@ module.exports = {
       const recordWithNonGlassItemsRemoved = {
         ...recordWithItems,
         OrderLineNumbers: _.filter(recordWithItems.OrderLineNumbers, (o) => {
-          return o.Product !== null;
+          return o.Product !== 160;
         }),
       };
 

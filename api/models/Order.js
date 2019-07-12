@@ -43,7 +43,7 @@ module.exports = {
     GuestName: {
       type: 'string',
       description: 'If customer is a guest it will need a keyword for identification',
-      example: 'wineorder1234'
+      example: 'Jarod Crowe'
     },
 
     Reserved: {

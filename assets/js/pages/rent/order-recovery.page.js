@@ -83,7 +83,7 @@ parasails.registerPage('order-recovery', {
             DaysOfUse: recoveredOrder.DaysOfUse,
             OrderIdToIgnore: recoveredOrder.id,
           }
-          if (orderLineNumber.Product !== null) {
+          if (orderLineNumber.Product !== 160) {
             result = await Cloud.checkCartItemValid(..._.values(payload));
             return result;
           }

@@ -129,7 +129,7 @@ module.exports = {
         const reserveFromPayload = {
           OrderNumber: order.id,
           LineNumber: orderLine.id,
-          TransactionType: 40, // rental order
+          TransactionType: 42, // rental order
           Product: orderLine.Product,
           Quantity: orderLine.Quantity,
           UnitPrice: orderLine.UnitPrice,
@@ -158,6 +158,7 @@ module.exports = {
         OrderNumber: order.id,
         LineNumber: delivery.id,
         TransactionType: 60, // delivery cost
+        Product: 160,
         Quantity: delivery.Quantity,
         UnitPrice: delivery.UnitPrice,
         Warehouse: 60,
