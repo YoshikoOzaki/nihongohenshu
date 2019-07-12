@@ -120,6 +120,7 @@ module.exports = {
 
     const createOrder = async function() {
       orderInputs = {
+        User: inputs.User,
         DateStart: inputs.DateStart,
         DateEnd: inputs.DateEnd,
         DaysOfUse: inputs.DaysOfUse,
