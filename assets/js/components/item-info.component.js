@@ -21,10 +21,10 @@ parasails.registerComponent('itemInfo', {
 
   template: `
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-12">
         <img width="230" :src="product.ImgSrc" />
       </div>
-      <div class="col-md-8">
+      <div class="col-md-12">
         <div>{{ product.NameEng }}</div>
         <div>{{ product.NameJap }}</div>
         <small>Total Count: {{ product.TotalQuantityInSystem }}</small>
