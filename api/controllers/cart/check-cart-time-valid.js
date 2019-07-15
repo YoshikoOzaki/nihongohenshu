@@ -53,6 +53,14 @@ module.exports = {
     //   throw 'dateTaken';
     // }
 
+    var moment = require("moment");
+    var a = moment(inputs.DateEnd);
+    var b = moment(inputs.DateStart);
+    var daysSelected = a.diff(b, 'days');
+    if (daysSelected < Number(inputs.DaysOfUse)) {
+      return exits.invalid('Days used is larger than the span of dates selected');
+    }
+
     // if all the validation passes - check the dates and item ids/skus
     // then just send back the validated item/order to add to the cart
 

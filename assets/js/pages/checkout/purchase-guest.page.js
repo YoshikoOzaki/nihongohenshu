@@ -45,6 +45,8 @@ parasails.registerPage('purchase-guest', {
 
       // this.syncing = true;
       // window.location = '/checkout/order-confirmation';
+      await parasails.util.clearCart();
+      window.location = '/checkout/purchase-confirmation'
     },
 
     asyncForEach: async function(array, callback) {

@@ -20,7 +20,7 @@
           <div v-if="orderWithAllData && !_.isEmpty(orderWithAllData)">
             <div class="mb-2">
               <div><small>User Name</small></div>
-              <div v-if="orderWithAllData.User">{{orderWithAllData.User.fullName</div>
+              <div v-if="orderWithAllData.User">{{orderWithAllData.User.fullName}}</div>
               <div>{{orderWithAllData.GuestName || 'Guest'}}</div>
             </div>
             <div v-if="loadedOrder.CustomerKeyword">
@@ -126,13 +126,17 @@
                     Total Price
                   </th>
                 </tr>
-                <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Glass !== null">
+                <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Product !== null">
                   <td>
                     <img height="100px" :src="orderLine.glassDetails.ImgSrc" />
                   </td>
                   <td>
-                    {{ orderLine.glassDetails.NameEng }}
-                    {{ orderLine.glassDetails.NameJap }}
+                    <div>
+                      {{ orderLine.glassDetails.NameJ1 }}
+                    </div>
+                    <div>
+                      {{ orderLine.glassDetails.NameJ2 }}
+                    </div>
                   </td>
                   <td>
                     ¥{{ orderLine.UnitPrice }}

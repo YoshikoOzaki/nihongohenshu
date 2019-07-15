@@ -39,6 +39,7 @@ parasails.registerPage('reserve-member', {
       // this.cart = await parasails.util.getCart();
 
       this.syncing = true;
+      await parasails.util.clearCart();
       window.location = '/checkout/order-confirmation';
     },
 
