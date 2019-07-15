@@ -4,15 +4,12 @@
       <div class="col-md-12">
         <div>
           <page-header
-          heading="Member Orders"
+          heading="Orders"
           sub-heading="Add reserved orders to the cart"
           />
         </div>
         <div v-if="_.isEmpty(orders)" >
-          <span
-            class="fa fa-spinner fa-spin"
-          >
-          </span>
+          <p><i>There are no orders</i></p>
         </div>
         <table v-if="orders.length > 0" class="table table-bordered">
           <tr>

@@ -1,9 +1,39 @@
 <div id="welcome">
   <div class="container">
-    <h1>Welcome!</h1>
+    <div>
+      <page-header
+      heading="Welcome!"
+      sub-heading="Choose what you would like to do next"
+      />
+    </div>
+    <div>
+      <p>
+        Welcome text
+      </p>
+    </div>
     <hr/>
-    <div class="buttons">
-      <a class="btn btn-primary" href="/rent/selection">Glass Selection</a>
+    <div class="row">
+      <div class="col-md-4 offset-md-4 text-center mt-3">
+        <div class="card p-3">
+          <a class="btn btn-primary" href="/rent/selection">
+            <i class="fa fa-search-plus mr-2"></i>Glass Selection
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4 offset-md-4 text-center mt-3">
+        <div class="card p-3">
+          <a class="btn btn-primary" href="/rent/reserve-member">
+            <i class="fa fa-shopping-bag mr-2"></i>Reserve Order
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4 offset-md-4 text-center mt-3">
+        <div class="card p-3">
+          <a class="btn btn-primary" href="/rent/purchase-member">
+            <i class="fa fa-credit-card-alt mr-2"></i>Proceed to Checkout
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

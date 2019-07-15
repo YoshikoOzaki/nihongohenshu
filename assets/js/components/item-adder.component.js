@@ -34,7 +34,7 @@ parasails.registerComponent('itemAdder', {
 
   template: `
     <div>
-      <div class="col-md-12">
+      <div>
         <img
           width="100%"
           :src="product.ImgSrc"
@@ -42,7 +42,7 @@ parasails.registerComponent('itemAdder', {
           @click="clickProductImage"
         />
       </div>
-      <div class="col-md-12 text-center">
+      <div class="text-center">
         <div class="mb-1">
           <h6 class="text-center">{{ product.NameE1 }}</h6>
           <h6 class="text-center">{{ product.NameJ1 }}</h6>

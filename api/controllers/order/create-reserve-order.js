@@ -41,7 +41,7 @@ module.exports = {
 
     Items: {
       type: [{
-        Id: "number",
+        id: "number",
         Quantity: "number",
         UnitPrice: "number"
       }]
