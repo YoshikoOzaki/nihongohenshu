@@ -255,6 +255,10 @@ module.exports = {
     const discountedTotalPrice = discountedUnitPriceWithWash * Quantity;
     const totalPriceWithWash = (basePrice +  washAndPolishConstant) * Quantity;
 
+    const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
+    const consumptionTax = discountedTotalPrice * consumptionTaxRate;
+    const totalPriceWithConsumptionTax = discountedTotalPrice + consumptionTax;
+
     discountedInputs = {
       ...item,
       Quantity: inputs.Quantity,
@@ -266,6 +270,8 @@ module.exports = {
       DiscountedUnitPrice: discountedUnitPrice,
       DiscountedUnitPriceWithWash: discountedUnitPriceWithWash,
       DiscountedTotalPrice: discountedTotalPrice,
+      ConsumptionTax: consumptionTax,
+      DiscountedTotalPriceWithTax: totalPriceWithConsumptionTax,
       Available: await getAvailability(),
       quantityFactorForFullRack,
     }

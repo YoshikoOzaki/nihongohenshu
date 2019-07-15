@@ -13,6 +13,9 @@ parasails.registerPage('cart', {
     formErrorsItems: { /* … */ },
     formErrorsShipping: { /* … */ },
     checkoutEnabled: false,
+    subTotal: '',
+    taxTotal: '',
+    grandTotal: '',
     cart: {
       items: [],
     },
@@ -38,6 +41,13 @@ parasails.registerPage('cart', {
 
   updated: async function() {
     await this.checkIfCheckoutEnabled();
+
+    const cart = this.cart;
+
+    this.subTotal = ((_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0);
+    // get the total of the shipping + items tax
+    this.taxTotal = (_.sum(cart.items, (o) => { return o.ConsumptionTax }) + cart.shipping.consumptionTax);
+    this.grandTotal = (this.subTotal + this.taxTotal);
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗

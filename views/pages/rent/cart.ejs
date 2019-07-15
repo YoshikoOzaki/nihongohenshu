@@ -4,10 +4,10 @@
       <div class="col-md-12">
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-9">
         <div class="">
           <div class="">
-            <h6>Rental Cart</h6>
+            <h6>Items</h6>
           </div>
           <div v-if="cart.orderIdToIgnore" class="mb-3">
             <div class="">
@@ -64,6 +64,9 @@
                           Discount
                         </th>
                         <th>
+                          Tax
+                        </th>
+                        <th>
                           Total
                         </th>
                         <th>
@@ -94,22 +97,28 @@
                           </div>
                         </td>
                         <td>
-                          <input class="form-control form-control-sm col-lg-12 mb-1" type="number"
-                            v-model.trim="item.Quantity" />
-                          <button @click="updateItemRowQuantity(index, item.Quantity)" type="submit"
-                            class="btn btn-sm btn-block ajax-button" :class="[syncing ? 'syncing' : '']">
-                            <span class="button-text" v-if="!syncing">
-                              <slot name="default">Update</slot>
-                            </span>
-                            <span class="button-loader clearfix" v-if="syncing">
-                              <slot name="syncing-state">
-                                <div class="loading-dot dot1"></div>
-                                <div class="loading-dot dot2"></div>
-                                <div class="loading-dot dot3"></div>
-                                <div class="loading-dot dot4"></div>
-                              </slot>
-                            </span>
-                          </button>
+                          <div class="input-group">
+                            <input class="form-control form-control-sm" type="number"
+                              v-model.trim="item.Quantity"
+                            />
+                            <div class="input-group-append">
+                              <button @click="updateItemRowQuantity(index, item.Quantity)" type="submit"
+                                class="btn btn-sm btn-block ajax-button btn-outline-primary" :class="[syncing ? 'syncing' : '']">
+                                <span class="button-text" v-if="!syncing">
+                                  <i class="fa fa-share-square-o"></i>
+                                  Update
+                                </span>
+                                <span class="button-loader clearfix" v-if="syncing">
+                                  <slot name="syncing-state">
+                                    <div class="loading-dot dot1"></div>
+                                    <div class="loading-dot dot2"></div>
+                                    <div class="loading-dot dot3"></div>
+                                    <div class="loading-dot dot4"></div>
+                                  </slot>
+                                </span>
+                              </button>
+                            </div>
+                          </div>
                         </td>
                         <td>
                           ¥{{item.UnitPrice}}
@@ -126,7 +135,10 @@
                           </span>
                         </td>
                         <td>
-                          ¥{{item.DiscountedTotalPrice}}
+                          ¥{{item.ConsumptionTax}}
+                        </td>
+                        <td>
+                          ¥{{item.DiscountedTotalPriceWithTax}}
                         </td>
                         <td>
                           <!-- <button @click="removeItemFromCart({index: index})"
@@ -134,9 +146,10 @@
                             <span class="fa fa-trash mr-1"></span><i><small>Remove</small></i>
                           </button> -->
                           <button @click="removeItemFromCart({ index: index })" type="submit"
-                            class="btn btn-sm btn-block ajax-button" :class="[syncing ? 'syncing' : '']">
+                            class="btn btn-sm btn-block btn-outline-primary ajax-button" :class="[syncing ? 'syncing' : '']">
                             <span class="button-text" v-if="!syncing">
-                              <slot name="default">Remove</slot>
+                              <i class="fa fa-trash"></i>
+                              Remove
                             </span>
                             <span class="button-loader clearfix" v-if="syncing">
                               <slot name="syncing-state">
@@ -149,9 +162,12 @@
                       </tr>
                     </table>
                   </div>
+                  <div class="">
+                    <h6>Shipping</h6>
+                  </div>
                   <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
                     <table class="table table-bordered table-sm">
-                      <thead class="thead-dark">
+                      <thead class="thead">
                         <th>
                           Delivery Date
                         </th>
@@ -172,6 +188,9 @@
                         </th>
                         <th>
                           Shipping
+                        </th>
+                        <th>
+                          Tax
                         </th>
                         <th>
                           Total
@@ -202,10 +221,29 @@
                           ¥{{cart.shipping && cart.shipping.price || 0}}
                         </td>
                         <td>
-                          <b>¥{{cart.shipping && (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0 }}</b>
+                          ¥{{cart.shipping && cart.shipping.consumptionTax || 0}}
+                        </td>
+                        <td>
+                          ¥{{cart.shipping && cart.shipping.priceWithTax || 0}}
                         </td>
                       </tr>
                     </table>
+                  </div>
+                  <div class="" v-if="subTotal && taxTotal && grandTotal">
+                    <div class="" v-if="subTotal && taxTotal && grandTotal">
+                      <h6>Totals</h6>
+                    </div>
+                    <div class="text-right">
+                      <h5>Sub Total</h5>
+                      <b>¥ {{subTotal && subTotal.toLocaleString()}}</b>
+                      <hr />
+                      <h5>Tax Total</h5>
+                      <b>¥ {{taxTotal && taxTotal.toLocaleString()}}</b>
+                      <hr />
+                      <h4>Grand Total</h4>
+                      <h5><b>¥ {{grandTotal && grandTotal.toLocaleString()}}</b></h5>
+                      <hr />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -241,7 +279,7 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="mb-3">
           <div class="">
             <h6>Add More Products</h6>
@@ -288,7 +326,7 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Add</ajax-button>
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">Add</ajax-button>
                   </div>
                 </div>
               </div>
@@ -342,7 +380,7 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Update</ajax-button>
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-outline-primary">Update</ajax-button>
                   </div>
                 </div>
               </div>
@@ -378,7 +416,7 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm">Update</ajax-button>
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">Update</ajax-button>
                   </div>
                 </div>
               </div>

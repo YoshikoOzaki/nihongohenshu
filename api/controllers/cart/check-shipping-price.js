@@ -202,10 +202,16 @@ module.exports = {
       const maxTruckDeliveryCharge = 10000; // get from db or set at top or env variable
       const actualTruckDeliveryCharge = _.min([totalCalculatedDeliveryCharge, maxTruckDeliveryCharge]);
 
+      const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
+      const consumptionTax = actualTruckDeliveryCharge * consumptionTaxRate;
+      const priceWithTax = actualTruckDeliveryCharge + consumptionTax;
+
       const response = {
         postcode: inputs.Postcode,
         postcodeRaw: inputs.PostcodeRaw,
         price: actualTruckDeliveryCharge < 0  ? 0 : actualTruckDeliveryCharge,
+        consumptionTax,
+        priceWithTax,
         shippingPossible: true,
         shippingType: 'truck',
         totalCalculatedDeliveryCharge,
@@ -300,6 +306,7 @@ module.exports = {
         return totalRequiredFullRacks + requiredPartialRacks;
       }
 
+
       buildRackRequirementArray().then(
         result => {
           buildPartialRackRequiredObject(result).then(
@@ -307,13 +314,20 @@ module.exports = {
               fullRacksRequiredFromPartialRacks(result2).then(
                 result3 => {
                   combinePartialRacksRequiredAndFullRacksRequired(result, result3).then(
-                    result4 => {
+                    async (result4) => {
                       const totalNumberOfPackages = Math.ceil(result4/2) // line 47
                       const totalPrice = totalNumberOfPackages * TakuhaiUnitChargeObject.TakuhaiUnitCharge // look this up from tak factor on other data
+
+                      const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
+                      const consumptionTax = totalPrice * consumptionTaxRate;
+                      const priceWithTax = totalPrice + consumptionTax;
+
                       const returnPayload = {
                         postcode: inputs.Postcode,
                         postcodeRaw: inputs.PostcodeRaw,
                         price: totalPrice,
+                        consumptionTax,
+                        priceWithTax,
                         shippingFactorRecord: ShippingFactorRecord,
                         shippingPossible: true,
                         shippingType: 'takuhai',
