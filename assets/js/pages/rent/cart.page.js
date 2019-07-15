@@ -202,8 +202,9 @@ parasails.registerPage('cart', {
       cart = await parasails.util.getCart();
       timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
       } catch (err) {
-        console.log(err);
-        toastr.error('Time range could not be checked for being valid');
+        console.log(err.responseInfo.body);
+        toastr.error(err.responseInfo.body);
+        return;
       }
 
       // check each item

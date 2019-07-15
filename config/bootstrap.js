@@ -98,7 +98,17 @@ module.exports.bootstrap = async function (done) {
   ]);
 
   await User.createEach([
-    {emailAddress: 'jarodccrowe@gmail.com', fullName: 'Harry', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123')},
+    {
+      emailAddress: 'jarodccrowe@gmail.com',
+      fullName: 'Jarod Crowe',
+      isSuperAdmin: true,
+      password: await sails.helpers.passwords.hashPassword('abc123'),
+      PostcodeRaw: '123-1234',
+      AddressLine1: '6-5 Uwada',
+      AddressLine2: 'Himi-Shi',
+      AddressLine3: 'Toyama Japan',
+      Telephone1: '+81 766-72-8680',
+    },
     {emailAddress: 'j@crowe.com', fullName: 'Jarod Crowe', isSuperAdmin: true, password: await sails.helpers.passwords.hashPassword('abc123')},
     {emailAddress: 'richard@email.com', fullName: 'Richard', isSuperAdmin: false, password: await sails.helpers.passwords.hashPassword('abc123')},
   ]);
@@ -510,185 +520,161 @@ module.exports.bootstrap = async function (done) {
     ]
   );
 
-  await TransactionType.createEach([
+  await TransactionType.createEach(
+    [
       {
         "Name": "確定",
         "id": 10,
         "Description": "Stock In(note:currently entered manually)",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "In"
       },
       {
         "Name": "破損 倉庫内",
         "id": 21,
         "Description": "Breakage In Warehouse",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "破損 配達中",
         "id": 22,
         "Description": "Breakage During Delivery",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "破損 再配送中",
         "id": 23,
         "Description": "Breakage During Re-delivery (of previous breakage)",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "破損 ﾚﾝﾀﾙ中",
         "id": 24,
         "Description": "Breakage During Rental",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "破損 返却中",
         "id": 25,
         "Description": "Breakage During Pickup",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "破損 洗浄中",
         "id": 26,
         "Description": "Breakage During Washing",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "不良品",
         "id": 27,
         "Description": "Defect Glass Discovered After Purchase",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "協賛",
         "id": 28,
         "Description": "Donation",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Out"
       },
       {
         "Name": "注文確定",
         "id": 40,
         "Description": "Rental Order",
-        "RecordHandlingGuide": 12
+        "RecordHandlingGuide": "Away"
       },
       {
         "Name": "仮押さえ",
         "id": 41,
         "Description": "Temporary Reservation",
-        "RecordHandlingGuide": 12
+        "RecordHandlingGuide": "Away"
       },
       {
         "Name": "見積中",
         "id": 42,
         "Description": "Under Tender",
-        "RecordHandlingGuide": 12
+        "RecordHandlingGuide": "Away"
       },
       {
         "Name": "詳細確定待ち",
         "id": 43,
         "Description": "Order received, awaiting details",
-        "RecordHandlingGuide": 12
+        "RecordHandlingGuide": "Away"
       },
       {
         "Name": "",
         "id": 44,
         "Description": "Rental Return Planned",
-        "RecordHandlingGuide": 22
+        "RecordHandlingGuide": "Returned"
       },
       {
         "Name": "取消",
         "id": 49,
         "Description": "Full Cancellation",
-        "RecordHandlingGuide": 22
+        "RecordHandlingGuide": "Returned"
       },
       {
         "Name": "出荷準備完了",
         "id": 50,
         "Description": "Ready to Deliver",
-        "RecordHandlingGuide": 22
+        "RecordHandlingGuide": "Away"
       },
       {
         "Name": "宅配中",
         "id": 51,
         "Description": "In Courier Service",
-        "RecordHandlingGuide": 22
-      },
-      {
-        "Name": "",
-        "id": 52,
-        "Description": "Null",
-        "RecordHandlingGuide": ""
+        "RecordHandlingGuide": "Away"
       },
       {
         "Name": "ﾚﾝﾀﾙ中",
         "id": 53,
         "Description": "With the Renter",
-        "RecordHandlingGuide": 22
-      },
-      {
-        "Name": "",
-        "id": 54,
-        "Description": "Null",
-        "RecordHandlingGuide": ""
+        "RecordHandlingGuide": "Away"
       },
       {
         "Name": "返却済み",
         "id": 55,
         "Description": "Rental Return Confirmed",
-        "RecordHandlingGuide": 22
+        "RecordHandlingGuide": "Returned"
       },
       {
         "Name": "返却延滞",
         "id": 56,
         "Description": "Rental Return Overdue",
-        "RecordHandlingGuide": 22
+        "RecordHandlingGuide": "Returned"
       },
       {
         "Name": "洗浄済み転記可",
         "id": 57,
         "Description": "Wash Completed, post to accounts receivable. If payment already received, it will be recorded in the independent accounts receivable package. Lotus posts across the systems, but this could be handled as a separately developed batch op.",
-        "RecordHandlingGuide": 22
+        "RecordHandlingGuide": "Returned"
       },
       {
         "Name": "洗浄済み転記禁止",
         "id": 58,
         "Description": "Wash Completed but don't post to accounts receivable yet",
-        "RecordHandlingGuide": 22
-      },
-      {
-        "Name": "",
-        "id": 59,
-        "Description": "Null",
-        "RecordHandlingGuide": ""
+        "RecordHandlingGuide": "Returned"
       },
       {
         "Name": "販売",
         "id": 60,
         "Description": "Sale",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Neutral"
       },
       {
         "Name": "",
         "id": "05",
         "Description": "Message Only",
-        "RecordHandlingGuide": 11
+        "RecordHandlingGuide": "Neutral"
       }
-  ]);
+    ]
+  );
 
   // these should actually be different orders or a few orders updating
   // over time into different states
   await Transaction.createEach([
     {
       TransactionType: '10',
-      Product: '161',
-      Quantity: '10000',
-      Warehouse: '60',
-      Comment: 'stock added into system',
-      Date: '2019-04-01',
-    },
-    {
-      TransactionType: '10',
-      Product: '189',
+      Product: '162',
       Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
@@ -712,11 +698,83 @@ module.exports.bootstrap = async function (done) {
     },
     {
       TransactionType: '10',
+      Product: '168',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '10',
+      Product: '163',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '10',
+      Product: '161',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '21',
+      Product: '161',
+      Quantity: '85',
+      Warehouse: '60',
+      Comment: 'broke in warehouse',
+      Date: '2019-05-01',
+    },
+    {
+      TransactionType: '10',
+      Product: '189',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '10',
+      Product: '164',
+      Quantity: '10000',
+      Warehouse: '60',
+      Comment: 'stock added into system',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '10',
       Product: '165',
       Quantity: '10000',
       Warehouse: '60',
       Comment: 'stock added into system',
       Date: '2019-04-01',
+    },
+    {
+      TransactionType: '21',
+      Product: '165',
+      Quantity: '236',
+      Warehouse: '60',
+      Comment: 'broke in the warehouse',
+      Date: '2019-04-01',
+    },
+    {
+      TransactionType: '42',
+      Product: '165',
+      Quantity: '300',
+      Warehouse: '60',
+      Comment: 'under tender',
+      Date: '2020-01-01',
+    },
+    {
+      TransactionType: '44',
+      Product: '165',
+      Quantity: '300',
+      Warehouse: '60',
+      Comment: 'return planned',
+      Date: '2020-01-10',
     },
   ]);
 

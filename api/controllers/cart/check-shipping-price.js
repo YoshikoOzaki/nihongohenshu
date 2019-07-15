@@ -159,7 +159,7 @@ module.exports = {
 
       const racks = await getRacks();
 
-      const maxHeightAllowablePerDolly = 1646; // env variable
+      const maxHeightAllowablePerDolly = 1646; // TODO env variable
       const quantityOfDollys = _.ceil(racks.totalHeight / maxHeightAllowablePerDolly, 0);
       const remainingHeight = racks.totalHeight % maxHeightAllowablePerDolly;
 
@@ -190,7 +190,7 @@ module.exports = {
       const TruckDistanceFactorCostResult = await TruckDistanceFactorCosting.findOne({ TruckDistanceFactor: TruckDistanceFactor });
 
       const minimumChargePer500x500ForTruck = TruckDistanceFactorCostResult.ChargeFirst500x500mm;
-      const chargePerExtraRackFirstDolly = 600; // env variable
+      const chargePerExtraRackFirstDolly = 600; // TODO env variable
       const chargePerExtraDolly = TruckDistanceFactorCostResult.ChargePerExtraDolly
       const chargeExtraRackFrom2ndDolly = TruckDistanceFactorCostResult.ChargePerExtraRackFromSecondDolly;
 

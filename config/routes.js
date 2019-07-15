@@ -44,6 +44,7 @@ module.exports.routes = {
   'GET /checkout/reserve-guest':   { action: 'checkout/view-reserve-guest' },
   'GET /checkout/order-prompt':   { action: 'checkout/view-order-prompt' },
   'GET /checkout/purchase-guest':   { action: 'checkout/view-purchase-guest' },
+  'GET /checkout/purchase-member':   { action: 'checkout/view-purchase-member' },
   'GET /checkout/order-confirmation':   { action: 'checkout/view-order-confirmation' },
   'GET /checkout/purchase-confirmation':   { action: 'checkout/view-purchase-confirmation' },
 
@@ -76,6 +77,7 @@ module.exports.routes = {
   'POST  /api/v1/order/create-reserve-order':          { action: 'order/create-reserve-order' },
   'POST  /api/v1/order/create-guest-order':          { action: 'order/create-guest-order' },
   'POST  /api/v1/order/create-member-reserve-order':          { action: 'order/create-member-reserve-order' },
+  'POST  /api/v1/order/create-member-order':          { action: 'order/create-member-order' },
 
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
   'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },

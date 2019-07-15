@@ -1,16 +1,21 @@
 module.exports = {
 
 
-  friendlyName: 'Create Reserve Order',
+  friendlyName: 'Create Member Order',
 
 
-  description: 'Create an order for reserved items.',
+  description: 'Create an order for member items.',
 
 
   extendedDescription:
   `Adds an order to the database with a reserved status`,
 
   inputs: {
+
+    User: {
+      type: 'number',
+      description: 'User that is reserving the order',
+    },
 
     DateStart: {
       type: 'string',
@@ -33,9 +38,15 @@ module.exports = {
       example: "555"
     },
 
+    GuestName: {
+      type: 'string',
+      required: true,
+      description: 'Customer name or customer order keyword'
+    },
+
     Items: {
       type: [{
-        Id: "number",
+        id: "number",
         Quantity: "number",
         UnitPrice: "number"
       }]
@@ -57,11 +68,35 @@ module.exports = {
       description: 'Postcode assigned to the order for shipping'
     },
 
-    User: {
-      type: 'number',
-      description: 'User that is reserving the order',
-    }
+    AddressLine1: {
+      type: 'string',
+    },
 
+    AddressLine2: {
+      type: 'string',
+    },
+
+    AddressLine3: {
+      type: 'string',
+    },
+
+    Telephone1: {
+      type: 'string',
+    },
+
+    Email1: {
+      type: 'string',
+      isEmail: true,
+    },
+
+    Comment: {
+      type: 'string',
+    },
+
+    TakuhaiTimeSlot: {
+      type: 'string',
+      description: ''
+    }
   },
 
   exits: {
@@ -85,13 +120,20 @@ module.exports = {
 
     const createOrder = async function() {
       orderInputs = {
+        User: inputs.User,
         DateStart: inputs.DateStart,
         DateEnd: inputs.DateEnd,
         DaysOfUse: inputs.DaysOfUse,
-        CustomerKeyword: inputs.CustomerKeyword,
+        GuestName: inputs.GuestName,
         Reserved: inputs.Reserved,
         Postcode: inputs.Postcode,
-        User: inputs.User,
+        AddressLine1: inputs.AddressLine1,
+        AddressLine2: inputs.AddressLine2,
+        AddressLine3: inputs.AddressLine3,
+        Telephone1: inputs.Telephone1,
+        Email1: inputs.Email1,
+        Comment: inputs.Comment,
+        TakuhaiTimeSlot: inputs.TakuhaiTimeSlot,
       }
       var newRecord = await Order.create(orderInputs).fetch();
       return newRecord;

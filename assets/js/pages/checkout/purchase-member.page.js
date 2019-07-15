@@ -1,4 +1,4 @@
-parasails.registerPage('purchase-guest', {
+parasails.registerPage('purchase-member', {
   //  ╦╔╗╔╦╔╦╗╦╔═╗╦    ╔═╗╔╦╗╔═╗╔╦╗╔═╗
   //  ║║║║║ ║ ║╠═╣║    ╚═╗ ║ ╠═╣ ║ ║╣
   //  ╩╝╚╝╩ ╩ ╩╩ ╩╩═╝  ╚═╝ ╩ ╩ ╩ ╩ ╚═╝
@@ -15,6 +15,7 @@ parasails.registerPage('purchase-guest', {
       },
     },
     takuhaiTimeSlots: [],
+    user: {},
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -23,9 +24,16 @@ parasails.registerPage('purchase-guest', {
   beforeMount: function() {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
+    this.formData.CustomerName = this.me.fullName;
+    this.formData.AddressLine1 = this.me.AddressLine1;
+    this.formData.AddressLine2 = this.me.AddressLine2;
+    this.formData.AddressLine3 = this.me.AddressLine3;
+    this.formData.Telephone1 = this.me.Telephone1;
+    this.formData.Email1 = this.me.emailAddress;
   },
   mounted: async function() {
     //…
+    console.log(this.me);
     this.cart = await parasails.util.getCart();
     this.takuhaiTimeSlots = await Cloud.getTakuhaiTimeSlots();
   },
@@ -45,8 +53,8 @@ parasails.registerPage('purchase-guest', {
 
       // this.syncing = true;
       // window.location = '/checkout/order-confirmation';
-      await parasails.util.clearCart();
       window.location = '/checkout/purchase-confirmation'
+      await parasails.util.clearCart();
     },
 
     asyncForEach: async function(array, callback) {
@@ -59,7 +67,7 @@ parasails.registerPage('purchase-guest', {
       this.cart = await parasails.util.getCart();
     },
 
-    createGuestOrder: async function() {
+    createMemberOrder: async function() {
       this.syncMessage = "Creating Order...";
       const cart = await parasails.util.getCart();
       // need to add address to the order
@@ -67,6 +75,7 @@ parasails.registerPage('purchase-guest', {
       // only backend can change to paid
       // this should really be included in charge though
       const orderPayload = {
+        User: this.me.id,
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
         DaysOfUse: cart.timePeriod.DaysOfUse,
@@ -87,8 +96,9 @@ parasails.registerPage('purchase-guest', {
       }
       let order = {};
       try {
-        order = await Cloud.createGuestOrder(..._.values(orderPayload));
+        order = await Cloud.createMemberOrder(..._.values(orderPayload));
       } catch(err) {
+        console.log(err);
         toastr.error(err);
         this.syncMessage = "";
       }
@@ -139,6 +149,10 @@ parasails.registerPage('purchase-guest', {
     },
 
     chargeCard: async function(token, orderId) {
+      if (!token || !orderId) {
+        console.log('No token or order Id');
+        return;
+      }
       // maybe i create and delete the order in here
       // pass in the order and the charge that needs to be made
       // create -> charge -> delete
@@ -226,10 +240,16 @@ parasails.registerPage('purchase-guest', {
         return;
       }
       // create an unpaid order
-      const guestOrder = await this.createGuestOrder();
+      let order = {};
+      try {
+        order = await this.createMemberOrder();
+      } catch (err) {
+        console.log(err);
+        return;
+      }
 
       // charge card and update order to paid
-      const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
+      const chargeCardResult = await this.chargeCard(ccToken, order.id);
 
       if (chargeCardResult.charge.result.mstatus === 'failure') {
         toastr.error('Credit Card Error ' + chargeCardResult.charge.result.merrMsg);
@@ -238,7 +258,7 @@ parasails.registerPage('purchase-guest', {
       if (chargeCardResult.charge.result.mstatus === 'success') {
         toastr.success('Order Created ' + chargeCardResult.charge.result.merrMsg);
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
-        // window.location = order-confirmation
+        await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
       }
 
       this.syncMessage = '';

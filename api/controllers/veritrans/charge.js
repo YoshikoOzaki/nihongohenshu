@@ -52,7 +52,7 @@ module.exports = {
     const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
     // TODO: remove the math floor number here for prod
     const req = {
-      "orderId": Math.floor(Math.random() * 100) + inputs.orderId + 1001,
+      "orderId": Math.floor(Math.random() * 100) + inputs.orderId + 10012,
       "amount": inputs.amount,
       "jpo":"10",
       "withCapture":"false",

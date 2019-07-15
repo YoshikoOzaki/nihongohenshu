@@ -91,7 +91,6 @@ module.exports = {
         return 'No date set to evaluate';
       }
 
-      // const OrderIdToIgnore = inputs.OrderIdToIgnore === undefined ? 0 : inputs.OrderIdToIgnore;
       const getTransactionNumbersToIgnore = async function() {
         if (inputs.OrderIdToIgnore) {
           const order = await Order.findOne(
@@ -102,94 +101,72 @@ module.exports = {
         }
         return [];
       }
-      // TODO: pass in the *order number* in inputs, get the transaction numbers from that, exclude those transaction numbers in the below query
-      // will need to add every possible code
-      // unless we use the transaction process type values well
+
       const transactionNumbersToIgnore = await getTransactionNumbersToIgnore();
+      const transactionTypes = await TransactionType.find();
+      const transactionTypesByRecordingHandlingGuide = _.groupBy(transactionTypes, 'RecordHandlingGuide');
 
-      try {
-      [
-        stockIn,
-        orderOut,
-        returnPlanned,
-        orderReturned,
-        returnAndWashCompleted,
-      ] = await Promise.all([
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { "<=": inputs.DateStart },
-            TransactionType: 10,
-            id: { '!=': transactionNumbersToIgnore}
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { "<=": inputs.DateEnd },
-            TransactionType: 40,
-            id: { '!=': transactionNumbersToIgnore}
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { "<=": inputs.DateStart },
-            TransactionType: 44,
-            id: { '!=': transactionNumbersToIgnore}
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { "<=": inputs.DateStart },
-            TransactionType: 55,
-            id: { '!=': transactionNumbersToIgnore}
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { "<=": inputs.DateStart },
-            TransactionType: 57,
-            id: { '!=': transactionNumbersToIgnore}
-          },
-          select: ['Quantity'],
-        })
-      ]);
+      const transactionsInArray = _.map(transactionTypesByRecordingHandlingGuide.In, 'id');
+      const transactionsInObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsInArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateStart },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsIn = _.sum(transactionsInObject, (o) => { return o.Quantity });
 
-        // collect totals related to those dates
-        const stockInTotal = _.sum(stockIn, (o) => { return o.Quantity });
-        const orderOutTotal = _.sum(orderOut, (o) => { return o.Quantity });
-        const returnPlanedTotal = _.sum(returnPlanned, (o) => { return o.Quantity });
-        const orderReturnedTotal = _.sum(orderReturned, (o) => { return o.Quantity });
-        const returnAndWashedTotal = _.sum(returnAndWashCompleted, (o) => { return o.Quantity });
+      const transactionsOutArray = _.map(transactionTypesByRecordingHandlingGuide.Out, 'id');
+      const transactionsOutObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsOutArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateEnd },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsOut = _.sum(transactionsOutObject, (o) => { return o.Quantity });
 
-        // calculate available or not
-        const totalAvailableForOrder =
-        (stockInTotal - orderOutTotal) +
-        returnPlanedTotal +
-        orderReturnedTotal +
-        returnAndWashedTotal;
+      const transactionsAwayArray = _.map(transactionTypesByRecordingHandlingGuide.Away, 'id');
+      const transactionsAwayObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsAwayArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateEnd },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsAway = _.sum(transactionsAwayObject, (o) => { return o.Quantity });
 
-        const inventory = totalAvailableForOrder;
-        const remaining = totalAvailableForOrder - inputs.Quantity;
+      const transactionsReturnedArray = _.map(transactionTypesByRecordingHandlingGuide.Returned, 'id');
+      const transactionsReturnedObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsReturnedArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateStart },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsReturned = _.sum(transactionsReturnedObject, (o) => { return o.Quantity });
 
-        const availability = {
-          available: remaining >= 0 ? 'Available' : 'Not Available',
-          remaining: inventory >= 0 ? inventory : 0,
-          totalAvailable: inventory,
-        };
+      const totalAvailableForOrder = transactionsIn - transactionsOut - transactionsAway + transactionsReturned;
 
-        return availability;
-      } catch (err) {
-        return err;
-      }
-    };
+      const inventory = totalAvailableForOrder;
+      const remaining = totalAvailableForOrder - inputs.Quantity;
+
+      const availability = {
+        available: remaining >= 0 ? 'Available' : 'Not Available',
+        remaining: inventory >= 0 ? inventory : 0,
+        totalAvailable: inventory,
+      };
+
+      return availability;
+    }
 
     // find price of items
     var item =  await Product.findOne({ id: inputs.Id });

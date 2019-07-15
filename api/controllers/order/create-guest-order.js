@@ -194,6 +194,7 @@ module.exports = {
         OrderNumber: order.id,
         LineNumber: delivery.id,
         TransactionType: 60, // delivery cost
+        Product: 160,
         Quantity: delivery.Quantity,
         UnitPrice: delivery.UnitPrice,
         Warehouse: 60,

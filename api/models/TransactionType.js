@@ -32,8 +32,8 @@ module.exports = {
 
     RecordHandlingGuide: {
       type: 'string',
-      description: 'Not sure',
-      example: '11',
+      description: 'Helps to understand how to calculate the transaction',
+      example: 'Out',
     },
 
     Transactions: {

@@ -128,7 +128,7 @@
                       Total Price
                     </th>
                   </tr>
-                  <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Glass !== null">
+                  <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Product !== null">
                     <td>
                       <img height="100px" :src="orderLine.glassDetails.ImgSrc" />
                     </td>
