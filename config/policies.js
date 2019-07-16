@@ -41,6 +41,7 @@ module.exports.policies = {
   'order/get-order': true,
   'order/recover-reserved-order': true,
   'order/delete-order': true,
+  'order/get-consumption-tax-rate': true,
 
   'veritrans/charge' : true,
 

@@ -13,6 +13,7 @@ parasails.registerPage('cart', {
     formErrorsItems: { /* … */ },
     formErrorsShipping: { /* … */ },
     checkoutEnabled: false,
+    taxRate: '',
     subTotal: '',
     taxTotal: '',
     grandTotal: '',
@@ -33,6 +34,8 @@ parasails.registerPage('cart', {
     this.cart = await parasails.util.getCart();
     const products = await Cloud.getGlasses();
     this.glasses = _.filter(products, { Type: 'Glassware' });
+    this.taxRate = await Cloud.getConsumptionTaxRate();
+    console.log(this.taxRate);
   },
 
   mounted: async function() {
@@ -45,8 +48,7 @@ parasails.registerPage('cart', {
     const cart = this.cart;
 
     this.subTotal = ((_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0);
-    // get the total of the shipping + items tax
-    this.taxTotal = (_.sum(cart.items, (o) => { return o.ConsumptionTax }) + cart.shipping.consumptionTax);
+    this.taxTotal = this.subTotal * this.taxRate;
     this.grandTotal = (this.subTotal + this.taxTotal);
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -429,9 +431,9 @@ parasails.registerPage('cart', {
       if(!argins.DateEnd) {
         this.formErrorsTime.DateEnd = true;
       }
-      if(!argins.DaysOfUse) {
-        this.formErrorsTime.DaysOfUse = true;
-      }
+      // if(!argins.DaysOfUse) {
+      //   this.formErrorsTime.DaysOfUse = true;
+      // }
       if (Object.keys(this.formErrorsTime).length > 0) {
         return;
       }

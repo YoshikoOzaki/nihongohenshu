@@ -70,12 +70,6 @@
                           Discount
                         </th>
                         <th>
-                          SubTotal
-                        </th>
-                        <th>
-                          Tax
-                        </th>
-                        <th>
                           Total
                         </th>
                         <th>
@@ -152,11 +146,6 @@
                         <td>
                           ¥{{item.DiscountedTotalPrice}}
                         </td>
-                        <td>
-                          ¥{{item.ConsumptionTax}}
-                        </td>
-                        <td>
-                          <b>¥{{item.DiscountedTotalPriceWithTax}}</b>
                         </td>
                         <td>
                           <!-- <button @click="removeItemFromCart({index: index})"
@@ -206,12 +195,6 @@
                         <th>
                           Shipping
                         </th>
-                        <th>
-                          Tax
-                        </th>
-                        <th>
-                          Total
-                        </th>
                       </thead>
                       <tr>
                         <td>
@@ -236,12 +219,6 @@
                         </td>
                         <td>
                           ¥{{cart.shipping && cart.shipping.price || 0}}
-                        </td>
-                        <td>
-                          ¥{{cart.shipping && cart.shipping.consumptionTax || 0}}
-                        </td>
-                        <td>
-                          ¥{{cart.shipping && cart.shipping.priceWithTax || 0}}
                         </td>
                       </tr>
                     </table>
@@ -382,7 +359,7 @@
                     <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
                   </div>
                 </div>
-                <div class="col-sm-12">
+                <div class="col-sm-12" v-if="false">
                   <div class="form-group">
                     <label for="full-name">Days of Usage</label>
                     <input class="form-control" id="days-of-use" name="days-of-use" type="number"
