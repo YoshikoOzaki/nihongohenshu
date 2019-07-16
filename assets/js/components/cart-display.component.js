@@ -24,6 +24,9 @@ parasails.registerComponent('cartDisplay', {
     return {
       moment: moment,
       syncMessage: '',
+      subTotal: '',
+      taxTotal: '',
+      grandTotal: '',
     };
   },
 
@@ -91,50 +94,90 @@ parasails.registerComponent('cartDisplay', {
           </tr>
         </table>
       </div>
+      <div class="">
+                    <h6>Shipping</h6>
+                  </div>
+                  <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
+                    <table class="table table-bordered table-sm">
+                      <thead class="thead">
+                        <th>
+                          Delivery Date
+                        </th>
+                        <th>
+                          Return Date
+                        </th>
+                        <th>
+                          Days Used
+                        </th>
+                        <th>
+                          Postcode
+                        </th>
+                        <th>
+                          Shipping Method
+                        </th>
+                        <th>
+                          Area
+                        </th>
+                        <th>
+                          Shipping
+                        </th>
+                        <th>
+                          Tax
+                        </th>
+                        <th>
+                          Total
+                        </th>
+                      </thead>
+                      <tr>
+                        <td>
+                          {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
+                        </td>
+                        <td>
+                          {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
+                        </td>
+                        <td>
+                          {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
+                        </td>
+                        <td>
+                          {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
+                          <small
+                            class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                        </td>
+                        <td>
+                          {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
+                        </td>
+                        <td>
+                          {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
+                        </td>
+                        <td>
+                          ¥{{cart.shipping && cart.shipping.price || 0}}
+                        </td>
+                        <td>
+                          ¥{{cart.shipping && cart.shipping.consumptionTax || 0}}
+                        </td>
+                        <td>
+                          ¥{{cart.shipping && cart.shipping.priceWithTax || 0}}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="" v-if="subTotal && taxTotal && grandTotal">
+                    <div class="" v-if="subTotal && taxTotal && grandTotal">
+                      <h6>Totals</h6>
+                    </div>
+                    <div class="text-right">
+                      <h5>Sub Total</h5>
+                      <b>¥ {{subTotal && subTotal.toLocaleString()}}</b>
+                      <hr />
+                      <h5>Tax Total</h5>
+                      <b>¥ {{taxTotal && taxTotal.toLocaleString()}}</b>
+                      <hr />
+                      <h4>Grand Total</h4>
+                      <h5><b>¥ {{grandTotal && grandTotal.toLocaleString()}}</b></h5>
+                      <hr />
+                    </div>
+                  </div>
       <div class="table-responsive">
-        <table class="table table-bordered table-sm">
-          <thead class="thead-dark">
-            <th>
-              Pick Up Date
-            </th>
-            <th>
-              Return Date
-            </th>
-            <th>
-              Days of Use
-            </th>
-            <th>
-              Postcode
-            </th>
-            <th>
-              Shipping
-            </th>
-            <th>
-              Total
-            </th>
-          </thead>
-          <tr>
-            <td>
-              {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
-            </td>
-            <td>
-              {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
-            </td>
-            <td>
-              {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
-            </td>
-            <td>
-              {{cart.shipping && cart.shipping.postcode || "Add a Postcode"}}<br />
-              <small class="text-danger">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
-            </td>
-            <td>
-              ¥{{cart.shipping && cart.shipping.price || 0}}
-            </td>
-            <td>
-              <b>¥{{cart.shipping && (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0 }}</b>
-            </td>
-          </tr>
-        </table>
         <button
           @click="checkAllCartAvailability"
           class="btn btn-outline-secondary btn-sm"
@@ -159,6 +202,13 @@ parasails.registerComponent('cartDisplay', {
   },
   mounted: async function(){
     //…
+  },
+  updated: async function() {
+    const cart = this.cart;
+
+    this.subTotal = ((_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0);
+    this.taxTotal = (_.sum(cart.items, (o) => { return o.ConsumptionTax }) + cart.shipping.consumptionTax);
+    this.grandTotal = (this.subTotal + this.taxTotal);
   },
   beforeDestroy: function() {
     //…

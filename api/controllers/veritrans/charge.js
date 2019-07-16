@@ -46,6 +46,8 @@ module.exports = {
     }
     // first validate if the order already exists and if it does return;
 
+    // also need to validate if the 'amount' is the same as what calculating the amount from the order id is
+
     const fetch = require("node-fetch");
 
     const ccid = "A100000000000001069951cc";

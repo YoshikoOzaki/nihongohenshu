@@ -4,8 +4,8 @@
       <div class="col-md-6 offset-md-3">
         <div>
           <page-header
-          heading="Reserved Order Confirmation"
-          sub-heading="Your order has been reserved"
+            heading="Reserved Confirmation"
+            sub-heading="Your order has been reserved"
           />
         </div>
         <div class="mb-3">
@@ -122,11 +122,8 @@
                   <th>
                     Quantity In Order
                   </th>
-                  <th>
-                    Total Price
-                  </th>
                 </tr>
-                <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Product !== null">
+                <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Product !== 160">
                   <td>
                     <img height="100px" :src="orderLine.glassDetails.ImgSrc" />
                   </td>
@@ -144,21 +141,22 @@
                   <td>
                     {{ orderLine.Quantity }}
                   </td>
-                  <td>
-                    ¥{{ orderLine.UnitPrice * orderLine.Quantity }}
-                  </td>
-                </tr>
-                <tr>
-                  <th colspan="3">
-                  </th>
-                  <th>
-                    <b>Order Total</b>
-                  </th>
-                  <th>
-                    ¥{{orderWithAllData.TotalPrice}}
-                  </th>
                 </tr>
               </table>
+            </div>
+          </div>
+          <div v-if="false">
+            <h6>Shipping</h6>
+          </div>
+          <div  v-if="false" v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Product === 160">
+            <div>
+              {{ orderLine.glassDetails.NameJ1 }}
+            </div>
+            <div>
+              {{ orderLine.glassDetails.NameJ2 }}
+            </div>
+            <div>
+              Postcode: {{ orderWithAllData.Postcode }}
             </div>
           </div>
         </div>

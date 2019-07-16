@@ -55,13 +55,22 @@
                           Quantity
                         </th>
                         <th>
-                          Price
+                          UPrice
                         </th>
                         <th>
-                          Price
+                          Wash
+                        </th>
+                        <th>
+                          UPrice -%
+                        </th>
+                        <th>
+                          UPrice-%+Wash
                         </th>
                         <th>
                           Discount
+                        </th>
+                        <th>
+                          SubTotal
                         </th>
                         <th>
                           Tax
@@ -70,7 +79,7 @@
                           Total
                         </th>
                         <th>
-                          Actions
+                          Remove
                         </th>
                       </thead>
                       <!-- Seperate this into component so it can do it's own update -->
@@ -124,7 +133,13 @@
                           ¥{{item.UnitPrice}}
                         </td>
                         <td>
+                          ¥{{item.WashAndPolish}}
+                        </td>
+                        <td>
                           ¥{{item.DiscountedUnitPrice}}
+                        </td>
+                        <td>
+                          ¥{{item.DiscountedUnitPriceWithWash}}
                         </td>
                         <td>
                           <span v-if="Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100) > 1">
@@ -135,10 +150,13 @@
                           </span>
                         </td>
                         <td>
+                          ¥{{item.DiscountedTotalPrice}}
+                        </td>
+                        <td>
                           ¥{{item.ConsumptionTax}}
                         </td>
                         <td>
-                          ¥{{item.DiscountedTotalPriceWithTax}}
+                          <b>¥{{item.DiscountedTotalPriceWithTax}}</b>
                         </td>
                         <td>
                           <!-- <button @click="removeItemFromCart({index: index})"
@@ -146,10 +164,9 @@
                             <span class="fa fa-trash mr-1"></span><i><small>Remove</small></i>
                           </button> -->
                           <button @click="removeItemFromCart({ index: index })" type="submit"
-                            class="btn btn-sm btn-block btn-outline-primary ajax-button" :class="[syncing ? 'syncing' : '']">
+                            class="btn btn-sm btn-block btn-outline-secondary ajax-button" :class="[syncing ? 'syncing' : '']">
                             <span class="button-text" v-if="!syncing">
                               <i class="fa fa-trash"></i>
-                              Remove
                             </span>
                             <span class="button-loader clearfix" v-if="syncing">
                               <slot name="syncing-state">
@@ -263,13 +280,15 @@
                     <a href="../checkout/reserve-prompt">
                       <button class="btn btn-outline-primary btn-sm"
                         :disabled="!checkoutEnabled">
-                        Reserve Order
+                        <i class="fa fa-shopping-bag"></i>
+                        Reserve Stock
                       </button>
                     </a>
                   </span>
                   <a href="../checkout/order-prompt">
                     <button class="btn btn-primary btn-sm" @click="createOrderFromCart"
                       :disabled="!checkoutEnabled">
+                      <i class="fa fa-credit-card-alt"></i>
                       Proceed to Checkout
                     </button>
                   </a>
@@ -326,7 +345,10 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">Add</ajax-button>
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">
+                      <i class="fa fa-cart-plus mr-1"></i>
+                      Add
+                    </ajax-button>
                   </div>
                 </div>
               </div>
@@ -380,7 +402,10 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-outline-primary">Update</ajax-button>
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-outline-primary">
+                      <i class="fa fa-pencil mr-1"></i>
+                      Update
+                    </ajax-button>
                   </div>
                 </div>
               </div>
@@ -416,7 +441,10 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">Update</ajax-button>
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">
+                        <i class="fa fa-pencil mr-1"></i>
+                        Update
+                      </ajax-button>
                   </div>
                 </div>
               </div>

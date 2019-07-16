@@ -118,6 +118,7 @@ module.exports = {
         Quantity: 1,
         UnitPrice: inputs.DeliveryCost,
         Order: Number(order.id),
+        Product: 160,
       }
       let delivery = await OrderLineNumber.create(payload).fetch();
       return delivery;
@@ -170,7 +171,7 @@ module.exports = {
       return transactionLines;
     }
 
-    // check one final time that order is totally valid
+    // check one final time that order is totally valid -> frontend and backend
 
     try {
       const order = await createOrder();
