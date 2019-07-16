@@ -55,13 +55,22 @@
                           Quantity
                         </th>
                         <th>
-                          Price
+                          UPrice
                         </th>
                         <th>
-                          Price
+                          Wash
+                        </th>
+                        <th>
+                          UPrice -%
+                        </th>
+                        <th>
+                          UPrice-%+Wash
                         </th>
                         <th>
                           Discount
+                        </th>
+                        <th>
+                          SubTotal
                         </th>
                         <th>
                           Tax
@@ -124,7 +133,13 @@
                           ¥{{item.UnitPrice}}
                         </td>
                         <td>
+                          ¥{{item.WashAndPolish}}
+                        </td>
+                        <td>
                           ¥{{item.DiscountedUnitPrice}}
+                        </td>
+                        <td>
+                          ¥{{item.DiscountedUnitPriceWithWash}}
                         </td>
                         <td>
                           <span v-if="Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100) > 1">
@@ -135,10 +150,13 @@
                           </span>
                         </td>
                         <td>
+                          ¥{{item.DiscountedTotalPrice}}
+                        </td>
+                        <td>
                           ¥{{item.ConsumptionTax}}
                         </td>
                         <td>
-                          ¥{{item.DiscountedTotalPriceWithTax}}
+                          <b>¥{{item.DiscountedTotalPriceWithTax}}</b>
                         </td>
                         <td>
                           <!-- <button @click="removeItemFromCart({index: index})"
@@ -263,7 +281,7 @@
                       <button class="btn btn-outline-primary btn-sm"
                         :disabled="!checkoutEnabled">
                         <i class="fa fa-shopping-bag"></i>
-                        Reserve Order
+                        Reserve Stock
                       </button>
                     </a>
                   </span>

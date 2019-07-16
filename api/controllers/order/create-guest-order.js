@@ -113,6 +113,10 @@ module.exports = {
       }
     }
 
+    // cart items should still be validated for their availability
+    // even though it has happened on the frontend it should also happen on the backend
+    // ie if a duplicate order is sent twice, it should be validated as the stock might not be there
+
     const createOrder = async function() {
       orderInputs = {
         DateStart: inputs.DateStart,

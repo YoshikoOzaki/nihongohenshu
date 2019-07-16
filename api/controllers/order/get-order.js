@@ -45,38 +45,41 @@ module.exports = {
         }
       ).populate('OrderLineNumbers').populate('User');
 
-      const recordWithNonGlassItemsRemoved = {
-        ...recordWithItems,
-        OrderLineNumbers: _.filter(recordWithItems.OrderLineNumbers, (o) => {
-          return o.Product !== 160;
-        }),
-      };
+      // const recordWithNonGlassItemsRemoved = {
+      //   ...recordWithItems,
+      //   OrderLineNumbers: _.filter(recordWithItems.OrderLineNumbers, (o) => {
+      //     return o.Product !== 160;
+      //   }),
+      // };
 
-      await asyncForEach(recordWithNonGlassItemsRemoved.OrderLineNumbers, async (item, i) => {
+      await asyncForEach(recordWithItems.OrderLineNumbers, async (item, i) => {
         glassDetailsForItem = await Product.findOne({ id: item.Product });
 
-        recordWithNonGlassItemsRemoved.OrderLineNumbers[i].glassDetails = glassDetailsForItem;
+        recordWithItems.OrderLineNumbers[i].glassDetails = glassDetailsForItem;
       });
 
       async function getTotalOrderPrice() {
         const costs = [];
         const washCost = await WashAndPolish.findOne({ Name: "Wash And Polish"  });
-        await asyncForEach(recordWithNonGlassItemsRemoved.OrderLineNumbers, async (item, i) => {
-          if (item.Product !== null) {
-            const itemCost = (item.UnitPrice + washCost.Price) * item.Quantity;
-            costs.push(itemCost);
+        const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
+        await asyncForEach(recordWithItems.OrderLineNumbers, async (item, i) => {
+          if (item.Product !== 160) {
+            const itemCost = ((item.UnitPrice + washCost.Price) * item.Quantity);
+            const itemCostPlusTax = itemCost + (itemCost * consumptionTaxRate);
+            costs.push(itemCostPlusTax);
             return;
           }
           // this should be a delivery or non glass item
-          const itemCost = item.unitPrice * item.quantity;
-          costs.push(itemCost);
+          const itemCost = item.UnitPrice * item.Quantity;
+          const itemCostPlusTax = itemCost + (itemCost * consumptionTaxRate);
+          costs.push(itemCostPlusTax);
         });
         return _.sum(costs);
       }
       const TotalPrice = await getTotalOrderPrice();
 
       recordWithItemsPropogatedAndTotalPrice = {
-        ...recordWithNonGlassItemsRemoved,
+        ...recordWithItems,
         TotalPrice,
       };
 

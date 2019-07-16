@@ -19,8 +19,9 @@
             </div>
             <div v-if="orderWithAllData && !_.isEmpty(orderWithAllData)">
               <div class="mb-2">
-                <div><small>User Name</small></div>
-                <div v-if="orderWithAllData.User">{{orderWithAllData.User.fullName</div>
+                <div  v-if="orderWithAllData.User"><small>User Name</small></div>
+                <div v-if="orderWithAllData.User">{{orderWithAllData.User.fullName}}</div>
+                <div><small>Order Name</small></div>
                 <div>{{orderWithAllData.GuestName || 'Guest'}}</div>
               </div>
               <div v-if="loadedOrder.CustomerKeyword">

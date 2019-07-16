@@ -30,6 +30,8 @@ parasails.registerPage('purchase-guest', {
     this.takuhaiTimeSlots = await Cloud.getTakuhaiTimeSlots();
   },
 
+  updated: async function() {
+  },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
