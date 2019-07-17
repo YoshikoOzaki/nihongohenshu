@@ -5,58 +5,7 @@
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
       <div class="col-sm-9">
-        <div class="row">
-          <div class="col-md-12 mb-3">
-            <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
-              <table class="table table-borderless table-sm">
-                <thead class="thead">
-                  <tr>
-                    <th>
-                      Delivery Date
-                    </th>
-                    <th>
-                      Return Date
-                    </th>
-                    <th>
-                      Days Used
-                    </th>
-                    <th>
-                      Postcode
-                    </th>
-                    <th>
-                      Shipping Method
-                    </th>
-                    <th>
-                      Area
-                    </th>
-                  </tr>
-                </thead>
-                <tr>
-                  <td>
-                    {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
-                  </td>
-                  <td>
-                    {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
-                  </td>
-                  <td>
-                    {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
-                  </td>
-                  <td>
-                    {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
-                    <small
-                      class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
-                  </td>
-                  <td>
-                    {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
-                  </td>
-                  <td>
-                    {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
+        <hr />
         <div class="row" v-for="(item, index) in cart.items" :key="item.Id">
           <div class="col-md-2 mb-3">
             <img style="width: 100%;":src="item.ImgSrc" />
@@ -94,18 +43,18 @@
             </div>
             <div>
               <small>Wash & Polish</small>
-              <div>¥{{item.WashAndPolish}}</div>
+              <div>¥{{item.TotalWashingCost}}</div>
             </div>
           </div>
           <div class="col-md-2 mb-3">
             <div>
               <small>Discount</small>
-              <div>-{{(100 - item.DiscountedUnitPrice/item.UnitPrice * 100).toFixed(2)}}%</div>
+              <div>{{(100 - (item.QuantityDiscountFactor * 100)).toFixed(2)}}%</div>
             </div>
             <div>
               <small>Total</small>
               <div>
-                <b>¥{{item.DiscountedTotalPrice.toLocaleString()}}</b>
+                <b>¥{{item.TotalPriceWithDiscountsAndWash.toLocaleString()}}</b>
               </div>
             </div>
           </div>
@@ -174,6 +123,56 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
+                  <table class="table table-borderless table-sm">
+                    <tr>
+                      <th>
+                        Delivery Date
+                      </th>
+                      <th>
+                        Return Date
+                      </th>
+                      <th>
+                        Days Used
+                      </th>
+                      <th>
+                        Postcode
+                      </th>
+                      <th>
+                        Shipping Method
+                      </th>
+                      <th>
+                        Area
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>
+                        {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
+                      </td>
+                      <td>
+                        {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
+                      </td>
+                      <td>
+                        {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
+                      </td>
+                      <td>
+                        {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
+                        <small
+                          class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                      </td>
+                      <td>
+                        {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
+                      </td>
+                      <td>
+                        {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
             <div class="text-muted p-1">
               <div class="row">
                 <div class="col-md-12">
@@ -185,7 +184,7 @@
                       <h5>Sub Total</h5>
                         ¥ {{subTotal && subTotal.toLocaleString()}}
                       <hr />
-                      <h5>Tax Total</h5>
+                      <h5>Tax</h5>
                         ¥ {{taxTotal && taxTotal.toLocaleString()}}
                       <hr />
                       <h4>Grand Total</h4>

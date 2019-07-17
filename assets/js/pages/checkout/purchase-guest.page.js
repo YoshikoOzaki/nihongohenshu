@@ -47,8 +47,8 @@ parasails.registerPage('purchase-guest', {
 
       // this.syncing = true;
       // window.location = '/checkout/order-confirmation';
-      await parasails.util.clearCart();
-      window.location = '/checkout/purchase-confirmation'
+      // await parasails.util.clearCart();
+      // window.location = '/checkout/purchase-confirmation'
     },
 
     asyncForEach: async function(array, callback) {
@@ -152,7 +152,7 @@ parasails.registerPage('purchase-guest', {
       chargePayload = {
         token: token.token,
         orderId: orderId,
-        amount: (_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price),
+        amount: (_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price),
         reserveOrderId: cart.orderIdToIgnore,
       };
 
@@ -241,6 +241,10 @@ parasails.registerPage('purchase-guest', {
         toastr.success('Order Created ' + chargeCardResult.charge.result.merrMsg);
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
         // window.location = order-confirmation
+
+        await parasails.util.clearCart();
+        // turn on for production
+        //window.location = '/checkout/purchase-confirmation'
       }
 
       this.syncMessage = '';

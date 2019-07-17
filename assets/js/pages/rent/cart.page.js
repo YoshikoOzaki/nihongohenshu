@@ -47,8 +47,8 @@ parasails.registerPage('cart', {
     const cart = this.cart;
     const taxRate = await Cloud.getConsumptionTaxRate();
 
-    this.subTotal = ((_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0);
-    this.taxTotal = ((_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0) * taxRate;
+    this.subTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0);
+    this.taxTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0) * taxRate;
     this.grandTotal = (this.subTotal + this.taxTotal);
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗

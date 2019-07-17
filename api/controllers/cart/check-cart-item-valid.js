@@ -170,19 +170,18 @@ module.exports = {
 
     // find price of items
     var item =  await Product.findOne({ id: inputs.Id });
-    // get the days of use from the cart value
 
     // Collect variables
-    const { Quantity } = inputs;
+    const { Quantity, DaysOfUse } = inputs;
     const { RackCapacity, UnitPrice } = item;
-    const washAndPolishConstant = 32;
-    const daysOfUseDiscountFactor = 1;
 
-    const basePrice = UnitPrice;
+    const washAndPolishConstant = await sails.helpers.getWashAndPolishCost();
+    const daysOfUseDiscountFactor = await sails.helpers.getDaysOfUseDiscountFactor();
+
     const fullRacks = Quantity / RackCapacity;
     const fullRacksRoundedDown = Math.floor(fullRacks);
     const quantityInFullRacks = RackCapacity * fullRacksRoundedDown;
-    const quantityInPartiallyFullRack = Quantity - quantityInFullRacks;
+    const quantityInPartiallyFullRack = Number(Quantity) - quantityInFullRacks;
     const partiallyFullRacks = quantityInPartiallyFullRack > 0 ? 1 : 0;
 
     // const quantityFactorForFullRack = 0.46+0.551/1.04^(_.max([0, fullRacksRoundedDown -3]));
@@ -197,50 +196,33 @@ module.exports = {
     // Create Prices
     // ------
 
-    const totalPrice = Quantity * UnitPrice;
+    const totalPrice = Number(Quantity) * UnitPrice;
 
-    // Remove washing cost, calculate for full and partial racks the discount as a lump sum
-    // const DiscountedBasePrice =
-    //   ((
-    //     basePrice *
-    //     daysOfUseDiscountFactor *
-    //     quantityFactorForFullRack *
-    //     quantityInFullRacks
-    //   )
-    //   +
-    //   (
-    //     basePrice *
-    //     daysOfUseDiscountFactor *
-    //     quantityFactorForPartialRack *
-    //     quantityInPartiallyFullRack
-    //   ));
-
-    async function getDiscountedBasePrice (
-      basePrice,
+    async function getDiscountedBasicTotalWithDiscounts (
+      UnitPrice,
       daysOfUseDiscountFactor,
       quantityFactorForFullRack,
       quantityInFullRacks,
       quantityFactorForPartialRack,
       quantityInPartiallyFullRack,
     ) {
-      return (
-        basePrice *
+      const discountPriceOfFullRacks = (
+        UnitPrice *
         daysOfUseDiscountFactor *
         quantityFactorForFullRack *
         quantityInFullRacks
-      )
-      +
-      (
-        basePrice *
+      );
+      const discountedPriceOfPartialRacks = (
+        UnitPrice *
         daysOfUseDiscountFactor *
         quantityFactorForPartialRack *
         quantityInPartiallyFullRack
       );
+      return _.sum([discountPriceOfFullRacks, discountedPriceOfPartialRacks]);
     }
 
-    // Divide it by the total quantity and add was cost back on to get discounted unit price
-    const discountedBasePrice = await getDiscountedBasePrice(
-      basePrice,
+    const discountedBasicTotal = await getDiscountedBasicTotalWithDiscounts(
+      UnitPrice,
       daysOfUseDiscountFactor,
       quantityFactorForFullRack,
       quantityInFullRacks,
@@ -248,35 +230,23 @@ module.exports = {
       quantityInPartiallyFullRack,
     );
 
-    const discountedUnitPrice = Math.round(discountedBasePrice / Quantity);
-    const discountedUnitPriceWithWash = discountedUnitPrice + washAndPolishConstant;
+    const discountedUnitPrice = Math.round(discountedBasicTotal / Quantity);
 
-    // Use the new discounted unit price to calculate the discounted total cost
-    const discountedTotalPrice = discountedUnitPriceWithWash * Quantity;
-    const totalPriceWithWash = (basePrice +  washAndPolishConstant) * Quantity;
+    const totalWashingCost = Quantity * washAndPolishConstant;
+    const totalDiscountedUnitConsumption = (discountedUnitPrice * Quantity) * DaysOfUse;
 
-    const DiscountedTotalPriceWithWash = discountedUnitPriceWithWash * Quantity;
-
-    // const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
-    // const consumptionTax = discountedTotalPrice * consumptionTaxRate;
-    // const totalPriceWithConsumptionTax = discountedTotalPrice + consumptionTax;
+    const discountedTotalWithWashAndDaysOfUse = _.sum([totalWashingCost, totalDiscountedUnitConsumption]);
 
     discountedInputs = {
       ...item,
       Quantity: inputs.Quantity,
       ImgSrc: item.ImgSrc,
       WashAndPolish: washAndPolishConstant,
-      TotalPrice: totalPrice,
-      TotalPriceWithWash: totalPriceWithWash,
-      DiscountedBasePrice: discountedBasePrice,
-      DiscountedUnitPrice: discountedUnitPrice,
-      DiscountedUnitPriceWithWash: discountedUnitPriceWithWash,
-      DiscountedTotalPriceWithWash: discountedTotalPrice,
-      DiscountedTotalPrice: discountedTotalPrice,
-      // ConsumptionTax: consumptionTax,
-      // DiscountedTotalPriceWithTax: totalPriceWithConsumptionTax,
+      TotalPriceRaw: totalPrice,
+      TotalPriceWithDiscountsAndWash: discountedTotalWithWashAndDaysOfUse,
+      TotalWashingCost: totalWashingCost,
+      QuantityDiscountFactor: quantityFactorForFullRack,
       Available: await getAvailability(),
-      quantityFactorForFullRack,
     }
 
     return exits.success(discountedInputs);

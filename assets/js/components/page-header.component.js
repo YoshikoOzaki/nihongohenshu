@@ -31,7 +31,7 @@ parasails.registerComponent('pageHeader', {
   //  ╠═╣ ║ ║║║║
   //  ╩ ╩ ╩ ╩ ╩╩═╝
   template: `
-    <div class="mb-3 mt-3">
+    <div class="mb-2 mt-3">
       <h4>
         {{heading}}
       </h4>
