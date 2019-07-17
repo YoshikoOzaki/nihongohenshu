@@ -21,6 +21,23 @@ module.exports = {
       + 'non compulsary as some order lines do other things',
     },
 
+    WashAndPolish: {
+      type: 'number',
+      description: 'The price of the wash and polish when the order was made - '
+      + 'non compulsary as some order lines do other things',
+    },
+
+    QuantityDiscountFactor: {
+      type: 'string',
+      description: 'The more items entered the bigger the discount, comes from api calculation',
+    },
+
+    TotalPriceWithDiscountsAndWash: {
+      type: 'number',
+      description: 'The price of the item when the order was made - '
+      + 'non compulsary as some order lines do other things',
+    },
+
     Product: {
       model: 'Product',
     },

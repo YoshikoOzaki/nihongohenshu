@@ -5,10 +5,97 @@
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
       <div class="col-sm-9">
-        <div class="">
-          <div class="">
-            <h6>Items</h6>
+        <hr />
+        <div class="row" v-for="(item, index) in cart.items" :key="item.Id">
+          <div class="col-md-2 mb-3">
+            <img style="width: 100%;":src="item.ImgSrc" />
           </div>
+          <div class="col-md-2 mb-3">
+            <h5>{{item.NameJ1}}</h5>
+            <h5>{{item.NameJ2}}</h5>
+            <div class="text-success" v-bind:class="{ 'text-info': item.Available.available === 'Not Available' }">
+              <div v-if="item.Available !== 'No date set to evaluate'">
+                {{item.Available.available}}&nbsp;<br />
+                <span class="text-muted"
+                  v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In
+                  Stock</span>
+              </div>
+              <div class="text-info" v-if="item.Available === 'No date set to evaluate'">
+                {{item.Available}}
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 mb-3">
+            <div v-if="false">
+              <div>
+                ¥{{item.WashAndPolish}}
+              </div>
+              <div>
+                ¥{{item.DiscountedUnitPrice}}
+              </div>
+              <div>
+                ¥{{item.DiscountedUnitPriceWithWash}}
+              </div>
+            </div>
+            <div>
+              <small>Unit Price</small>
+              <div>¥{{item.UnitPrice}}</div>
+            </div>
+            <div>
+              <small>Wash & Polish</small>
+              <div>¥{{item.TotalWashingCost}}</div>
+            </div>
+          </div>
+          <div class="col-md-2 mb-3">
+            <div>
+              <small>Discount</small>
+              <div>{{(100 - (item.QuantityDiscountFactor * 100)).toFixed(2)}}%</div>
+            </div>
+            <div>
+              <small>Total</small>
+              <div>
+                <b>¥{{item.TotalPriceWithDiscountsAndWash.toLocaleString()}}</b>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="input-group">
+              <input class="form-control form-control-sm" type="number" v-model.trim="item.Quantity" />
+              <div class="input-group-append">
+                <button @click="updateItemRowQuantity(index, item.Quantity)" type="submit"
+                  class="btn btn-sm btn-block ajax-button btn-outline-primary" :class="[syncing ? 'syncing' : '']">
+                  <span class="button-text" v-if="!syncing">
+                    <i class="fa fa-pencil mr-1"></i>
+                    Update
+                  </span>
+                  <span class="button-loader clearfix" v-if="syncing">
+                    <slot name="syncing-state">
+                      <div class="loading-dot dot1"></div>
+                      <div class="loading-dot dot2"></div>
+                      <div class="loading-dot dot3"></div>
+                      <div class="loading-dot dot4"></div>
+                    </slot>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-1 mb-3">
+            <button @click="removeItemFromCart({ index: index })" type="submit"
+              class="btn btn-sm btn-outline-secondary ajax-button" :class="[syncing ? 'syncing' : '']">
+              <span class="button-text" v-if="!syncing">
+                <i class="fa fa-trash"></i>
+              </span>
+              <span class="button-loader clearfix" v-if="syncing">
+                <slot name="syncing-state">
+                  <div class="loading-dot dot1"></div>
+                  <div class="loading-dot dot2"></div>
+                </slot>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="">
           <div v-if="cart.orderIdToIgnore" class="mb-3">
             <div class="">
               <div class="row">
@@ -31,208 +118,74 @@
               <div class="row">
                 <div class="col-md-12">
                   <span class="text-info">
-                  <small><i>No items in the rental cart</i></small>
+                    <small><i>No items in the rental cart</i></small>
                   </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
+                  <table class="table table-borderless table-sm">
+                    <tr>
+                      <th>
+                        Delivery Date
+                      </th>
+                      <th>
+                        Return Date
+                      </th>
+                      <th>
+                        Days Used
+                      </th>
+                      <th>
+                        Postcode
+                      </th>
+                      <th>
+                        Shipping Method
+                      </th>
+                      <th>
+                        Area
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>
+                        {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
+                      </td>
+                      <td>
+                        {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
+                      </td>
+                      <td>
+                        {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
+                      </td>
+                      <td>
+                        {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
+                        <small
+                          class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                      </td>
+                      <td>
+                        {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
+                      </td>
+                      <td>
+                        {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
+                      </td>
+                    </tr>
+                  </table>
                 </div>
               </div>
             </div>
             <div class="text-muted p-1">
               <div class="row">
                 <div class="col-md-12">
-                  <div class="table-responsive" v-if="cart.items && cart.items.length > 0">
-                    <table class="table table-bordered table-sm">
-                      <thead>
-                        <th>
-                          Image
-                        </th>
-                        <th>
-                          Product
-                        </th>
-                        <th>
-                          Available
-                        </th>
-                        <th>
-                          Quantity
-                        </th>
-                        <th>
-                          UPrice
-                        </th>
-                        <th>
-                          Wash
-                        </th>
-                        <th>
-                          UPrice -%
-                        </th>
-                        <th>
-                          UPrice-%+Wash
-                        </th>
-                        <th>
-                          Discount
-                        </th>
-                        <th>
-                          Total
-                        </th>
-                        <th>
-                          Remove
-                        </th>
-                      </thead>
-                      <!-- Seperate this into component so it can do it's own update -->
-                      <tr v-for="(item, index) in cart.items" :key="item.Id">
-                        <td>
-                          <img style="height: 120px" :src="item.ImgSrc" />
-                        </td>
-                        <td>
-                          <div>{{item.NameJ1}}</div>
-                          <div>{{item.NameJ2}}</div>
-                        </td>
-                        <td>
-                          <div class="text-success"
-                            v-bind:class="{ 'text-info': item.Available.available === 'Not Available' }">
-                            <div v-if="item.Available !== 'No date set to evaluate'">
-                              {{item.Available.available}}&nbsp;<br />
-                              <span class="text-muted"
-                                v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In
-                                Stock</span>
-                            </div>
-                            <div class="text-info" v-if="item.Available === 'No date set to evaluate'">
-                              {{item.Available}}
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="input-group">
-                            <input class="form-control form-control-sm" type="number"
-                              v-model.trim="item.Quantity"
-                            />
-                            <div class="input-group-append">
-                              <button @click="updateItemRowQuantity(index, item.Quantity)" type="submit"
-                                class="btn btn-sm btn-block ajax-button btn-outline-primary" :class="[syncing ? 'syncing' : '']">
-                                <span class="button-text" v-if="!syncing">
-                                  <i class="fa fa-share-square-o"></i>
-                                  Update
-                                </span>
-                                <span class="button-loader clearfix" v-if="syncing">
-                                  <slot name="syncing-state">
-                                    <div class="loading-dot dot1"></div>
-                                    <div class="loading-dot dot2"></div>
-                                    <div class="loading-dot dot3"></div>
-                                    <div class="loading-dot dot4"></div>
-                                  </slot>
-                                </span>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          ¥{{item.UnitPrice}}
-                        </td>
-                        <td>
-                          ¥{{item.WashAndPolish}}
-                        </td>
-                        <td>
-                          ¥{{item.DiscountedUnitPrice}}
-                        </td>
-                        <td>
-                          ¥{{item.DiscountedUnitPriceWithWash}}
-                        </td>
-                        <td>
-                          <span v-if="Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100) > 1">
-                            {{Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100)}}%
-                          </span>
-                          <span v-if="!(Math.round(100 - item.DiscountedUnitPrice/item.UnitPrice * 100) > 1)">
-                            0%
-                          </span>
-                        </td>
-                        <td>
-                          ¥{{item.DiscountedTotalPrice}}
-                        </td>
-                        </td>
-                        <td>
-                          <!-- <button @click="removeItemFromCart({index: index})"
-                            class="btn btn-xs btn-block btn-outline-secondary">
-                            <span class="fa fa-trash mr-1"></span><i><small>Remove</small></i>
-                          </button> -->
-                          <button @click="removeItemFromCart({ index: index })" type="submit"
-                            class="btn btn-sm btn-block btn-outline-secondary ajax-button" :class="[syncing ? 'syncing' : '']">
-                            <span class="button-text" v-if="!syncing">
-                              <i class="fa fa-trash"></i>
-                            </span>
-                            <span class="button-loader clearfix" v-if="syncing">
-                              <slot name="syncing-state">
-                                <div class="loading-dot dot1"></div>
-                                <div class="loading-dot dot2"></div>
-                              </slot>
-                            </span>
-                          </button>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div class="">
-                    <h6>Shipping</h6>
-                  </div>
-                  <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
-                    <table class="table table-bordered table-sm">
-                      <thead class="thead">
-                        <th>
-                          Delivery Date
-                        </th>
-                        <th>
-                          Return Date
-                        </th>
-                        <th>
-                          Days Used
-                        </th>
-                        <th>
-                          Postcode
-                        </th>
-                        <th>
-                          Shipping Method
-                        </th>
-                        <th>
-                          Area
-                        </th>
-                        <th>
-                          Shipping
-                        </th>
-                      </thead>
-                      <tr>
-                        <td>
-                          {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
-                        </td>
-                        <td>
-                          {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
-                        </td>
-                        <td>
-                          {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
-                        </td>
-                        <td>
-                          {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
-                          <small
-                            class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
-                        </td>
-                        <td>
-                          {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
-                        </td>
-                        <td>
-                          {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
-                        </td>
-                        <td>
-                          ¥{{cart.shipping && cart.shipping.price || 0}}
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div class="" v-if="subTotal && taxTotal && grandTotal">
-                    <div class="" v-if="subTotal && taxTotal && grandTotal">
-                      <h6>Totals</h6>
-                    </div>
+                  <div>
                     <div class="text-right">
-                      <h5>Sub Total</h5>
-                      <b>¥ {{subTotal && subTotal.toLocaleString()}}</b>
+                      <h5>Shipping</h5>
+                        ¥ {{cart.shipping && cart.shipping.price && cart.shipping.price.toLocaleString()}}
                       <hr />
-                      <h5>Tax Total</h5>
-                      <b>¥ {{taxTotal && taxTotal.toLocaleString()}}</b>
+                      <h5>Sub Total</h5>
+                        ¥ {{subTotal && subTotal.toLocaleString()}}
+                      <hr />
+                      <h5>Tax</h5>
+                        ¥ {{taxTotal && taxTotal.toLocaleString()}}
                       <hr />
                       <h4>Grand Total</h4>
                       <h5><b>¥ {{grandTotal && grandTotal.toLocaleString()}}</b></h5>
@@ -255,16 +208,14 @@
                 <div class="col-md-6 text-lg-right">
                   <span class="mr-2">
                     <a href="../checkout/reserve-prompt">
-                      <button class="btn btn-outline-primary btn-sm"
-                        :disabled="!checkoutEnabled">
+                      <button class="btn btn-outline-primary btn-sm" :disabled="!checkoutEnabled">
                         <i class="fa fa-shopping-bag"></i>
                         Reserve Stock
                       </button>
                     </a>
                   </span>
                   <a href="../checkout/order-prompt">
-                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart"
-                      :disabled="!checkoutEnabled">
+                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart" :disabled="!checkoutEnabled">
                       <i class="fa fa-credit-card-alt"></i>
                       Proceed to Checkout
                     </button>
@@ -405,7 +356,8 @@
                     <input class="form-control" id="postcode" name="postcode"
                       :class="[formErrorsShipping.PostcodeRaw ? 'is-invalid' : '']"
                       v-model.trim="formDataShipping.PostcodeRaw" autocomplete="postcode">
-                      <div class="invalid-feedback" v-if="formErrorsShipping.PostcodeRaw">Please enter a postcode in the format of 111-1111.</div>
+                    <div class="invalid-feedback" v-if="formErrorsShipping.PostcodeRaw">Please enter a postcode in the
+                      format of 111-1111.</div>
                   </div>
                 </div>
               </div>
@@ -419,9 +371,9 @@
                 <div class="col-sm-12">
                   <div class="form-group text-right">
                     <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">
-                        <i class="fa fa-pencil mr-1"></i>
-                        Update
-                      </ajax-button>
+                      <i class="fa fa-pencil mr-1"></i>
+                      Update
+                    </ajax-button>
                   </div>
                 </div>
               </div>

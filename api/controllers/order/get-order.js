@@ -58,6 +58,8 @@ module.exports = {
         recordWithItems.OrderLineNumbers[i].glassDetails = glassDetailsForItem;
       });
 
+
+
       async function getTotalOrderPrice() {
         const costs = [];
         const washCost = await WashAndPolish.findOne({ Name: "Wash And Polish"  });
@@ -77,6 +79,7 @@ module.exports = {
         return _.sum(costs);
       }
       const TotalPrice = await getTotalOrderPrice();
+      // const TotalPrice = await sails.helpers.getTotalOrderPrice(recordWithItems);
 
       recordWithItemsPropogatedAndTotalPrice = {
         ...recordWithItems,
