@@ -71,6 +71,8 @@ parasails.registerPage('cart', {
         return;
       }
       this.cart = {};
+      this.subTotal = '';
+      this.grandTotal = '';
       localStorage.removeItem('cart');
     },
 

@@ -1,13 +1,13 @@
 <div id="order-recovery" v-cloak>
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6 offset-md-3">
         <page-header
           heading="Reserved Order Recovery"
           sub-heading="User your order id and keyword to recall a reserved order as a guest"
         />
       </div>
-      <div class="col-md-4">
+      <div class="col-md-6 offset-md-3">
         <ajax-form @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError"
           :handle-submitting="submitForm" :handle-parsing="handleParsingForm">
           <div class="form-group">

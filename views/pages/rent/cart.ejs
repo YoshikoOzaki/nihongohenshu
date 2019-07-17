@@ -5,58 +5,111 @@
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
       <div class="col-sm-9">
-        <div class="row mb-3" v-for="(item, index) in cart.items" :key="item.Id">
-          <div class="col-md-3">
-            <img style="height: 100px" :src="item.ImgSrc" />
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
+              <table class="table table-borderless table-sm">
+                <thead class="thead">
+                  <tr>
+                    <th>
+                      Delivery Date
+                    </th>
+                    <th>
+                      Return Date
+                    </th>
+                    <th>
+                      Days Used
+                    </th>
+                    <th>
+                      Postcode
+                    </th>
+                    <th>
+                      Shipping Method
+                    </th>
+                    <th>
+                      Area
+                    </th>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>
+                    {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
+                  </td>
+                  <td>
+                    {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
+                  </td>
+                  <td>
+                    {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
+                  </td>
+                  <td>
+                    {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
+                    <small
+                      class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                  </td>
+                  <td>
+                    {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
+                  </td>
+                  <td>
+                    {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
-          <div class="col-md-5">
-            <div class="row">
-              <div class="col-md-6">
-                <div>{{item.NameJ1}}</div>
-                <div>{{item.NameJ2}}</div>
-                <div class="text-success" v-bind:class="{ 'text-info': item.Available.available === 'Not Available' }">
-                  <div v-if="item.Available !== 'No date set to evaluate'">
-                    {{item.Available.available}}&nbsp;<br />
-                    <span class="text-muted"
-                      v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In
-                      Stock</span>
-                  </div>
-                  <div class="text-info" v-if="item.Available === 'No date set to evaluate'">
-                    {{item.Available}}
-                  </div>
-                </div>
+        </div>
+        <div class="row" v-for="(item, index) in cart.items" :key="item.Id">
+          <div class="col-md-2 mb-3">
+            <img style="width: 100%;":src="item.ImgSrc" />
+          </div>
+          <div class="col-md-2 mb-3">
+            <h5>{{item.NameJ1}}</h5>
+            <h5>{{item.NameJ2}}</h5>
+            <div class="text-success" v-bind:class="{ 'text-info': item.Available.available === 'Not Available' }">
+              <div v-if="item.Available !== 'No date set to evaluate'">
+                {{item.Available.available}}&nbsp;<br />
+                <span class="text-muted"
+                  v-if="item.Available.available === 'Not Available'">{{item.Available.remaining}} In
+                  Stock</span>
               </div>
-              <div class="col-md-6">
-                <div v-if="false">
-                  <div>
-                    ¥{{item.WashAndPolish}}
-                  </div>
-                  <div>
-                    ¥{{item.DiscountedUnitPrice}}
-                  </div>
-                  <div>
-                    ¥{{item.DiscountedUnitPriceWithWash}}
-                  </div>
-                </div>
-                <div>
-                  Unit Price: ¥{{item.UnitPrice}}
-                </div>
-                <div>
-                  Wash & Polish: ¥{{item.WashAndPolish}}
-                </div>
-                <div>
-                  Quantity Discount:
-                  <span>
-                    -{{(100 - item.DiscountedUnitPrice/item.UnitPrice * 100).toFixed(2)}}%
-                  </span>
-                </div>
-                <div>
-                  <b>¥{{item.DiscountedTotalPrice.toLocaleString()}}</b>
-                </div>
+              <div class="text-info" v-if="item.Available === 'No date set to evaluate'">
+                {{item.Available}}
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2 mb-3">
+            <div v-if="false">
+              <div>
+                ¥{{item.WashAndPolish}}
+              </div>
+              <div>
+                ¥{{item.DiscountedUnitPrice}}
+              </div>
+              <div>
+                ¥{{item.DiscountedUnitPriceWithWash}}
+              </div>
+            </div>
+            <div>
+              <small>Unit Price</small>
+              <div>¥{{item.UnitPrice}}</div>
+            </div>
+            <div>
+              <small>Wash & Polish</small>
+              <div>¥{{item.WashAndPolish}}</div>
+            </div>
+          </div>
+          <div class="col-md-2 mb-3">
+            <div>
+              <small>Discount</small>
+              <div>-{{(100 - item.DiscountedUnitPrice/item.UnitPrice * 100).toFixed(2)}}%</div>
+            </div>
+            <div>
+              <small>Total</small>
+              <div>
+                <b>¥{{item.DiscountedTotalPrice.toLocaleString()}}</b>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
             <div class="input-group">
               <input class="form-control form-control-sm" type="number" v-model.trim="item.Quantity" />
               <div class="input-group-append">
@@ -78,9 +131,9 @@
               </div>
             </div>
           </div>
-          <div class="col-md-1">
+          <div class="col-md-1 mb-3">
             <button @click="removeItemFromCart({ index: index })" type="submit"
-            class="btn btn-sm btn-outline-secondary ajax-button" :class="[syncing ? 'syncing' : '']">
+              class="btn btn-sm btn-outline-secondary ajax-button" :class="[syncing ? 'syncing' : '']">
               <span class="button-text" v-if="!syncing">
                 <i class="fa fa-trash"></i>
               </span>
@@ -116,7 +169,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <span class="text-info">
-                  <small><i>No items in the rental cart</i></small>
+                    <small><i>No items in the rental cart</i></small>
                   </span>
                 </div>
               </div>
@@ -124,67 +177,16 @@
             <div class="text-muted p-1">
               <div class="row">
                 <div class="col-md-12">
-                  <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
-                    <table class="table table-borderless table-sm">
-                      <thead class="thead">
-                        <tr>
-                          <th>
-                            Delivery Date
-                          </th>
-                          <th>
-                            Return Date
-                          </th>
-                          <th>
-                            Days Used
-                          </th>
-                          <th>
-                            Postcode
-                          </th>
-                          <th>
-                            Shipping Method
-                          </th>
-                          <th>
-                            Area
-                          </th>
-                          <th>
-                            Shipping
-                          </th>
-                        </tr>
-                      </thead>
-                      <tr>
-                        <td>
-                          {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
-                        </td>
-                        <td>
-                          {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
-                        </td>
-                        <td>
-                          {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
-                        </td>
-                        <td>
-                          {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
-                          <small
-                            class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
-                        </td>
-                        <td>
-                          {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
-                        </td>
-                        <td>
-                          {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
-                        </td>
-                        <td>
-                          ¥{{cart.shipping && cart.shipping.price || 0}}
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
                   <div>
                     <div class="text-right">
+                      <h5>Shipping</h5>
+                        ¥ {{cart.shipping && cart.shipping.price && cart.shipping.price.toLocaleString()}}
+                      <hr />
                       <h5>Sub Total</h5>
-                      <b>¥ {{subTotal && subTotal.toLocaleString()}}</b>
+                        ¥ {{subTotal && subTotal.toLocaleString()}}
                       <hr />
                       <h5>Tax Total</h5>
-                      <b>¥ {{taxTotal && taxTotal.toLocaleString()}}</b>
+                        ¥ {{taxTotal && taxTotal.toLocaleString()}}
                       <hr />
                       <h4>Grand Total</h4>
                       <h5><b>¥ {{grandTotal && grandTotal.toLocaleString()}}</b></h5>
@@ -207,16 +209,14 @@
                 <div class="col-md-6 text-lg-right">
                   <span class="mr-2">
                     <a href="../checkout/reserve-prompt">
-                      <button class="btn btn-outline-primary btn-sm"
-                        :disabled="!checkoutEnabled">
+                      <button class="btn btn-outline-primary btn-sm" :disabled="!checkoutEnabled">
                         <i class="fa fa-shopping-bag"></i>
                         Reserve Stock
                       </button>
                     </a>
                   </span>
                   <a href="../checkout/order-prompt">
-                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart"
-                      :disabled="!checkoutEnabled">
+                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart" :disabled="!checkoutEnabled">
                       <i class="fa fa-credit-card-alt"></i>
                       Proceed to Checkout
                     </button>
@@ -357,7 +357,8 @@
                     <input class="form-control" id="postcode" name="postcode"
                       :class="[formErrorsShipping.PostcodeRaw ? 'is-invalid' : '']"
                       v-model.trim="formDataShipping.PostcodeRaw" autocomplete="postcode">
-                      <div class="invalid-feedback" v-if="formErrorsShipping.PostcodeRaw">Please enter a postcode in the format of 111-1111.</div>
+                    <div class="invalid-feedback" v-if="formErrorsShipping.PostcodeRaw">Please enter a postcode in the
+                      format of 111-1111.</div>
                   </div>
                 </div>
               </div>
@@ -371,9 +372,9 @@
                 <div class="col-sm-12">
                   <div class="form-group text-right">
                     <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">
-                        <i class="fa fa-pencil mr-1"></i>
-                        Update
-                      </ajax-button>
+                      <i class="fa fa-pencil mr-1"></i>
+                      Update
+                    </ajax-button>
                   </div>
                 </div>
               </div>
