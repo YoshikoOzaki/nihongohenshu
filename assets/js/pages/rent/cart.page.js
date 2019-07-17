@@ -35,7 +35,6 @@ parasails.registerPage('cart', {
     const products = await Cloud.getGlasses();
     this.glasses = _.filter(products, { Type: 'Glassware' });
     this.taxRate = await Cloud.getConsumptionTaxRate();
-    console.log(this.taxRate);
   },
 
   mounted: async function() {
@@ -46,9 +45,10 @@ parasails.registerPage('cart', {
     await this.checkIfCheckoutEnabled();
 
     const cart = this.cart;
+    const taxRate = await Cloud.getConsumptionTaxRate();
 
     this.subTotal = ((_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0);
-    this.taxTotal = this.subTotal * this.taxRate;
+    this.taxTotal = ((_.sum(cart.items, (o) => { return o.DiscountedTotalPrice }) + cart.shipping.price) || 0) * taxRate;
     this.grandTotal = (this.subTotal + this.taxTotal);
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
