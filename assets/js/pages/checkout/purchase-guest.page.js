@@ -31,6 +31,12 @@ parasails.registerPage('purchase-guest', {
   },
 
   updated: async function() {
+    const cart = this.cart;
+    const taxRate = await Cloud.getConsumptionTaxRate();
+
+    this.subTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0);
+    this.taxTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0) * taxRate;
+    this.grandTotal = (this.subTotal + this.taxTotal);
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
@@ -152,7 +158,7 @@ parasails.registerPage('purchase-guest', {
       chargePayload = {
         token: token.token,
         orderId: orderId,
-        amount: (_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price),
+        amount: this.grandTotal,
         reserveOrderId: cart.orderIdToIgnore,
       };
 
@@ -227,6 +233,7 @@ parasails.registerPage('purchase-guest', {
         toastr.error(ccToken.message);
         return;
       }
+
       // create an unpaid order
       const guestOrder = await this.createGuestOrder();
 
@@ -242,8 +249,8 @@ parasails.registerPage('purchase-guest', {
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
         // window.location = order-confirmation
 
-        await parasails.util.clearCart();
         // turn on for production
+        // await parasails.util.clearCart();
         //window.location = '/checkout/purchase-confirmation'
       }
 

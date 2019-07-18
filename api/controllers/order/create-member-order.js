@@ -48,7 +48,10 @@ module.exports = {
       type: [{
         id: "number",
         Quantity: "number",
-        UnitPrice: "number"
+        UnitPrice: "number",
+        TotalPriceWithDiscountsAndWash: "number",
+        QuantityDiscountFactor: "number",
+        WashAndPolish: "number",
       }]
     },
 
@@ -145,6 +148,9 @@ module.exports = {
         const itemInputs = {
           Quantity: Number(item.Quantity),
           UnitPrice: Number(item.UnitPrice),
+          WashAndPolish: item.WashAndPolish,
+          QuantityDiscountFactor: item.QuantityDiscountFactor,
+          TotalPriceWithDiscountsAndWash: Number(item.TotalPriceWithDiscountsAndWash),
           Product: Number(item.id),
           Order: Number(order.id),
         }

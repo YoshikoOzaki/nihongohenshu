@@ -146,8 +146,8 @@ module.exports = {
         const itemInputs = {
           Quantity: Number(item.Quantity),
           UnitPrice: Number(item.UnitPrice),
-          WashAndPolish: item.WashAndPolish,
-          QuantityDiscountFactor: item.QuantityDiscountFactor,
+          WashAndPolish: Number(item.WashAndPolish),
+          QuantityDiscountFactor: Number(item.QuantityDiscountFactor),
           TotalPriceWithDiscountsAndWash: Number(item.TotalPriceWithDiscountsAndWash),
           Product: Number(item.id),
           Order: Number(order.id),
@@ -162,8 +162,10 @@ module.exports = {
     const createDeliveryOrderLine = async function(order) {
       const payload = {
         Quantity: 1,
-        UnitPrice: inputs.DeliveryCost,
+        UnitPrice: Number(inputs.DeliveryCost),
         Order: Number(order.id),
+        Product: 160,
+        TotalPriceWithDiscountsAndWash: Number(inputs.DeliveryCost),
       }
       let delivery = await OrderLineNumber.create(payload).fetch();
       return delivery;
