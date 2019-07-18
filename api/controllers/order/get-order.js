@@ -58,27 +58,16 @@ module.exports = {
         recordWithItems.OrderLineNumbers[i].glassDetails = glassDetailsForItem;
       });
 
-
-
       async function getTotalOrderPrice() {
-        const costs = [];
-        const washCost = await WashAndPolish.findOne({ Name: "Wash And Polish"  });
         const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
-        await asyncForEach(recordWithItems.OrderLineNumbers, async (item, i) => {
-          if (item.Product !== 160) {
-            const itemCost = ((item.UnitPrice + washCost.Price) * item.Quantity);
-            const itemCostPlusTax = itemCost + (itemCost * consumptionTaxRate);
-            costs.push(itemCostPlusTax);
-            return;
-          }
-          // this should be a delivery or non glass item
-          const itemCost = item.UnitPrice * item.Quantity;
-          const itemCostPlusTax = itemCost + (itemCost * consumptionTaxRate);
-          costs.push(itemCostPlusTax);
-        });
-        return _.sum(costs);
+
+        const subTotal = ((_.sum(recordWithItems.OrderLineNumbers, (o) => { return o.TotalPriceWithDiscountsAndWash }) || 0));
+        const taxTotal = (subTotal * consumptionTaxRate);
+        const grandTotal = (subTotal + taxTotal);
+        return grandTotal;
       }
       const TotalPrice = await getTotalOrderPrice();
+      // TODO : build this below
       // const TotalPrice = await sails.helpers.getTotalOrderPrice(recordWithItems);
 
       recordWithItemsPropogatedAndTotalPrice = {
