@@ -176,7 +176,7 @@ module.exports = {
     const { RackCapacity, UnitPrice } = item;
 
     const washAndPolishConstant = await sails.helpers.getWashAndPolishCost();
-    const daysOfUseDiscountFactor = await sails.helpers.getDaysOfUseDiscountFactor();
+    const daysOfUseIncreaseFactor = await sails.helpers.getDaysOfUseIncreaseFactor(DaysOfUse);
 
     const UnitPriceWithoutWashing = UnitPrice - washAndPolishConstant;
     const fullRacks = Quantity / RackCapacity;
@@ -186,7 +186,7 @@ module.exports = {
     const partiallyFullRacks = quantityInPartiallyFullRack > 0 ? 1 : 0;
 
     // const quantityFactorForFullRack = 0.46+0.551/1.04^(_.max([0, fullRacksRoundedDown -3]));
-    const racksToThePowerOf = _.max([0, fullRacksRoundedDown + partiallyFullRacks -3]);
+    const racksToThePowerOf = _.max([0, fullRacksRoundedDown + partiallyFullRacks - 3]);
     // const quantityFactorForFullRack = Math.pow(0.46 + ( 0.551 / 1.04 ), racksToThePowerOf);
     const quantityFactorForFullRackRaw = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
     const quantityFactorForFullRack = quantityFactorForFullRackRaw > 1 ? 1 : quantityFactorForFullRackRaw;
@@ -199,9 +199,10 @@ module.exports = {
 
     const totalPrice = Number(Quantity) * UnitPriceWithoutWashing;
 
+    // seperate the full and non full racks because
+    // they might have different quantity discount factors
     async function getDiscountedBasicTotalWithDiscounts (
       UnitPriceWithoutWashing,
-      daysOfUseDiscountFactor,
       quantityFactorForFullRack,
       quantityInFullRacks,
       quantityFactorForPartialRack,
@@ -209,13 +210,11 @@ module.exports = {
     ) {
       const discountPriceOfFullRacks = (
         UnitPriceWithoutWashing *
-        daysOfUseDiscountFactor *
         quantityFactorForFullRack *
         quantityInFullRacks
       );
       const discountedPriceOfPartialRacks = (
         UnitPriceWithoutWashing *
-        daysOfUseDiscountFactor *
         quantityFactorForPartialRack *
         quantityInPartiallyFullRack
       );
@@ -224,20 +223,19 @@ module.exports = {
 
     const discountedBasicTotal = await getDiscountedBasicTotalWithDiscounts(
       UnitPriceWithoutWashing,
-      daysOfUseDiscountFactor,
       quantityFactorForFullRack,
       quantityInFullRacks,
       quantityFactorForPartialRack,
       quantityInPartiallyFullRack,
     );
 
-    const discountedUnitPrice = Math.round(discountedBasicTotal / Quantity);
+    const discountedUnitPrice = discountedBasicTotal / Quantity;
+    const discountedUnitPriceWithDaysOfUseIncreaseFactor = discountedUnitPrice * daysOfUseIncreaseFactor;
+    const totalDiscountedUnitCostWithEverything = discountedUnitPriceWithDaysOfUseIncreaseFactor * Quantity;
 
     const totalWashingCost = Quantity * washAndPolishConstant;
 
-    const totalDiscountedUnitConsumption = (discountedUnitPrice * Quantity) * DaysOfUse;
-
-    const discountedTotalWithWashAndDaysOfUse = _.sum([totalWashingCost, totalDiscountedUnitConsumption]);
+    const discountedTotalWithWashAndDaysOfUse = _.sum([totalWashingCost, totalDiscountedUnitCostWithEverything]);
 
     discountedInputs = {
       ...item,
@@ -245,10 +243,18 @@ module.exports = {
       ImgSrc: item.ImgSrc,
       WashAndPolish: washAndPolishConstant,
       TotalPriceRaw: totalPrice,
-      TotalPriceWithDiscountsAndWash: discountedTotalWithWashAndDaysOfUse,
+      TotalPriceWithDiscountsAndWash: Math.round(discountedTotalWithWashAndDaysOfUse),
       TotalWashingCost: totalWashingCost,
+      DiscountedUnitCostWithDaysFactorForDisplay: Math.round(_.sum([discountedUnitPriceWithDaysOfUseIncreaseFactor])),
       QuantityDiscountFactor: quantityFactorForFullRack,
       Available: await getAvailability(),
+      Extras: {
+        discountedUnitPrice,
+        discountedUnitPriceWithDaysOfUseIncreaseFactor,
+        totalDiscountedUnitCostWithEverything,
+        totalWashingCost,
+        daysOfUseIncreaseFactor,
+      }
     }
 
     return exits.success(discountedInputs);

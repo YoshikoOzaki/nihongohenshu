@@ -817,6 +817,171 @@ module.exports.bootstrap = async function (done) {
     },
   ]);
 
+  await DaysOfUseIncreaseFactor.createEach(
+    [
+      {
+        "PeriodUsed": 1,
+        "IncreaseFactor": 1,
+        "CumulativeIncreaseMultiplier": 1
+      },
+      {
+        "PeriodUsed": 2,
+        "IncreaseFactor": 0.645,
+        "CumulativeIncreaseMultiplier": 1.65
+      },
+      {
+        "PeriodUsed": 3,
+        "IncreaseFactor": 0.35475,
+        "CumulativeIncreaseMultiplier": 2
+      },
+      {
+        "PeriodUsed": 4,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 2.23
+      },
+      {
+        "PeriodUsed": 5,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 2.46
+      },
+      {
+        "PeriodUsed": 6,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 2.69
+      },
+      {
+        "PeriodUsed": 7,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 2.92
+      },
+      {
+        "PeriodUsed": 8,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 3.15
+      },
+      {
+        "PeriodUsed": 9,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 3.38
+      },
+      {
+        "PeriodUsed": 10,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 3.61
+      },
+      {
+        "PeriodUsed": 11,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 3.84
+      },
+      {
+        "PeriodUsed": 12,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 4.07
+      },
+      {
+        "PeriodUsed": 13,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 4.3
+      },
+      {
+        "PeriodUsed": 14,
+        "IncreaseFactor": 0.2305875,
+        "CumulativeIncreaseMultiplier": 4.53
+      },
+      {
+        "PeriodUsed": 15,
+        "IncreaseFactor": 0.149881875,
+        "CumulativeIncreaseMultiplier": 4.68
+      },
+      {
+        "PeriodUsed": 16,
+        "IncreaseFactor": 0.149881875,
+        "CumulativeIncreaseMultiplier": 4.83
+      },
+      {
+        "PeriodUsed": 17,
+        "IncreaseFactor": 0.149881875,
+        "CumulativeIncreaseMultiplier": 4.98
+      },
+      {
+        "PeriodUsed": 18,
+        "IncreaseFactor": 0.149881875,
+        "CumulativeIncreaseMultiplier": 5.13
+      },
+      {
+        "PeriodUsed": 19,
+        "IncreaseFactor": 0.149881875,
+        "CumulativeIncreaseMultiplier": 5.28
+      },
+      {
+        "PeriodUsed": 20,
+        "IncreaseFactor": 0.149881875,
+        "CumulativeIncreaseMultiplier": 5.43
+      },
+      {
+        "PeriodUsed": 21,
+        "IncreaseFactor": 0.149881875,
+        "CumulativeIncreaseMultiplier": 5.58
+      },
+      {
+        "PeriodUsed": 22,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 5.68
+      },
+      {
+        "PeriodUsed": 23,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 5.78
+      },
+      {
+        "PeriodUsed": 24,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 5.88
+      },
+      {
+        "PeriodUsed": 25,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 5.98
+      },
+      {
+        "PeriodUsed": 26,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 6.08
+      },
+      {
+        "PeriodUsed": 27,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 6.18
+      },
+      {
+        "PeriodUsed": 28,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 6.28
+      },
+      {
+        "PeriodUsed": 29,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 6.38
+      },
+      {
+        "PeriodUsed": 30,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 6.48
+      },
+      {
+        "PeriodUsed": 31,
+        "IncreaseFactor": 0.09742321875,
+        "CumulativeIncreaseMultiplier": 6.58
+      },
+      {
+        "PeriodUsed": 32,
+        "IncreaseFactor": 0,
+        "CumulativeIncreaseMultiplier": 10000
+      }
+    ]
+  );
+
   await TruckDistanceFactorCosting.createEach(
     [
       {
