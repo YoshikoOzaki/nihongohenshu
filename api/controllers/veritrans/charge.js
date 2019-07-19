@@ -55,7 +55,7 @@ module.exports = {
     // TODO: remove the math floor number here for prod
     const req = {
       "orderId": Math.floor(Math.random() * 100) + inputs.orderId + 10012,
-      "amount": inputs.amount,
+      "amount": Math.round(inputs.amount),
       "jpo":"10",
       "withCapture":"false",
       "payNowIdParam": {
@@ -121,8 +121,9 @@ module.exports = {
 
     if (resultJson.result.mstatus === 'failure') {
       // delete the newly unpaid order as it no longer matters
+
       await Transaction.destroy({
-        id: inputs.orderId
+        OrderNumber: inputs.orderId
       });
       await OrderLineNumber.destroy({
         Order: inputs.orderId,

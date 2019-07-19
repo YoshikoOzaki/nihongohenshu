@@ -34,17 +34,17 @@
                 ¥{{item.DiscountedUnitPrice}}
               </div>
               <div>
-                ¥{{item.DiscountedUnitPriceWithWash}}
+                ¥{{item.DiscountedUnitCostWithWash}}
               </div>
             </div>
             <div>
               <small>Unit Price</small>
-              <div>¥{{item.UnitPrice}}</div>
+              <div>¥{{item.DiscountedUnitCostWithDaysFactorForDisplay}}</div>
             </div>
           </div>
           <div class="col-md-2 mb-3">
             <div>
-              <small>Discount</small>
+              <small>Quantity Discount</small>
               <div>{{(100 - (item.QuantityDiscountFactor * 100)).toFixed(2)}}%</div>
             </div>
             <div>
