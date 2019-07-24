@@ -105,7 +105,6 @@ module.exports = {
       return response;
     }
 
-
     // All done.
     const validTimePeriod = await getValidTimePeriod();
     const validShipping = await getValidShipping();
@@ -117,8 +116,5 @@ module.exports = {
     };
 
     return exits.success(returnCart);
-
   }
-
-
 };

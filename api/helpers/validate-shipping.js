@@ -203,13 +203,101 @@ module.exports = {
     }
 
     if (vehicleTypeRequired === 'takuhai') {
+      const cartItems = inputs.Items;
+      let TakuhaiUnitChargeObject = {};
+      try {
+        TakuhaiUnitChargeObject = await TakuhaiUnitCharge.findOne({ 'TakuhaiFactor':
+          ShippingFactorRecord.Takuhai_Factor || 1
+        });
+      } catch (err) {
+        return exits.invalid('Could not get the Takuhai details for this postcode');
+      }
 
+      const buildRackRequirementArray = async function(){
+        let cartItemsCalculation = [];
+        for (const cartItem of cartItems) {
+          let product = {};
+          try {
+            product = await Product.findOne({ id: cartItem.id });
+          } catch (err) {
+            return exits.invalid('Could not get shipping details for this postcode');
+          }
+          const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
+          const quantityInPartialRacks = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
+          const newCartItem = {
+            productCode: cartItem.id,
+            quantityOfItems: cartItem.Quantity,
+            rackCapactity: product.RackCapacity,
+            fullRacksRequired,
+            quantityInPartialRacks,
+          };
+          cartItemsCalculation.push(newCartItem);
+        };
+        return cartItemsCalculation;
+      };
+
+      const buildPartialRackRequiredObject = async function(rackRequirementsArray){
+        let partialRackCalulationObject = {
+          36: 0,
+          25: 0,
+          16: 0,
+          9: 0,
+          10: 0,
+        };
+        for (const item of rackRequirementsArray) {
+          const newValue = partialRackCalulationObject[item.rackCapactity] + item.quantityInPartialRacks;
+          const newPartialRackCalulation = {
+            ...partialRackCalulationObject,
+            [item.rackCapactity]: newValue,
+          }
+          partialRackCalulationObject = newPartialRackCalulation;
+        };
+        return partialRackCalulationObject;
+      };
+
+      const getFullRacksRequiredFromPartialRacks = async function(partialRackRequiredObject) {
+        const requiredRacks = Math.ceil(partialRackRequiredObject[36]/36) +
+        Math.ceil(partialRackRequiredObject[25]/25) +
+        Math.ceil(partialRackRequiredObject[16]/16) +
+        Math.ceil(partialRackRequiredObject[9]/9) +
+        Math.ceil(partialRackRequiredObject[10]/10);
+
+        return requiredRacks;
+      }
+
+      const combinePartialRacksRequiredAndFullRacksRequired = async function(rackRequirementArray, requiredPartialRacks) {
+        let totalRequiredFullRacks = 0;
+        for (const item of rackRequirementArray) {
+          totalRequiredFullRacks = totalRequiredFullRacks + item.fullRacksRequired;
+        };
+
+        return totalRequiredFullRacks + requiredPartialRacks;
+      }
+
+      const rackRequirementArray = await buildRackRequirementArray();
+      const partialRackRequirementArray = await buildPartialRackRequiredObject(rackRequirementArray);
+      const fullRacksRequiredFromPartialRacks = await getFullRacksRequiredFromPartialRacks(partialRackRequirementArray);
+      const combinedRacksRequired = await combinePartialRacksRequiredAndFullRacksRequired(rackRequirementArray, fullRacksRequiredFromPartialRacks);
+
+
+      const totalNumberOfPackages = Math.ceil(combinedRacksRequired/2);
+      const totalPrice = totalNumberOfPackages * TakuhaiUnitChargeObject.TakuhaiUnitCharge;
+      const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
+      const consumptionTax = totalPrice * consumptionTaxRate;
+      const priceWithTax = _.sum([totalPrice, consumptionTax]);
+
+      const returnPayload = {
+        postcode: inputs.Postcode,
+        postcodeRaw: inputs.PostcodeRaw,
+        price: totalPrice,
+        consumptionTax,
+        priceWithTax,
+        shippingFactorRecord: ShippingFactorRecord,
+        shippingPossible: true,
+        shippingType: 'takuhai',
+        partialRackRequirementArray,
+      };
+      return exits.success(returnPayload);
     }
-
-
-
-
   }
-
-
 };
