@@ -41,7 +41,7 @@ module.exports = {
     invalid: {
       responseType: 'badRequest',
       description: 'Inputs are not valid',
-      extendedDescription: 'Inputs are not valid longer',
+      extendedDescription: 'validate-cart failed',
     },
 
   },
@@ -71,8 +71,7 @@ module.exports = {
         inputs.timePeriod.DateEnd
       );
 
-      let response = {};
-      response = {
+      const response = {
         DateStart: inputs.timePeriod.DateStart,
         DateEnd: inputs.timePeriod.DateEnd,
         DaysOfUse: daysOfUse,
@@ -80,14 +79,41 @@ module.exports = {
       return response;
     }
 
+    const getValidShipping = async function() {
+      if (
+        !inputs.shipping.postcode ||
+        !inputs.shipping.postcodeRaw ||
+        !inputs.items
+      ) {
+        return {};
+      }
+
+      let getShippingDetails = {};
+      try {
+        getShippingDetails = await sails.helpers.validateShipping(
+          inputs.shipping.postcode,
+          inputs.shipping.postcodeRaw,
+          inputs.items
+        );
+      } catch (err) {
+        return exits.invalid(err.raw);
+      }
+
+      const response = {
+        ...getShippingDetails,
+      };
+      return response;
+    }
+
 
     // All done.
     const validTimePeriod = await getValidTimePeriod();
+    const validShipping = await getValidShipping();
 
     let returnCart = {
       timePeriod: validTimePeriod,
       items: [],
-      shipping: {},
+      shipping: validShipping,
     };
 
     return exits.success(returnCart);

@@ -31,9 +31,7 @@ module.exports = {
     },
 
     invalid: {
-      responseType: 'badRequest',
       description: 'Inputs are not valid',
-      extendedDescription: 'Inputs are not valid 2',
     },
   },
 
