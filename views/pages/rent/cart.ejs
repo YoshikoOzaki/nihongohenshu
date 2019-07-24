@@ -211,7 +211,7 @@
                     </a>
                   </span>
                   <a href="../checkout/order-prompt">
-                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart" :disabled="!checkoutEnabled">
+                    <button class="btn btn-primary btn-sm" :disabled="!checkoutEnabled">
                       <i class="fa fa-credit-card-alt"></i>
                       Proceed to Checkout
                     </button>
@@ -371,12 +371,13 @@
                       Update
                     </ajax-button>
                   </div>
+
                 </div>
               </div>
             </ajax-form>
+            <button @click="validateCartTest()"> Validation Test</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>

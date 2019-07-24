@@ -21,6 +21,7 @@ module.exports.policies = {
   'cart/check-cart-item-valid': true,
   'cart/check-cart-time-valid': true,
   'cart/check-shipping-price': true,
+  'cart/validate-cart': true,
 
   'glass/get-glasses': true,
   'glass/get-glass': true,
