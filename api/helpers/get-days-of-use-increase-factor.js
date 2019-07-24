@@ -40,6 +40,10 @@ module.exports = {
       return exits.success(1);
     }
 
+    if (inputs.DaysOfUse > 32) {
+      return exits.invalid("Days of use too long");
+    }
+
     try {
       daysOfUseIncreaseFactor = await DaysOfUseIncreaseFactor.findOne({ PeriodUsed: inputs.DaysOfUse });
       return exits.success(daysOfUseIncreaseFactor.CumulativeIncreaseMultiplier);
