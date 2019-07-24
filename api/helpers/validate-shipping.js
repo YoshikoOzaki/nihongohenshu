@@ -279,7 +279,6 @@ module.exports = {
       const fullRacksRequiredFromPartialRacks = await getFullRacksRequiredFromPartialRacks(partialRackRequirementArray);
       const combinedRacksRequired = await combinePartialRacksRequiredAndFullRacksRequired(rackRequirementArray, fullRacksRequiredFromPartialRacks);
 
-
       const totalNumberOfPackages = Math.ceil(combinedRacksRequired/2);
       const totalPrice = totalNumberOfPackages * TakuhaiUnitChargeObject.TakuhaiUnitCharge;
       const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
