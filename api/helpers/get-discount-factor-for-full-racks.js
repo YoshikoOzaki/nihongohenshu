@@ -62,7 +62,11 @@ module.exports = {
       return o.fullRacksRequired;
     });
 
-    const discountFactor = Math.min(1, (_.sum([10.46, 0.551])/(Math.pow(1.04, totalRequiredFullRacks - 3))));
+    // const discountFactor = Math.min(1, (_.sum([0.46, 0.551])/(Math.pow(1.04, totalRequiredFullRacks - 3))));
+
+
+    const racksToThePowerOf = _.max([0, totalRequiredFullRacks - 3]);
+    const discountFactor = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
 
     var discountFactorForFullRacks = {
       totalRequiredFullRacks,

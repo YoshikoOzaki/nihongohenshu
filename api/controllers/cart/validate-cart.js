@@ -143,9 +143,9 @@ module.exports = {
       }
 
 
-      const response = {
+      const response = [
         ...validItems,
-      };
+      ];
       return response;
     }
 
@@ -154,11 +154,14 @@ module.exports = {
     const validShipping = await getValidShipping();
     const quantityDiscountFactorForFullRacks = await getQuantityDiscountFactorForFullRacks();
     const validItems = await getValidItems(quantityDiscountFactorForFullRacks, validTimePeriod);
+    const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
+    const cartTotals = await sails.helpers.getCartTotals(validShipping, validItems, consumptionTaxRate);
 
     let returnCart = {
       timePeriod: validTimePeriod,
       items: validItems,
       shipping: validShipping,
+      cartTotals,
     };
 
     return exits.success(returnCart);
