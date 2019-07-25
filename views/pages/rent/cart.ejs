@@ -39,7 +39,7 @@
             </div>
             <div>
               <small>Unit Price</small>
-              <div>¥{{item.DiscountedUnitCostWithDaysFactorForDisplay}}</div>
+              <div>¥{{item.Extras.discountedUnitPriceWithDaysOfUseIncreaseFactor + item.WashAndPolish}}</div>
             </div>
           </div>
           <div class="col-md-2 mb-3">
@@ -211,7 +211,7 @@
                     </a>
                   </span>
                   <a href="../checkout/order-prompt">
-                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart" :disabled="!checkoutEnabled">
+                    <button class="btn btn-primary btn-sm" :disabled="!checkoutEnabled">
                       <i class="fa fa-credit-card-alt"></i>
                       Proceed to Checkout
                     </button>
@@ -371,12 +371,13 @@
                       Update
                     </ajax-button>
                   </div>
+
                 </div>
               </div>
             </ajax-form>
+            <button @click="validateCartTest()"> Validation Test</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>

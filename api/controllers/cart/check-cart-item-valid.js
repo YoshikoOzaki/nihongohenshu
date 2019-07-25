@@ -106,6 +106,7 @@ module.exports = {
       const transactionTypes = await TransactionType.find();
       const transactionTypesByRecordingHandlingGuide = _.groupBy(transactionTypes, 'RecordHandlingGuide');
 
+      // this is for the specific item
       const transactionsInArray = _.map(transactionTypesByRecordingHandlingGuide.In, 'id');
       const transactionsInObject = await Transaction.find({
         where: {
@@ -185,12 +186,9 @@ module.exports = {
     const quantityInPartiallyFullRack = Number(Quantity) - quantityInFullRacks;
     const partiallyFullRacks = quantityInPartiallyFullRack > 0 ? 1 : 0;
 
-    // const quantityFactorForFullRack = 0.46+0.551/1.04^(_.max([0, fullRacksRoundedDown -3]));
     const racksToThePowerOf = _.max([0, fullRacksRoundedDown + partiallyFullRacks - 3]);
-    // const quantityFactorForFullRack = Math.pow(0.46 + ( 0.551 / 1.04 ), racksToThePowerOf);
     const quantityFactorForFullRackRaw = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
     const quantityFactorForFullRack = quantityFactorForFullRackRaw > 1 ? 1 : quantityFactorForFullRackRaw;
-    // const quantityFactorForFullRack = Math.pow((racksToThePowerOf), 0.46 + ( 0.551 / 1.04 ));
 
     const quantityFactorForPartialRack = quantityFactorForFullRack;
 

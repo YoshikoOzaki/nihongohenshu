@@ -80,6 +80,7 @@ module.exports.routes = {
   'POST  /api/v1/order/create-member-order':          { action: 'order/create-member-order' },
   'POST  /api/v1/order/get-consumption-tax-rate':          { action: 'order/get-consumption-tax-rate' },
 
+  'POST  /api/v1/cart/validate-cart':          { action: 'cart/validate-cart' },
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
   'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },
   'POST  /api/v1/cart/check-shipping-price':          { action: 'cart/check-shipping-price' },
