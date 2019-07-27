@@ -134,7 +134,7 @@ parasails.registerPage('cart', {
       };
 
       parametersRequired.cartHasItems = cart.items && cart.items.length > 0;
-      parametersRequired.cartItemsAreValid = cart.items && _.each(cart.items, (o) => {
+      parametersRequired.cartItemsAreValid = cart.items && (cart.items.length > 0) && _.each(cart.items, (o) => {
         return o.Available.available === 'Available';
       }).length === cart.items.length;
       parametersRequired.shippingCodeEntered = cart.shipping && cart.shipping.Postcode;
