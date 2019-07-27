@@ -111,9 +111,12 @@ parasails.registerPage('cart', {
 
     validateCartTest: async function() {
       const cart = await parasails.util.getCart();
+      // TODO: remove un required cart elements
 
       try {
-        result = await Cloud.validateCart(..._.values(cart));
+        newCart = await Cloud.validateCart(..._.values(cart));
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        this.cart = newCart;
       } catch (err) {
         console.log(err);
         toastr.error(err.responseInfo.body);
