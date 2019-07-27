@@ -162,6 +162,7 @@ module.exports = {
       items: validItems,
       shipping: validShipping,
       cartTotals,
+      quantityDiscountFactorForFullRacks,
     };
 
     return exits.success(returnCart);

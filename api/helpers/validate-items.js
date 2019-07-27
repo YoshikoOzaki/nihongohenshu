@@ -177,12 +177,8 @@ module.exports = {
       const quantityInPartiallyFullRack = Number(Quantity) - quantityInFullRacks;
       const partiallyFullRacks = quantityInPartiallyFullRack > 0 ? 1 : 0;
 
-      // const racksToThePowerOf = _.max([0, fullRacksRoundedDown + partiallyFullRacks - 3]);
-      // const quantityFactorForFullRackRaw = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
       const quantityFactorForFullRack = inputs.QuantityDiscountFactorForFullRacks.discountFactor;
       // this is coming from the QDFFR calculation
-
-      // const quantityFactorForFullRack = quantityFactorForFullRackRaw > 1 ? 1 : quantityFactorForFullRackRaw;
 
       const quantityFactorForPartialRack = quantityFactorForFullRack;
 
@@ -223,7 +219,7 @@ module.exports = {
 
       const discountedUnitPrice = discountedBasicTotal / Quantity;
       const discountedUnitPriceWithDaysOfUseIncreaseFactor = discountedUnitPrice * daysOfUseIncreaseFactor;
-      const totalDiscountedUnitCostWithEverything = discountedUnitPriceWithDaysOfUseIncreaseFactor * Quantity;
+      const totalDiscountedUnitCostWithEverything = Math.round(discountedUnitPriceWithDaysOfUseIncreaseFactor * Quantity);
 
       const totalWashingCost = Quantity * washAndPolishConstant;
 
