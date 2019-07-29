@@ -73,6 +73,9 @@ module.exports = {
     }
 
     const getAvailability = async function (item) {
+      if (!inputs.DateEnd || !inputs.DateStart) {
+        return 'No date set to evaluate';
+      }
       const getTransactionNumbersToIgnore = async function() {
         if (inputs.OrderIdToIgnore) {
           try {

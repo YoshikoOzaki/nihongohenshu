@@ -129,24 +129,25 @@ module.exports = {
         return [];
       }
 
-      let validItems;
       try {
+        let validItems;
         validItems = await sails.helpers.validateItems(
-          validTimePeriod.DateStart,
-          validTimePeriod.DateEnd,
-          validTimePeriod.DaysOfUse,
+          validTimePeriod.DateStart || '',
+          validTimePeriod.DateEnd || '',
+          validTimePeriod.DaysOfUse || '',
           inputs.items,
           quantityDiscountFactorForFullRacks,
         );
+
+        const response = [
+          ...validItems,
+        ];
+        return response;
       } catch (err) {
-        return exits.invalid(err.raw);
+        return exits.invalid(err.raw || err.message);
       }
 
 
-      const response = [
-        ...validItems,
-      ];
-      return response;
     }
 
     // All done.
