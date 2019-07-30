@@ -190,57 +190,74 @@ parasails.registerPage('cart', {
     },
 
     handleTimeSubmitting: async function(data) {
-      async function asyncForEach(array, callback) {
-        for (let index = 0; index < array.length; index++) {
-          await callback(array[index], index, array);
-        }
-      }
-
+      const cart = await parasails.util.getCart();
+      console.log(data);
+      const payload = {
+        timePeriod: data,
+        items: cart.items,
+        shipping: cart.shipping,
+      };
       try {
-      // check all the logic for order time & update cart
-      cart = await parasails.util.getCart();
-      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
+        await this.validateCart(payload);
+        toastr.success('Days of use added to the cart');
       } catch (err) {
-        console.log(err.responseInfo.body);
-        toastr.error(err.responseInfo.body);
-        return;
-      }
-
-      // check each item
-      try {
-        const newCartItems = [];
-        if (cart.items && cart.items.length > 0) {
-          const checkCartItemAvailable = async function(item) {
-            const itemPayload = {
-              Id: item.id,
-              Quantity: item.Quantity,
-              ...timeValidResult,
-              OrderIdToIgnore: cart.orderIdToIgnore,
-            }
-            itemResult = await Cloud.checkCartItemValid(..._.values(itemPayload));
-            return itemResult;
-          };
-          await asyncForEach(cart.items, async (o) => {
-            const result = await checkCartItemAvailable(o);
-            newCartItems.push(result);
-          });
-        }
-        const newCart = {
-          ...cart,
-          items: newCartItems,
-          timePeriod: {...timeValidResult},
-        };
-        localStorage.setItem('cart', JSON.stringify(newCart));
-        toastr.success('Time range added to the cart');
-        } catch (err) {
         console.log(err);
-        toastr.error('Time range could not be added to the cart');
+        toastr.error('Days of use could not be added to the cart');
       }
     },
 
+    // handleTimeSubmitting: async function(data) {
+    //   async function asyncForEach(array, callback) {
+    //     for (let index = 0; index < array.length; index++) {
+    //       await callback(array[index], index, array);
+    //     }
+    //   }
+
+    //   try {
+    //   // check all the logic for order time & update cart
+    //   cart = await parasails.util.getCart();
+    //   timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
+    //   } catch (err) {
+    //     console.log(err.responseInfo.body);
+    //     toastr.error(err.responseInfo.body);
+    //     return;
+    //   }
+
+    //   // check each item
+    //   try {
+    //     const newCartItems = [];
+    //     if (cart.items && cart.items.length > 0) {
+    //       const checkCartItemAvailable = async function(item) {
+    //         const itemPayload = {
+    //           Id: item.id,
+    //           Quantity: item.Quantity,
+    //           ...timeValidResult,
+    //           OrderIdToIgnore: cart.orderIdToIgnore,
+    //         }
+    //         itemResult = await Cloud.checkCartItemValid(..._.values(itemPayload));
+    //         return itemResult;
+    //       };
+    //       await asyncForEach(cart.items, async (o) => {
+    //         const result = await checkCartItemAvailable(o);
+    //         newCartItems.push(result);
+    //       });
+    //     }
+    //     const newCart = {
+    //       ...cart,
+    //       items: newCartItems,
+    //       timePeriod: {...timeValidResult},
+    //     };
+    //     localStorage.setItem('cart', JSON.stringify(newCart));
+    //     toastr.success('Time range added to the cart');
+    //     } catch (err) {
+    //     console.log(err);
+    //     toastr.error('Time range could not be added to the cart');
+    //   }
+    // },
+
     handleShippingSubmitting: async function (data) {
       const cart = await parasails.util.getCart();
-      console.log(data);
+
       const payload = {
         timePeriod: cart.timePeriod,
         items: cart.items,
