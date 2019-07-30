@@ -4,7 +4,12 @@
       <div class="col-md-12">
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
-      <div class="col-sm-9">
+      <div class="col-sm-9"><hr />
+        <div class="row">
+          <div class="col-md-12" v-if="cart.quantityDiscountFactorForFullRacks">
+            Current Discount Factor : {{(100 - (cart.quantityDiscountFactorForFullRacks.discountFactor * 100)).toFixed(2)}}%
+          </div>
+        </div>
         <hr />
         <div class="row" v-for="(item, index) in cart.items" :key="item.Id">
           <div class="col-md-2 mb-3">
@@ -22,35 +27,6 @@
               </div>
               <div class="text-info" v-if="item.Available === 'No date set to evaluate'">
                 {{item.Available}}
-              </div>
-            </div>
-          </div>
-          <div class="col-md-2 mb-3">
-            <div v-if="false">
-              <div>
-                ¥{{item.WashAndPolish}}
-              </div>
-              <div>
-                ¥{{item.DiscountedUnitPrice}}
-              </div>
-              <div>
-                ¥{{item.DiscountedUnitCostWithWash}}
-              </div>
-            </div>
-            <div>
-              <small>Unit Price</small>
-              <div>¥{{item.Extras.discountedUnitPriceWithDaysOfUseIncreaseFactor + item.WashAndPolish}}</div>
-            </div>
-          </div>
-          <div class="col-md-2 mb-3">
-            <div>
-              <small>Quantity Discount</small>
-              <div>{{(100 - (item.QuantityDiscountFactor * 100)).toFixed(2)}}%</div>
-            </div>
-            <div>
-              <small>Total</small>
-              <div>
-                <b>¥{{item && item.TotalPriceWithDiscountsAndWash && item.TotalPriceWithDiscountsAndWash.toLocaleString()}}</b>
               </div>
             </div>
           </div>
@@ -76,11 +52,40 @@
               </div>
             </div>
           </div>
+          <div class="col-md-2 mb-3">
+            <div v-if="false">
+              <div>
+                ¥{{item.WashAndPolish}}
+              </div>
+              <div>
+                ¥{{item.DiscountedUnitPrice}}
+              </div>
+              <div>
+                ¥{{item.DiscountedUnitCostWithWash}}
+              </div>
+            </div>
+            <div>
+              <small>Unit Price</small>
+              <div>¥{{(item.Extras.totalDiscountedUnitCostWithEverything + item.WashAndPolish).toLocaleString()}}</div>
+            </div>
+          </div>
           <div class="col-md-1 mb-3">
+            <!-- <div>
+              <small>Quantity Discount</small>
+              <div>{{(100 - (item.QuantityDiscountFactor * 100)).toFixed(2)}}%</div>
+            </div> -->
+            <div>
+              <small>Total</small>
+              <div>
+                <b>¥{{item && item.TotalPriceWithDiscountsAndWash && item.TotalPriceWithDiscountsAndWash.toLocaleString()}}</b>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 mb-3 text-right">
             <button @click="removeItemFromCart({ index: index })" type="submit"
               class="btn btn-sm btn-outline-secondary ajax-button" :class="[syncing ? 'syncing' : '']">
               <span class="button-text" v-if="!syncing">
-                <i class="fa fa-trash"></i>
+                <i class="fa fa-trash mr-1"></i> Remove
               </span>
               <span class="button-loader clearfix" v-if="syncing">
                 <slot name="syncing-state">
@@ -89,6 +94,11 @@
                 </slot>
               </span>
             </button>
+          </div>
+          <div class="col-md-12">
+            <div style="background: rgba(0, 0, 0, 0.1); height: 1px" class="col-md-12 mb-3">
+              <!-- divider -->
+            </div>
           </div>
         </div>
         <div class="">
@@ -175,16 +185,23 @@
                   <div>
                     <div class="text-right">
                       <h5>Shipping</h5>
-                        ¥ {{cart.shipping && cart.shipping.price && cart.shipping.price.toLocaleString()}}
+                        ¥ {{cart.shipping && cart.shipping.price && cart.shipping.price.toLocaleString() || 0}}
                       <hr />
                       <h5>Sub Total</h5>
-                        ¥ {{subTotal && subTotal.toLocaleString()}}
+                        <!-- ¥ {{subTotal && subTotal.toLocaleString()}} -->
+                        ¥ {{cart.cartTotals && cart.cartTotals.subTotal || 0}}
                       <hr />
                       <h5>Tax</h5>
-                        ¥ {{taxTotal && taxTotal.toLocaleString()}}
+                        <!-- ¥ {{taxTotal && taxTotal.toLocaleString()}} -->
+                        ¥ {{cart.cartTotals && cart.cartTotals.taxTotal || 0}}
                       <hr />
                       <h4>Grand Total</h4>
-                      <h5><b>¥ {{grandTotal && grandTotal.toLocaleString()}}</b></h5>
+                      <h5>
+                        <b>
+                          <!-- ¥ {{grandTotal && grandTotal.toLocaleString()}} -->
+                          ¥ {{cart.cartTotals && cart.cartTotals.grandTotal || 0}}
+                        </b>
+                      </h5>
                       <hr />
                     </div>
                   </div>

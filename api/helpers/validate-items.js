@@ -160,13 +160,38 @@ module.exports = {
     }
 
     const validateItem = async function(item) {
+      const availability = await getAvailability(item);
+
       // find price of items
       var product;
       try {
-        product =  await Product.findOne({ id: item.id });
+        product = await Product.findOne({ id: item.id });
       } catch (err) {
         return exits.invalid('Could not find product');
       }
+
+      if (availability.available === 'Not Available') {
+        return {
+          ...product,
+          Quantity: item.Quantity,
+          ImgSrc: product.ImgSrc,
+          WashAndPolish: 0,
+          TotalPriceRaw: 0,
+          TotalPriceWithDiscountsAndWash: 0,
+          TotalWashingCost: 0,
+          DiscountedUnitCostWithDaysFactorForDisplay:0,
+          QuantityDiscountFactor: 0,
+          Available: availability,
+          Extras: {
+            discountedUnitPrice: 0,
+            discountedUnitPriceWithDaysOfUseIncreaseFactor: 0,
+            totalDiscountedUnitCostWithEverything: 0,
+            totalWashingCost: 0,
+            daysOfUseIncreaseFactor: 0,
+          }
+        }
+      }
+
 
       // Collect variables
       const { DaysOfUse } = inputs;
@@ -241,7 +266,7 @@ module.exports = {
         TotalWashingCost: totalWashingCost,
         DiscountedUnitCostWithDaysFactorForDisplay: Math.round(_.sum([discountedUnitPriceWithDaysOfUseIncreaseFactor])),
         QuantityDiscountFactor: quantityFactorForFullRack,
-        Available: await getAvailability(item),
+        Available: availability,
         Extras: {
           discountedUnitPrice,
           discountedUnitPriceWithDaysOfUseIncreaseFactor,

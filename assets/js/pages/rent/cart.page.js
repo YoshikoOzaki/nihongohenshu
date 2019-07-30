@@ -19,6 +19,9 @@ parasails.registerPage('cart', {
     grandTotal: '',
     cart: {
       items: [],
+      quantityDiscountFactorForFullRacks: {
+        discountFactor: 0,
+      }
     },
     glasses: [],
     moment: moment,
@@ -72,7 +75,12 @@ parasails.registerPage('cart', {
       if (this.syncing) {
         return;
       }
-      this.cart = {};
+      this.cart = {
+        items: [],
+        quantityDiscountFactorForFullRacks: {
+          discountFactor: 0,
+        }
+      };
       this.subTotal = '';
       this.grandTotal = '';
       localStorage.removeItem('cart');
@@ -128,7 +136,36 @@ parasails.registerPage('cart', {
         console.log(err.responseInfo.body);
         toastr.error('Could not validate cart');
       }
+    },
 
+    validateCart: async function(cartToValidate) {
+      const cart = cartToValidate;
+      // TODO: remove un required cart elements
+
+      if (
+        cart.timePeriod === undefined ||
+        cart.items === undefined ||
+        cart.shipping === undefined
+      ) {
+        toastr.error('Could not validate cart');
+        return;
+      }
+
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: cart.items,
+        shipping: cart.shipping,
+      }
+
+      try {
+        newCart = await Cloud.validateCart(..._.values(payload));
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        this.cart = newCart;
+      } catch (err) {
+        console.log(err);
+        console.log(err.responseInfo.body);
+        toastr.error('Could not validate cart');
+      }
     },
 
     checkIfCheckoutEnabled: async function() {
@@ -236,51 +273,80 @@ parasails.registerPage('cart', {
     },
 
     handleItemSubmitting: async function(data) {
-      // check if it's already in the cart
+      console.log(data);
       const cart = await parasails.util.getCart();
-
-      // this is a hack, it should be validated in one large function
-      // probably with the rest of the cart logic
-      const existingCartItemIndex = _.findIndex(cart.items, { id: data.Id });
-      if (existingCartItemIndex >= 0) {
+      const existingCartItem = _.find(cart.items, { id: data.Id });
+      if (existingCartItem) {
         toastr.warning('Item is already in the cart, please update it there');
         return;
       }
-
-      const getCartWithNewItem = async function(itemData) {
-        // this is a decent example of sending I think
-        const itemPayload = {
-          Id: data.Id,
+      const newItems = [
+        ..._.without(cart.items, existingCartItem),
+        {
+          id: data.Id,
           Quantity: data.Quantity,
-          DateStart: cart.timePeriod.DateStart,
-          DateEnd: cart.timePeriod.DateEnd,
-          DaysOfUse: cart.timePeriod.DaysOfUse,
-          OrderIdToIgnore: cart.OrderIdToIgnore,
         }
-        const itemCheckResult = await Cloud.checkCartItemValid(..._.values(itemPayload));
-
-        const newCart = {
-          ...cart,
-          items: [
-            ...cart.items,
-            itemCheckResult
-          ],
-        };
-        if (itemCheckResult) {
-          return newCart;
-        }
-      }
-
+      ];
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: newItems,
+        shipping: cart.shipping,
+      };
+      console.log(payload);
       try {
-        const result = await getCartWithNewItem(data);
-        const result2 = await this.calculateNewCart(result);
-        await localStorage.setItem('cart', JSON.stringify(result2));
+        await this.validateCart(payload);
         toastr.success('Item added to the cart');
       } catch (err) {
         console.log(err);
-        toastr.error('Item could not be added to the cart' + err);
       }
     },
+
+    // handleItemSubmitting: async function(data) {
+    //   // check if it's already in the cart
+    //   const cart = await parasails.util.getCart();
+
+    //   // this is a hack, it should be validated in one large function
+    //   // probably with the rest of the cart logic
+    //   const existingCartItemIndex = _.findIndex(cart.items, { id: data.Id });
+    //   if (existingCartItemIndex >= 0) {
+    //     toastr.warning('Item is already in the cart, please update it there');
+    //     return;
+    //   }
+
+    //   const getCartWithNewItem = async function(itemData) {
+    //     // this is a decent example of sending I think
+    //     const itemPayload = {
+    //       Id: data.Id,
+    //       Quantity: data.Quantity,
+    //       DateStart: cart.timePeriod.DateStart,
+    //       DateEnd: cart.timePeriod.DateEnd,
+    //       DaysOfUse: cart.timePeriod.DaysOfUse,
+    //       OrderIdToIgnore: cart.OrderIdToIgnore,
+    //     }
+    //     const itemCheckResult = await Cloud.checkCartItemValid(..._.values(itemPayload));
+
+    //     const newCart = {
+    //       ...cart,
+    //       items: [
+    //         ...cart.items,
+    //         itemCheckResult
+    //       ],
+    //     };
+    //     if (itemCheckResult) {
+    //       return newCart;
+    //     }
+    //   }
+
+    //   try {
+    //     const result = await getCartWithNewItem(data);
+    //     const result2 = await this.calculateNewCart(result);
+    //     await localStorage.setItem('cart', JSON.stringify(result2));
+    //     toastr.success('Item added to the cart');
+    //   } catch (err) {
+    //     console.log(err);
+    //     toastr.error('Item could not be added to the cart' + err);
+    //   }
+    // },
 
     removeItemFromCart: async function(data) {
       if (this.syncing) {

@@ -40,7 +40,7 @@ module.exports = {
       try {
         product = await Product.findOne({ id: cartItem.id });
       } catch (err) {
-        return exits.invalid('Can not find one of the cart objects - ' + cartItem.NameJ2);
+        return exits.invalid('Can not find one of the cart objects - ' + cartItem.id);
       }
       const fullRacksRequired = Math.floor(cartItem.Quantity / product.RackCapacity);
       const partialRackItemQuantity = cartItem.Quantity - (fullRacksRequired * product.RackCapacity);
@@ -68,9 +68,16 @@ module.exports = {
     const racksToThePowerOf = _.max([0, totalRequiredFullRacks - 3]);
     const discountFactor = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
 
+    const partialRacksInfo =
+      _(itemLineRackRequirements)
+      .groupBy('rackCapacity')
+      .value();
+
+
     var discountFactorForFullRacks = {
       totalRequiredFullRacks,
       discountFactor,
+      partialRacksInfo,
     };
 
     return discountFactorForFullRacks;
