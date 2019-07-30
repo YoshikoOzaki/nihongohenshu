@@ -157,15 +157,9 @@ parasails.registerPage('cart', {
         shipping: cart.shipping,
       }
 
-      try {
-        newCart = await Cloud.validateCart(..._.values(payload));
-        localStorage.setItem('cart', JSON.stringify(newCart));
-        this.cart = newCart;
-      } catch (err) {
-        console.log(err);
-        console.log(err.responseInfo.body);
-        toastr.error('Could not validate cart');
-      }
+      newCart = await Cloud.validateCart(..._.values(payload));
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      this.cart = newCart;
     },
 
     checkIfCheckoutEnabled: async function() {
@@ -244,33 +238,50 @@ parasails.registerPage('cart', {
       }
     },
 
-    handleShippingSubmitting: async function(data) {
-      // check all the logic for order time & update cart
-      oldCart = await parasails.util.getCart();
+    handleShippingSubmitting: async function (data) {
+      const cart = await parasails.util.getCart();
       console.log(data);
-      // push in shipping code and current cart to check shipping function
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: cart.items,
+        shipping: data,
+      };
       try {
-        result = await Cloud.checkShippingPrice(
-          data.Postcode,
-          data.PostcodeRaw,
-          oldCart,
-        );
-
-        const newCart = {
-          ...oldCart,
-          shipping: {
-            ...result,
-          },
-        };
-
-        await localStorage.setItem('cart', JSON.stringify(newCart));
-        this.formDataShipping.Postcode = '';
+        await this.validateCart(payload);
         toastr.success('Shipping added to the cart');
       } catch (err) {
         console.log(err);
         toastr.error('Shipping could not be added to the cart');
       }
     },
+
+    // handleShippingSubmitting: async function(data) {
+    //   // check all the logic for order time & update cart
+    //   oldCart = await parasails.util.getCart();
+    //   console.log(data);
+    //   // push in shipping code and current cart to check shipping function
+    //   try {
+    //     result = await Cloud.checkShippingPrice(
+    //       data.Postcode,
+    //       data.PostcodeRaw,
+    //       oldCart,
+    //     );
+
+    //     const newCart = {
+    //       ...oldCart,
+    //       shipping: {
+    //         ...result,
+    //       },
+    //     };
+
+    //     await localStorage.setItem('cart', JSON.stringify(newCart));
+    //     this.formDataShipping.Postcode = '';
+    //     toastr.success('Shipping added to the cart');
+    //   } catch (err) {
+    //     console.log(err);
+    //     toastr.error('Shipping could not be added to the cart');
+    //   }
+    // },
 
     handleItemSubmitting: async function(data) {
       console.log(data);
@@ -292,12 +303,12 @@ parasails.registerPage('cart', {
         items: newItems,
         shipping: cart.shipping,
       };
-      console.log(payload);
       try {
         await this.validateCart(payload);
         toastr.success('Item added to the cart');
       } catch (err) {
         console.log(err);
+        toastr.error('Item could not added to the cart');
       }
     },
 
