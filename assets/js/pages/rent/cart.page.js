@@ -113,13 +113,20 @@ parasails.registerPage('cart', {
       const cart = await parasails.util.getCart();
       // TODO: remove un required cart elements
 
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: cart.items,
+        shipping: cart.shipping,
+      }
+
       try {
-        newCart = await Cloud.validateCart(..._.values(cart));
+        newCart = await Cloud.validateCart(..._.values(payload));
         localStorage.setItem('cart', JSON.stringify(newCart));
         this.cart = newCart;
       } catch (err) {
         console.log(err);
-        toastr.error(err.responseInfo.body);
+        console.log(err.responseInfo.body);
+        toastr.error('Could not validate cart');
       }
 
     },

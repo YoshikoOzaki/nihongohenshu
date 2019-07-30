@@ -76,6 +76,9 @@ module.exports = {
       if (!inputs.DateEnd || !inputs.DateStart) {
         return 'No date set to evaluate';
       }
+      if (inputs.DateEnd === '0' || inputs.DateStart === '0') {
+        return 'No date set to evaluate';
+      }
       const getTransactionNumbersToIgnore = async function() {
         if (inputs.OrderIdToIgnore) {
           try {
