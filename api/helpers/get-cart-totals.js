@@ -44,12 +44,15 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-
     // Get cart totals.
     var cartTotals;
 
-    const subTotal = ((_.sum(inputs.Items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + inputs.Shipping.price) || 0);
-    const taxTotal = Math.round(((_.sum(inputs.Items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + inputs.Shipping.price) || 0) * inputs.TaxRate);
+    const shippingPrice = inputs.Shipping.pice || 0;
+
+    const itemsCost = _.sum(inputs.Items, (o) => { return o.TotalPriceWithDiscountsAndWash });
+
+    const subTotal = (_.sum([itemsCost, shippingPrice]));
+    const taxTotal = (_.sum([itemsCost, shippingPrice])) * inputs.TaxRate;
     const grandTotal = _.sum([subTotal, taxTotal]);
 
     cartTotals = {

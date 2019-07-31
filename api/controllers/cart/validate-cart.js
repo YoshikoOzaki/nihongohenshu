@@ -81,8 +81,8 @@ module.exports = {
 
     const getValidShipping = async function() {
       if (
-        !inputs.shipping.postcode ||
-        !inputs.shipping.postcodeRaw ||
+        !inputs.shipping.Postcode ||
+        !inputs.shipping.PostcodeRaw ||
         !inputs.items
       ) {
         return {};
@@ -91,8 +91,8 @@ module.exports = {
       let getShippingDetails = {};
       try {
         getShippingDetails = await sails.helpers.validateShipping(
-          inputs.shipping.postcode,
-          inputs.shipping.postcodeRaw,
+          inputs.shipping.Postcode,
+          inputs.shipping.PostcodeRaw,
           inputs.items
         );
       } catch (err) {
@@ -129,24 +129,26 @@ module.exports = {
         return [];
       }
 
-      let validItems;
       try {
+        let validItems;
         validItems = await sails.helpers.validateItems(
-          validTimePeriod.DateStart,
-          validTimePeriod.DateEnd,
-          validTimePeriod.DaysOfUse,
+          validTimePeriod.DateStart || '0',
+          validTimePeriod.DateEnd || '0',
+          validTimePeriod.DaysOfUse || '1',
           inputs.items,
           quantityDiscountFactorForFullRacks,
         );
+
+        const response = [
+          ...validItems,
+        ];
+        return response;
       } catch (err) {
-        return exits.invalid(err.raw);
+        console.log(err);
+        return exits.invalid(err.raw || err.message);
       }
 
 
-      const response = [
-        ...validItems,
-      ];
-      return response;
     }
 
     // All done.

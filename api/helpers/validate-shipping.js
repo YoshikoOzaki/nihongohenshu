@@ -188,15 +188,15 @@ module.exports = {
       const priceWithTax = actualTruckDeliveryCharge + consumptionTax;
 
       const response = {
-        postcode: inputs.Postcode,
-        postcodeRaw: inputs.PostcodeRaw,
-        price: actualTruckDeliveryCharge < 0  ? 0 : actualTruckDeliveryCharge,
-        consumptionTax,
-        priceWithTax,
-        shippingPossible: true,
-        shippingType: 'truck',
-        totalCalculatedDeliveryCharge,
-        shippingFactorRecord: ShippingFactorRecord,
+        Postcode: inputs.Postcode,
+        PostcodeRaw: inputs.PostcodeRaw,
+        Price: actualTruckDeliveryCharge < 0  ? 0 : actualTruckDeliveryCharge,
+        ConsumptionTax: consumptionTax,
+        PriceWithTax: priceWithTax,
+        ShippingPossible: true,
+        ShippingType: 'truck',
+        TotalCalculatedDeliveryCharge: totalCalculatedDeliveryCharge,
+        ShippingFactorRecord: ShippingFactorRecord,
       };
 
       return exits.success(response);
@@ -286,15 +286,15 @@ module.exports = {
       const priceWithTax = _.sum([totalPrice, consumptionTax]);
 
       const returnPayload = {
-        postcode: inputs.Postcode,
-        postcodeRaw: inputs.PostcodeRaw,
-        price: totalPrice,
-        consumptionTax,
-        priceWithTax,
-        shippingFactorRecord: ShippingFactorRecord,
-        shippingPossible: true,
-        shippingType: 'takuhai',
-        partialRackRequirementArray,
+        Postcode: inputs.Postcode,
+        PostcodeRaw: inputs.PostcodeRaw,
+        Price: totalPrice,
+        ConsumptionTax: consumptionTax,
+        PriceWithTax: priceWithTax,
+        ShippingFactorRecord,
+        ShippingPossible: true,
+        ShippingType: 'takuhai',
+        PartialRackRequirementArray: partialRackRequirementArray,
       };
       return exits.success(returnPayload);
     }
