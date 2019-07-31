@@ -376,13 +376,13 @@ parasails.registerPage('cart', {
     //   }
     // },
 
-    removeItemFromCart: async function(data) {
+    removeItemFromCart: async function (data) {
       if (this.syncing) {
         return false;
       }
-      // this might not be updating the whole cart total price
       this.syncing = true;
-      const removeItemFromCart = async function(itemToRemove) {
+      const cart = await parasails.util.getCart();
+      const removeItemFromCart = async function () {
         oldCart = await parasails.util.getCart();
         oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
           return i !== data.index;
@@ -393,12 +393,15 @@ parasails.registerPage('cart', {
         };
         return newCart;
       }
+      const cartWithoutItemToRemove = await removeItemFromCart();
 
+      const payload = {
+        timePeriod: cartWithoutItemToRemove.timePeriod,
+        items: cartWithoutItemToRemove.items,
+        shipping: cartWithoutItemToRemove.shipping,
+      };
       try {
-        const result = await removeItemFromCart(data);
-        const result2 = await this.calculateNewCart(result);
-        localStorage.setItem('cart', JSON.stringify(result2));
-        this.cart = result2;
+        await this.validateCart(payload);
         toastr.success('Item removed from the cart');
         this.syncing = false;
       } catch (err) {
@@ -408,39 +411,103 @@ parasails.registerPage('cart', {
       }
     },
 
-    updateItemRowQuantity: async function(index, quantity) {
+    // removeItemFromCart: async function(data) {
+    //   if (this.syncing) {
+    //     return false;
+    //   }
+    //   // this might not be updating the whole cart total price
+    //   this.syncing = true;
+    //   const removeItemFromCart = async function(itemToRemove) {
+    //     oldCart = await parasails.util.getCart();
+    //     oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
+    //       return i !== data.index;
+    //     });
+    //     const newCart = {
+    //       ...oldCart,
+    //       items: oldCartItemsWithItemRemoved,
+    //     };
+    //     return newCart;
+    //   }
+
+    //   try {
+    //     const result = await removeItemFromCart(data);
+    //     const result2 = await this.calculateNewCart(result);
+    //     localStorage.setItem('cart', JSON.stringify(result2));
+    //     this.cart = result2;
+    //     toastr.success('Item removed from the cart');
+    //     this.syncing = false;
+    //   } catch (err) {
+    //     console.log(err);
+    //     toastr.error('Item could not be removed from the cart');
+    //     this.syncing = false;
+    //   }
+    // },
+
+    updateItemRowQuantity: async function (index, quantity) {
       if (this.syncing) {
         return false;
       }
       this.syncing = true;
-      try {
       const cart = await parasails.util.getCart();
-      const dataWithTimePeriod = {
-        Id: cart.items[index].id,
-        Quantity: quantity,
-        DateStart: cart.timePeriod.DateStart,
-        DateEnd: cart.timePeriod.DateEnd,
-        DaysOfUse: cart.timePeriod.DaysOfUse,
-        OrderIdToIgnore: cart.OrderIdToIgnore,
-      }
+      const newCartItems = [
+        ...cart.items,
+      ];
+      newCartItems.splice(index, 1, {
+        ...cart.items[index],
+        Quantity: quantity
+      });
 
-      const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-
-      const newCart = {
-        ...cart,
-      }
-      newCart.items[index] = result;
-
-      const newCartWithShippingAndTotals = await this.calculateNewCart(newCart);
-      localStorage.setItem('cart', JSON.stringify(newCartWithShippingAndTotals));
-      this.cart = newCartWithShippingAndTotals;
-      toastr.success('Item quantity changed');
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: newCartItems,
+        shipping: cart.shipping,
+      };
+      console.log(cart.items);
+      console.log(newCartItems);
+      try {
+        await this.validateCart(payload);
+        toastr.success('Item quantity changed');
+        this.syncing = false;
       } catch (err) {
         console.log(err);
         toastr.error('Item quantity could not be changed');
+        this.syncing = false;
       }
-      this.syncing = false;
     },
+
+    // updateItemRowQuantity: async function(index, quantity) {
+    //   if (this.syncing) {
+    //     return false;
+    //   }
+    //   this.syncing = true;
+    //   try {
+    //   const cart = await parasails.util.getCart();
+    //   const dataWithTimePeriod = {
+    //     Id: cart.items[index].id,
+    //     Quantity: quantity,
+    //     DateStart: cart.timePeriod.DateStart,
+    //     DateEnd: cart.timePeriod.DateEnd,
+    //     DaysOfUse: cart.timePeriod.DaysOfUse,
+    //     OrderIdToIgnore: cart.OrderIdToIgnore,
+    //   }
+
+    //   const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+
+    //   const newCart = {
+    //     ...cart,
+    //   }
+    //   newCart.items[index] = result;
+
+    //   const newCartWithShippingAndTotals = await this.calculateNewCart(newCart);
+    //   localStorage.setItem('cart', JSON.stringify(newCartWithShippingAndTotals));
+    //   this.cart = newCartWithShippingAndTotals;
+    //   toastr.success('Item quantity changed');
+    //   } catch (err) {
+    //     console.log(err);
+    //     toastr.error('Item quantity could not be changed');
+    //   }
+    //   this.syncing = false;
+    // },
 
     handleParsingShippingForm: function() {
       // Clear out any pre-existing error messages.

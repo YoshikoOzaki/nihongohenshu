@@ -44,7 +44,6 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-
     // Get cart totals.
     var cartTotals;
 
