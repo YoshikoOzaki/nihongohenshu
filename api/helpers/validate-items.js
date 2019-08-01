@@ -251,7 +251,8 @@ module.exports = {
 
       const discountedUnitPrice = discountedBasicTotal / Quantity;
       const discountedUnitPriceWithDaysOfUseIncreaseFactor = discountedUnitPrice * daysOfUseIncreaseFactor;
-      const totalDiscountedUnitCostWithEverything = Math.round(discountedUnitPriceWithDaysOfUseIncreaseFactor * Quantity);
+      const roundedDiscountedUnitPriceWithDaysOfUseIncreaseFactor = Math.round(discountedUnitPriceWithDaysOfUseIncreaseFactor);
+      const totalDiscountedUnitCostWithEverything = roundedDiscountedUnitPriceWithDaysOfUseIncreaseFactor * Quantity;
 
       const totalWashingCost = Quantity * washAndPolishConstant;
 
@@ -266,12 +267,11 @@ module.exports = {
         TotalPriceRaw: totalPrice,
         TotalPriceWithDiscountsAndWash: Math.round(discountedTotalWithWashAndDaysOfUse),
         TotalWashingCost: totalWashingCost,
-        DiscountedUnitCostWithDaysFactorForDisplay: Math.round(_.sum([discountedUnitPriceWithDaysOfUseIncreaseFactor])),
         QuantityDiscountFactor: quantityFactorForFullRack,
         // Available: await getAvailability(item),
         Extras: {
           discountedUnitPrice,
-          discountedUnitPriceWithDaysOfUseIncreaseFactor,
+          roundedDiscountedUnitPriceWithDaysOfUseIncreaseFactor,
           totalDiscountedUnitCostWithEverything,
           totalWashingCost,
           daysOfUseIncreaseFactor,

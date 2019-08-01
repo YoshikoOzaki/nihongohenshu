@@ -53,20 +53,9 @@
             </div>
           </div>
           <div class="col-md-2 mb-3">
-            <div v-if="false">
-              <div>
-                ¥{{item.WashAndPolish}}
-              </div>
-              <div>
-                ¥{{item.extras.discountedUnitPriceWithDaysOfUseIncreaseFactor}}
-              </div>
-              <div>
-                ¥{{item.DiscountedUnitCostWithWash}}
-              </div>
-            </div>
             <div>
               <small>Unit Price</small>
-              <div>¥{{(_.sum([item.Extras.discountedUnitPriceWithDaysOfUseIncreaseFactor + item.WashAndPolish])).toLocaleString()}}</div>
+              <div>¥{{(_.sum([item.Extras.roundedDiscountedUnitPriceWithDaysOfUseIncreaseFactor + item.WashAndPolish])).toLocaleString()}}</div>
             </div>
           </div>
           <div class="col-md-1 mb-3">
