@@ -50,8 +50,8 @@ parasails.registerPage('reserve-guest', {
         CustomerKeyword: this.formData.Keyword,
         Items: cart.items,
         Reserved: true,
-        DeliveryCost: cart.shipping.price,
-        Postcode: cart.shipping.postcode,
+        DeliveryCost: cart.shipping.Price,
+        Postcode: cart.shipping.Postcode,
       }
 
       console.log(payload);

@@ -58,7 +58,7 @@
                 ¥{{item.WashAndPolish}}
               </div>
               <div>
-                ¥{{item.DiscountedUnitPrice}}
+                ¥{{item.extras.discountedUnitPriceWithDaysOfUseIncreaseFactor}}
               </div>
               <div>
                 ¥{{item.DiscountedUnitCostWithWash}}
@@ -66,7 +66,7 @@
             </div>
             <div>
               <small>Unit Price</small>
-              <div>¥{{(item.Extras.totalDiscountedUnitCostWithEverything + item.WashAndPolish).toLocaleString()}}</div>
+              <div>¥{{(_.sum([item.Extras.discountedUnitPriceWithDaysOfUseIncreaseFactor + item.WashAndPolish])).toLocaleString()}}</div>
             </div>
           </div>
           <div class="col-md-1 mb-3">
