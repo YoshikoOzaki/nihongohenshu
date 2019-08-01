@@ -158,12 +158,13 @@ module.exports = {
       let validItems;
       try {
         validItems = await sails.helpers.getItemsAvailability(
-          validTimePeriod.DateStart,
-          validTimePeriod.DateEnd,
-          validTimePeriod.DaysOfUse,
+          validTimePeriod.DateStart || '0',
+          validTimePeriod.DateEnd || '0',
+          validTimePeriod.DaysOfUse || '1',
           inputs.items,
         );
       } catch (err) {
+        console.log(err);
         return exits.invalid(err.raw);
       }
       const response = [

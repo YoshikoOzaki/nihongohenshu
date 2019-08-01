@@ -65,6 +65,12 @@ module.exports = {
     }
 
     const getAvailability = async function (item) {
+      if (!inputs.DateEnd || !inputs.DateStart) {
+        return 'No date set to evaluate';
+      }
+      if (inputs.DateEnd === '0' || inputs.DateStart === '0') {
+        return 'No date set to evaluate';
+      }
       const getTransactionNumbersToIgnore = async function() {
         if (inputs.OrderIdToIgnore) {
           try {
@@ -84,15 +90,22 @@ module.exports = {
       const transactionTypes = await TransactionType.find();
       const transactionTypesByRecordingHandlingGuide = _.groupBy(transactionTypes, 'RecordHandlingGuide');
       const transactionsInArray = _.map(transactionTypesByRecordingHandlingGuide.In, 'id');
-      const transactionsInObject = await Transaction.find({
-        where: {
-          Product: item.id,
-          TransactionType: transactionsInArray,
-          id: { '!=': transactionNumbersToIgnore},
-          Date: { "<=": inputs.DateStart },
-        },
-        select: ['Quantity'],
-      });
+
+      let transactionsInObject;
+      try {
+        transactionsInObject = await Transaction.find({
+          where: {
+            Product: item.id,
+            TransactionType: transactionsInArray,
+            id: { '!=': transactionNumbersToIgnore},
+            Date: { "<=": inputs.DateStart },
+          },
+          select: ['Quantity'],
+        });
+      } catch (err) {
+        console.log(err);
+        return exits.invalid(err);
+      }
       const transactionsIn = _.sum(transactionsInObject, (o) => { return o.Quantity });
 
       const transactionsOutArray = _.map(transactionTypesByRecordingHandlingGuide.Out, 'id');
