@@ -170,7 +170,7 @@ module.exports = {
         return exits.invalid('Could not find product');
       }
 
-      if (availability.available === 'Not Available') {
+      if (item.available === 'Not Available') {
         return {
           ...product,
           ...item,

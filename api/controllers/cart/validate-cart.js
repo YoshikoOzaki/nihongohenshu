@@ -147,8 +147,6 @@ module.exports = {
         console.log(err);
         return exits.invalid(err.raw || err.message);
       }
-
-
     }
 
     const addAvailabilityToItems = async function(validTimePeriod) {
