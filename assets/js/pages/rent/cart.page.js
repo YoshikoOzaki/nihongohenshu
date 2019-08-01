@@ -78,35 +78,6 @@ parasails.registerPage('cart', {
       this.cart = newCart;
     },
 
-    calculateNewCart: async function(newCart){
-      const getPostcode = () => {
-        if (newCart.shipping && newCart.shipping.postcode) {
-          return newCart.shipping.postcode;
-        }
-        return 0;
-      }
-      const getPostcodeRaw = () => {
-        if (newCart.shipping && newCart.shipping.postcodeRaw) {
-          return newCart.shipping.postcodeRaw;
-        }
-        return 0;
-      }
-      const result = await Cloud.checkShippingPrice(
-        getPostcode(),
-        getPostcodeRaw(),
-        newCart
-      );
-      const newCart2 = {
-        ...newCart,
-        shipping: {
-          ...result
-        },
-      };
-      if (result) {
-        return newCart2;
-      }
-    },
-
     // More functional methods
 
     validateCartTest: async function() {
@@ -170,10 +141,12 @@ parasails.registerPage('cart', {
       parametersRequired.cartItemsAreValid = cart.items && (cart.items.length > 0) && _.each(cart.items, (o) => {
         return o.Available.available === 'Available';
       }).length === cart.items.length;
-      parametersRequired.shippingCodeEntered = cart.shipping && cart.shipping.Postcode;
+      parametersRequired.shippingCodeEntered = cart.shipping && (cart.shipping.Postcode !== undefined);
       parametersRequired.shippingCodeValid = cart.shipping && cart.shipping.shippingPossible !== false;
       parametersRequired.datesEntered = cart.timePeriod && !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
       parametersRequired.daysOfUseEntered = cart.timePeriod && cart.timePeriod.DaysOfUse > 0;
+
+      console.log(parametersRequired);
       if (_.includes(parametersRequired, false)) {
         this.checkoutEnabled = false;
         return;
