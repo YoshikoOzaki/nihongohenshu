@@ -160,7 +160,7 @@ module.exports = {
     }
 
     const validateItem = async function(item) {
-      const availability = await getAvailability(item);
+      // const availability = await getAvailability(item);
 
       // find price of items
       var product;
@@ -173,6 +173,7 @@ module.exports = {
       if (availability.available === 'Not Available') {
         return {
           ...product,
+          ...item,
           Quantity: item.Quantity,
           ImgSrc: product.ImgSrc,
           WashAndPolish: 0,
@@ -181,7 +182,7 @@ module.exports = {
           TotalWashingCost: 0,
           DiscountedUnitCostWithDaysFactorForDisplay:0,
           QuantityDiscountFactor: 0,
-          Available: availability,
+          // Available: availability,
           Extras: {
             discountedUnitPrice: 0,
             discountedUnitPriceWithDaysOfUseIncreaseFactor: 0,

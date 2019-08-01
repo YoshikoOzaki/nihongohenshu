@@ -124,7 +124,7 @@ module.exports = {
 
     const getValidItems = async function(itemsWithAvailability, quantityDiscountFactorForFullRacks, validTimePeriod) {
       if (
-        !inputs.items
+        !itemsWithAvailability
       ) {
         return [];
       }
@@ -180,6 +180,7 @@ module.exports = {
     const itemsWithAvailability = await addAvailabilityToItems(validTimePeriod);
     const quantityDiscountFactorForFullRacks = await getQuantityDiscountFactorForFullRacks();
     const validItems = await getValidItems(itemsWithAvailability, quantityDiscountFactorForFullRacks, validTimePeriod);
+    // something wrong with the above
     const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
     const cartTotals = await sails.helpers.getCartTotals(validShipping, validItems, consumptionTaxRate);
 
