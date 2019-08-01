@@ -178,17 +178,17 @@
                       <hr />
                       <h5>Sub Total</h5>
                         <!-- ¥ {{subTotal && subTotal.toLocaleString()}} -->
-                        ¥ {{cart.cartTotals && cart.cartTotals.subTotal || 0}}
+                        ¥ {{cart.cartTotals && cart.cartTotals.subTotal.Price.toLocaleString() || 0}}
                       <hr />
                       <h5>Tax</h5>
                         <!-- ¥ {{taxTotal && taxTotal.toLocaleString()}} -->
-                        ¥ {{cart.cartTotals && cart.cartTotals.taxTotal || 0}}
+                        ¥ {{cart.cartTotals && cart.cartTotals.taxTotal.Price.toLocaleString() || 0}}
                       <hr />
                       <h4>Grand Total</h4>
                       <h5>
                         <b>
                           <!-- ¥ {{grandTotal && grandTotal.toLocaleString()}} -->
-                          ¥ {{cart.cartTotals && cart.cartTotals.grandTotal || 0}}
+                          ¥ {{cart.cartTotals && cart.cartTotals.grandTotal.Price.toLocaleString() || 0}}
                         </b>
                       </h5>
                       <hr />
