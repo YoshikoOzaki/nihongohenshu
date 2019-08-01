@@ -36,6 +36,11 @@ module.exports = {
     const cartItems = inputs.Items;
     const itemLineRackRequirements = [];
     await asyncForEach(cartItems, async(cartItem) => {
+      // Only process available items
+      if (cartItem.Available.available !== 'Available') {
+        return;
+      }
+
       let product = {};
       try {
         product = await Product.findOne({ id: cartItem.id });

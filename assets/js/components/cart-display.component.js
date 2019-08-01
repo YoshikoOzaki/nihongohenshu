@@ -37,6 +37,9 @@ parasails.registerComponent('cartDisplay', {
   <div>
     <div class="row">
     <div class="col-md-12">
+      <div class="">
+        <h6>Items</h6>
+      </div>
       <div class="table-responsive">
         <table class="table table-bordered table-sm">
           <tr>
@@ -130,15 +133,15 @@ parasails.registerComponent('cartDisplay', {
               {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
             </td>
             <td>
-              {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
+              {{cart.shipping && cart.shipping.PostcodeRaw || "Add a Postcode"}}<br />
               <small
-                class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                class="text-info">{{ (cart.shipping && cart.shipping.ShippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
             </td>
             <td>
-              {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
+              {{cart.shipping && _.capitalize(cart.shipping.ShippingType)}}<br />
             </td>
             <td>
-              {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
+              {{cart.shipping && cart.shipping.ShippingFactorRecord && _.capitalize(cart.shipping.ShippingFactorRecord.Place)}}<br />
             </td>
           </tr>
         </table>
@@ -149,13 +152,13 @@ parasails.registerComponent('cartDisplay', {
         </div>
         <div class="text-right">
           <h5>Sub Total</h5>
-          <b>¥ {{subTotal && subTotal.toLocaleString()}}</b>
+          <b>¥ {{cart.cartTotals && cart.cartTotals.subTotal.toLocaleString()}}</b>
           <hr />
           <h5>Tax Total</h5>
-          <b>¥ {{taxTotal && taxTotal.toLocaleString()}}</b>
+          <b>¥ {{cart.cartTotals && cart.cartTotals.taxTotal.toLocaleString()}}</b>
           <hr />
           <h4>Grand Total</h4>
-          <h5><b>¥ {{grandTotal && grandTotal.toLocaleString()}}</b></h5>
+          <h5><b>¥ {{cart.cartTotals && cart.cartTotals.grandTotal.toLocaleString()}}</b></h5>
           <hr />
         </div>
       </div>

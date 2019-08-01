@@ -105,16 +105,16 @@ module.exports = {
       return response;
     }
 
-    const getQuantityDiscountFactorForFullRacks = async function() {
+    const getQuantityDiscountFactorForFullRacks = async function (itemsWithAvailability) {
       if (
-        !inputs.items
+        !itemsWithAvailability
       ) {
         return '';
       }
 
       let quantityDiscountFactorForFullRacks;
       try {
-        quantityDiscountFactorForFullRacks = await sails.helpers.getDiscountFactorForFullRacks(inputs.items);
+        quantityDiscountFactorForFullRacks = await sails.helpers.getDiscountFactorForFullRacks(itemsWithAvailability);
       } catch (err) {
         return exits.invalid(err.raw);
       }
@@ -122,9 +122,9 @@ module.exports = {
       return response;
     }
 
-    const getValidItems = async function(quantityDiscountFactorForFullRacks, validTimePeriod) {
+    const getValidItems = async function(itemsWithAvailability, quantityDiscountFactorForFullRacks, validTimePeriod) {
       if (
-        !inputs.items
+        !itemsWithAvailability
       ) {
         return [];
       }
@@ -135,7 +135,7 @@ module.exports = {
           validTimePeriod.DateStart || '0',
           validTimePeriod.DateEnd || '0',
           validTimePeriod.DaysOfUse || '1',
-          inputs.items,
+          itemsWithAvailability,
           quantityDiscountFactorForFullRacks,
         );
 
@@ -147,15 +147,38 @@ module.exports = {
         console.log(err);
         return exits.invalid(err.raw || err.message);
       }
+    }
 
-
+    const addAvailabilityToItems = async function(validTimePeriod) {
+      if (
+        !inputs.items
+      ) {
+        return [];
+      }
+      let validItems;
+      try {
+        validItems = await sails.helpers.getItemsAvailability(
+          validTimePeriod.DateStart,
+          validTimePeriod.DateEnd,
+          validTimePeriod.DaysOfUse,
+          inputs.items,
+        );
+      } catch (err) {
+        return exits.invalid(err.raw);
+      }
+      const response = [
+        ...validItems,
+      ];
+      return response;
     }
 
     // All done.
     const validTimePeriod = await getValidTimePeriod();
     const validShipping = await getValidShipping();
-    const quantityDiscountFactorForFullRacks = await getQuantityDiscountFactorForFullRacks();
-    const validItems = await getValidItems(quantityDiscountFactorForFullRacks, validTimePeriod);
+    const itemsWithAvailability = await addAvailabilityToItems(validTimePeriod);
+    const quantityDiscountFactorForFullRacks = await getQuantityDiscountFactorForFullRacks(itemsWithAvailability);
+    const validItems = await getValidItems(itemsWithAvailability, quantityDiscountFactorForFullRacks, validTimePeriod);
+    // something wrong with the above
     const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
     const cartTotals = await sails.helpers.getCartTotals(validShipping, validItems, consumptionTaxRate);
 

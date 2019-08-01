@@ -35,14 +35,6 @@ module.exports = {
       description: 'All the items in the cart',
     },
 
-    QuantityDiscountFactorForFullRacks: {
-      required: true,
-      type: {
-        discountFactor: 'number',
-        totalRequiredFullRacks: 'number',
-      },
-    },
-
     OrderIdToIgnore: {
       type: 'number',
       description: 'If we are adding a recovered order, we dont want to calculate transactions from that order',
@@ -73,12 +65,6 @@ module.exports = {
     }
 
     const getAvailability = async function (item) {
-      if (!inputs.DateEnd || !inputs.DateStart) {
-        return 'No date set to evaluate';
-      }
-      if (inputs.DateEnd === '0' || inputs.DateStart === '0') {
-        return 'No date set to evaluate';
-      }
       const getTransactionNumbersToIgnore = async function() {
         if (inputs.OrderIdToIgnore) {
           try {
@@ -160,122 +146,18 @@ module.exports = {
     }
 
     const validateItem = async function(item) {
-      // const availability = await getAvailability(item);
-
       // find price of items
       var product;
       try {
-        product = await Product.findOne({ id: item.id });
+        product =  await Product.findOne({ id: item.id });
       } catch (err) {
         return exits.invalid('Could not find product');
       }
 
-      if (item.available === 'Not Available') {
-        return {
-          ...product,
-          ...item,
-          Quantity: item.Quantity,
-          ImgSrc: product.ImgSrc,
-          WashAndPolish: 0,
-          TotalPriceRaw: 0,
-          TotalPriceWithDiscountsAndWash: 0,
-          TotalWashingCost: 0,
-          DiscountedUnitCostWithDaysFactorForDisplay:0,
-          QuantityDiscountFactor: 0,
-          // Available: availability,
-          Extras: {
-            discountedUnitPrice: 0,
-            discountedUnitPriceWithDaysOfUseIncreaseFactor: 0,
-            totalDiscountedUnitCostWithEverything: 0,
-            totalWashingCost: 0,
-            daysOfUseIncreaseFactor: 0,
-          }
-        }
-      }
-
-
-      // Collect variables
-      const { DaysOfUse } = inputs;
-      const { RackCapacity, UnitPrice } = product;
-      const { Quantity } = item;
-
-      const washAndPolishConstant = await sails.helpers.getWashAndPolishCost();
-      const daysOfUseIncreaseFactor = await sails.helpers.getDaysOfUseIncreaseFactor(DaysOfUse);
-
-      const UnitPriceWithoutWashing = UnitPrice - washAndPolishConstant;
-      const fullRacks = Quantity / RackCapacity;
-      const fullRacksRoundedDown = Math.floor(fullRacks);
-      const quantityInFullRacks = RackCapacity * fullRacksRoundedDown;
-      const quantityInPartiallyFullRack = Number(Quantity) - quantityInFullRacks;
-      const partiallyFullRacks = quantityInPartiallyFullRack > 0 ? 1 : 0;
-
-      const quantityFactorForFullRack = inputs.QuantityDiscountFactorForFullRacks.discountFactor;
-      // this is coming from the QDFFR calculation
-
-      const quantityFactorForPartialRack = quantityFactorForFullRack;
-
-      // Create Prices
-      // ------
-
-      const totalPrice = Number(Quantity) * UnitPriceWithoutWashing;
-
-      // seperate the full and non full racks because
-      // they might have different quantity discount factors
-      async function getDiscountedBasicTotalWithDiscounts (
-        UnitPriceWithoutWashing,
-        quantityFactorForFullRack,
-        quantityInFullRacks,
-        quantityFactorForPartialRack,
-        quantityInPartiallyFullRack,
-      ) {
-        const discountPriceOfFullRacks = (
-          UnitPriceWithoutWashing *
-          quantityFactorForFullRack *
-          quantityInFullRacks
-        );
-        const discountedPriceOfPartialRacks = (
-          UnitPriceWithoutWashing *
-          quantityFactorForPartialRack *
-          quantityInPartiallyFullRack
-        );
-        return _.sum([discountPriceOfFullRacks, discountedPriceOfPartialRacks]);
-      }
-
-      const discountedBasicTotal = await getDiscountedBasicTotalWithDiscounts(
-        UnitPriceWithoutWashing,
-        quantityFactorForFullRack,
-        quantityInFullRacks,
-        quantityFactorForPartialRack,
-        quantityInPartiallyFullRack,
-      );
-
-      const discountedUnitPrice = discountedBasicTotal / Quantity;
-      const discountedUnitPriceWithDaysOfUseIncreaseFactor = discountedUnitPrice * daysOfUseIncreaseFactor;
-      const totalDiscountedUnitCostWithEverything = Math.round(discountedUnitPriceWithDaysOfUseIncreaseFactor * Quantity);
-
-      const totalWashingCost = Quantity * washAndPolishConstant;
-
-      const discountedTotalWithWashAndDaysOfUse = _.sum([totalWashingCost, totalDiscountedUnitCostWithEverything]);
-
       discountedInputs = {
         ...product,
-        ...item,
         Quantity: item.Quantity,
-        ImgSrc: product.ImgSrc,
-        WashAndPolish: washAndPolishConstant,
-        TotalPriceRaw: totalPrice,
-        TotalPriceWithDiscountsAndWash: Math.round(discountedTotalWithWashAndDaysOfUse),
-        TotalWashingCost: totalWashingCost,
-        DiscountedUnitCostWithDaysFactorForDisplay: Math.round(_.sum([discountedUnitPriceWithDaysOfUseIncreaseFactor])),
-        QuantityDiscountFactor: quantityFactorForFullRack,
-        // Available: await getAvailability(item),
-        Extras: {
-          discountedUnitPrice,
-          discountedUnitPriceWithDaysOfUseIncreaseFactor,
-          totalDiscountedUnitCostWithEverything,
-          totalWashingCost,
-          daysOfUseIncreaseFactor,
-        }
+        Available: await getAvailability(item),
       }
 
       return discountedInputs;
