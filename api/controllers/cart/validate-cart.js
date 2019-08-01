@@ -105,16 +105,16 @@ module.exports = {
       return response;
     }
 
-    const getQuantityDiscountFactorForFullRacks = async function() {
+    const getQuantityDiscountFactorForFullRacks = async function (itemsWithAvailability) {
       if (
-        !inputs.items
+        !itemsWithAvailability
       ) {
         return '';
       }
 
       let quantityDiscountFactorForFullRacks;
       try {
-        quantityDiscountFactorForFullRacks = await sails.helpers.getDiscountFactorForFullRacks(inputs.items);
+        quantityDiscountFactorForFullRacks = await sails.helpers.getDiscountFactorForFullRacks(itemsWithAvailability);
       } catch (err) {
         return exits.invalid(err.raw);
       }
@@ -176,7 +176,7 @@ module.exports = {
     const validTimePeriod = await getValidTimePeriod();
     const validShipping = await getValidShipping();
     const itemsWithAvailability = await addAvailabilityToItems(validTimePeriod);
-    const quantityDiscountFactorForFullRacks = await getQuantityDiscountFactorForFullRacks();
+    const quantityDiscountFactorForFullRacks = await getQuantityDiscountFactorForFullRacks(itemsWithAvailability);
     const validItems = await getValidItems(itemsWithAvailability, quantityDiscountFactorForFullRacks, validTimePeriod);
     // something wrong with the above
     const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
