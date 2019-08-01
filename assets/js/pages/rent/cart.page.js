@@ -13,15 +13,13 @@ parasails.registerPage('cart', {
     formErrorsItems: { /* … */ },
     formErrorsShipping: { /* … */ },
     checkoutEnabled: false,
-    taxRate: '',
-    subTotal: '',
-    taxTotal: '',
-    grandTotal: '',
     cart: {
       items: [],
       quantityDiscountFactorForFullRacks: {
         discountFactor: 0,
-      }
+      },
+      shipping: {},
+      timePeriod: {},
     },
     glasses: [],
     moment: moment,
@@ -46,13 +44,6 @@ parasails.registerPage('cart', {
 
   updated: async function() {
     await this.checkIfCheckoutEnabled();
-
-    const cart = this.cart;
-    const taxRate = await Cloud.getConsumptionTaxRate();
-
-    this.subTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0);
-    this.taxTotal = Math.round(((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0) * taxRate);
-    this.grandTotal = (this.subTotal + this.taxTotal);
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
@@ -75,15 +66,16 @@ parasails.registerPage('cart', {
       if (this.syncing) {
         return;
       }
-      this.cart = {
+      const newCart = {
         items: [],
         quantityDiscountFactorForFullRacks: {
           discountFactor: 0,
-        }
+        },
+        shipping: {},
+        timePeriod: {},
       };
-      this.subTotal = '';
-      this.grandTotal = '';
-      localStorage.removeItem('cart');
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      this.cart = newCart;
     },
 
     calculateNewCart: async function(newCart){
@@ -321,7 +313,8 @@ parasails.registerPage('cart', {
         shipping: cart.shipping,
       };
       try {
-        await this.validateCart(payload);
+        const result = await this.validateCart(payload);
+        console.log(result);
         toastr.success('Item added to the cart');
       } catch (err) {
         console.log(err);
