@@ -37,6 +37,9 @@ parasails.registerComponent('cartDisplay', {
   <div>
     <div class="row">
     <div class="col-md-12">
+      <div class="">
+        <h6>Items</h6>
+      </div>
       <div class="table-responsive">
         <table class="table table-bordered table-sm">
           <tr>
