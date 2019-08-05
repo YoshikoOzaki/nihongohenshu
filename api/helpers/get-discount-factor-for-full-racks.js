@@ -72,6 +72,7 @@ module.exports = {
 
     const racksToThePowerOf = _.max([0, totalRequiredFullRacks - 3]);
     const discountFactor = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
+    const discountFactorRounded = _.min([discountFactor, 1]);
 
     const partialRacksInfo =
       _(itemLineRackRequirements)
@@ -81,7 +82,7 @@ module.exports = {
 
     var discountFactorForFullRacks = {
       totalRequiredFullRacks,
-      discountFactor,
+      discountFactor: discountFactorRounded,
       partialRacksInfo,
     };
 
