@@ -106,6 +106,21 @@ module.exports = {
     TakuhaiTimeSlot: {
       model: 'TakuhaiTimeSlot',
       description: 'Links order to a time slot, not required for all orders as some use other delivery methods'
+    },
+
+    SubTotal : {
+      type: 'number',
+      description: 'The total before tax'
+    },
+    
+    TaxTotal : {
+      type: 'number',
+      description: 'The total tax'
+    },
+
+    GrandTotal : {
+      type: 'number',
+      description: 'The total after tax'
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
