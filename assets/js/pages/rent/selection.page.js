@@ -101,6 +101,7 @@ parasails.registerPage('selection', {
       const cart = await parasails.util.getCart();
       const existingCartItem = _.find(cart.items, { id: data.Id });
       if (existingCartItem) {
+        this.syncing = false;
         toastr.warning('Item is already in the cart, please update it there');
         return;
       }
@@ -118,12 +119,12 @@ parasails.registerPage('selection', {
       };
       try {
         await this.validateCart(payload);
-        toastr.success('Item added to the cart');
         this.syncing = false;
+        toastr.success('Item added to the cart');
       } catch (err) {
         console.log(err);
-        toastr.error('Item could not added to the cart');
         this.syncing = false;
+        toastr.error('Item could not added to the cart');
       }
     },
     
