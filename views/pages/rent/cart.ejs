@@ -32,7 +32,7 @@
           </div>
           <div class="col-md-3 mb-3">
             <div class="input-group">
-              <input class="form-control form-control-sm" type="number" v-model.trim="item.Quantity" />
+              <input class="form-control form-control-sm" type="number" v-model.trim="item.Quantity"/>
               <div class="input-group-append">
                 <button @click="updateItemRowQuantity(index, item.Quantity)" type="submit"
                   class="btn btn-sm btn-block ajax-button btn-outline-primary" :class="[syncing ? 'syncing' : '']">
