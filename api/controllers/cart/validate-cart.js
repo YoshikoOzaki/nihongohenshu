@@ -82,7 +82,6 @@ module.exports = {
     const getValidShipping = async function() {
       if (
         !inputs.shipping.Postcode ||
-        !inputs.shipping.PostcodeRaw ||
         !inputs.items
       ) {
         return {};
@@ -92,7 +91,7 @@ module.exports = {
       try {
         getShippingDetails = await sails.helpers.validateShipping(
           inputs.shipping.Postcode,
-          inputs.shipping.PostcodeRaw,
+          inputs.shipping.PostcodeRaw || inputs.shipping.Postcode.toString(),
           inputs.items
         );
       } catch (err) {

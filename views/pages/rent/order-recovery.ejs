@@ -4,7 +4,7 @@
       <div class="col-md-6 offset-md-3">
         <page-header
           heading="Reserved Order Recovery"
-          sub-heading="User your order id and keyword to recall a reserved order as a guest"
+          sub-heading="Use your order id and keyword to recall a reserved order as a guest"
         />
       </div>
       <div class="col-md-6 offset-md-3">
@@ -69,7 +69,7 @@
                   {{newCart.timePeriod.DaysOfUse}}
                 </td>
                 <td>
-                  {{newCart.shipping.postcode}}
+                  {{newCart.shipping.Postcode}}
                 </td>
               </tr>
             </table>
@@ -82,13 +82,7 @@
                   Name
                 </th>
                 <th>
-                  Unit Price
-                </th>
-                <th>
                   Quantity In Order
-                </th>
-                <th>
-                  Total Price
                 </th>
               </tr>
               <tr v-for="item in newCart.items">
@@ -96,17 +90,11 @@
                   <img height="100px" :src="item.ImgSrc" />
                 </td>
                 <td>
-                  {{ item.NameEng }}
-                  {{ item.NameJap }}
+                  {{ item.NameJ1 }}
+                  {{ item.NameJ2 }}
                 </td>
                 <td>
-                  ¥{{ item.UnitPrice }}
-                </td>
-                <td>
-                  ¥{{ item.Quantity }}
-                </td>
-                <td>
-                  ¥{{ item.UnitPrice * item.Quantity }}
+                  {{ item.Quantity }}
                 </td>
               </tr>
             </table>
