@@ -82,10 +82,11 @@ parasails.registerPage('order-recovery', {
         timePeriod: cart.timePeriod,
         items: cart.items,
         shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
       }
 
       newCart = await Cloud.validateCart(..._.values(payload));
-      // localStorage.setItem('cart', JSON.stringify(newCart));
+      localStorage.setItem('cart', JSON.stringify(newCart));
       this.newCart = newCart;
     },
 
@@ -113,6 +114,7 @@ parasails.registerPage('order-recovery', {
         shipping: {
           Postcode: recoveredOrder.Postcode,
         },
+        OrderIdToIgnore: recoveredOrder.id,
       };
 
       try {
@@ -120,7 +122,7 @@ parasails.registerPage('order-recovery', {
         toastr.success('Order validated');
       } catch (err) {
         console.log(err);
-        toastr.error('Order could not be recovered and validated');
+        toastr.error('Order could not be validated');
       }
     },
 

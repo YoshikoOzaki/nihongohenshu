@@ -161,10 +161,11 @@ module.exports = {
           validTimePeriod.DateEnd || '0',
           validTimePeriod.DaysOfUse || '1',
           inputs.items,
+          inputs.OrderIdToIgnore || undefined,
         );
       } catch (err) {
         console.log(err);
-        return exits.invalid(err.raw);
+        return exits.invalid(err);
       }
       const response = [
         ...validItems,
@@ -178,7 +179,6 @@ module.exports = {
     const itemsWithAvailability = await addAvailabilityToItems(validTimePeriod);
     const quantityDiscountFactorForFullRacks = await getQuantityDiscountFactorForFullRacks(itemsWithAvailability);
     const validItems = await getValidItems(itemsWithAvailability, quantityDiscountFactorForFullRacks, validTimePeriod);
-    // something wrong with the above
     const consumptionTaxRate = await sails.helpers.getConsumptionTaxRate();
     const cartTotals = await sails.helpers.getCartTotals(validShipping, validItems, consumptionTaxRate);
 
@@ -188,6 +188,7 @@ module.exports = {
       shipping: validShipping,
       cartTotals,
       quantityDiscountFactorForFullRacks,
+      OrderIdToIgnore: inputs.OrderIdToIgnore,
     };
 
     return exits.success(returnCart);
