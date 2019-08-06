@@ -58,6 +58,7 @@ parasails.registerPage('reserve-guest', {
         Reserved: true,
         DeliveryCost: cart.shipping.Price,
         Postcode: cart.shipping.Postcode,
+        PostcodeRaw: cart.shipping.PostcodeRaw,
       }
 
       console.log(payload);

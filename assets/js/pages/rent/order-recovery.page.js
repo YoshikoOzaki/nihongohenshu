@@ -113,6 +113,7 @@ parasails.registerPage('order-recovery', {
         ],
         shipping: {
           Postcode: recoveredOrder.Postcode,
+          PostcodeRaw: recoveredOrder.PostcodeRaw,
         },
         OrderIdToIgnore: recoveredOrder.id,
       };
