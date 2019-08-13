@@ -50,9 +50,12 @@ parasails.registerPage('member-orders', {
     addOrderToCart: async function(order) {
       this.syncing = true;
       try {
-        const cartReadyOrder = await parasails.util.convertOrderToCartSyntax(order);
-        await localStorage.setItem('cart', JSON.stringify(cartReadyOrder));
+        const orderConvertedToCartSyntax = await parasails.util.convertOrderToCartSyntax(order);
+        const validatedCart = await parasails.util.validateCart(orderConvertedToCartSyntax);
+        // const validatedCart = await this.validateCart(orderConvertedToCartSyntax);
+        await localStorage.setItem('cart', JSON.stringify(validatedCart));
         toastr.success('Added reserved order to the cart');
+        setTimeout(window.location = '/rent/cart', 3000);
       } catch (err) {
         toastr.error('Could not add order to cart');
       }
@@ -68,5 +71,6 @@ parasails.registerPage('member-orders', {
         toastr.error('Could not delete reserve order');
       }
     }
+    
   }
 });

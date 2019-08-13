@@ -1,7 +1,7 @@
 <div id="reserve-prompt">
-  <div class="container">
+  <div class="container" v-cloak>
     <div class="row">
-      <div class="col-md-6 offset-md-3 text-center mt-3">
+      <div class="col-md-6 offset-md-3 text-center mt-3" v-cloak v-if="!loggedIn">
         <div class="card p-3">
           <a href="../checkout/reserve-guest">
             <button class="btn btn-outline-primary">
@@ -14,7 +14,7 @@
         <div class="card p-3">
           <a href="../checkout/reserve-member">
             <button class="btn btn-primary">
-              Log in to Reserve as Member
+              Reserve as Member
             </button>
           </a>
         </div>
