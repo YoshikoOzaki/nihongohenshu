@@ -1,10 +1,10 @@
 module.exports = {
 
 
-  friendlyName: 'Validate cart',
+  friendlyName: 'Validate cart helper',
 
 
-  description: 'Input a proposed cart, outputs a new valid cart',
+  description: '',
 
 
   inputs: {
@@ -38,16 +38,20 @@ module.exports = {
 
   exits: {
 
+    success: {
+      description: 'All done.',
+    },
+
     invalid: {
       responseType: 'badRequest',
       description: 'Inputs are not valid',
       extendedDescription: 'validate-cart failed',
     },
-
   },
 
 
   fn: async function (inputs, exits) {
+    // TODO
 
     const getValidTimePeriod = async function() {
       if (
@@ -192,5 +196,7 @@ module.exports = {
     };
 
     return exits.success(returnCart);
+
   }
 };
+

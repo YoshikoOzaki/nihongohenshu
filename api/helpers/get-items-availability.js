@@ -164,7 +164,7 @@ module.exports = {
       try {
         product =  await Product.findOne({ id: item.id });
       } catch (err) {
-        return exits.invalid('Could not find product');
+        return exits.invalid('Could not find product ' + item.id);
       }
 
       discountedInputs = {

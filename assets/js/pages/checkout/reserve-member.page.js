@@ -45,14 +45,22 @@ parasails.registerPage('reserve-member', {
 
     submitReserveOrder: async function() {
       const cart = await parasails.util.getCart();
+      const availableOnlyItems = _.filter(cart.items, (o) => {
+        return o.Available.available === "Available"; 
+      });
       const payload = {
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
         DaysOfUse: cart.timePeriod.DaysOfUse,
-        Items: cart.items,
+        Items: [
+          ...availableOnlyItems
+        ],
         Reserved: true,
         DeliveryCost: cart.shipping.price,
         Postcode: cart.shipping.postcode,
+        DeliveryCost: cart.shipping.Price,
+        Postcode: cart.shipping.Postcode,
+        PostcodeRaw: cart.shipping.PostcodeRaw,
         User: this.me.id,
       }
 

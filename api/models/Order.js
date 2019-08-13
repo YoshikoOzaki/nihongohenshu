@@ -59,6 +59,12 @@ module.exports = {
       example: 600000,
     },
 
+    PostcodeRaw: {
+      type: 'string',
+      description: 'Added for reserving orders',
+      example: '600-000',
+    },
+
     User: {
       model: 'User',
       description: 'Links order to a user, not required as some orders are for guests'
@@ -106,6 +112,21 @@ module.exports = {
     TakuhaiTimeSlot: {
       model: 'TakuhaiTimeSlot',
       description: 'Links order to a time slot, not required for all orders as some use other delivery methods'
+    },
+
+    SubTotal : {
+      type: 'number',
+      description: 'The total before tax'
+    },
+    
+    TaxTotal : {
+      type: 'number',
+      description: 'The total tax'
+    },
+
+    GrandTotal : {
+      type: 'number',
+      description: 'The total after tax'
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

@@ -118,6 +118,7 @@ parasails.registerPage('cart', {
         timePeriod: cart.timePeriod,
         items: cart.items,
         shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore,
       }
 
       newCart = await Cloud.validateCart(..._.values(payload));
@@ -161,6 +162,7 @@ parasails.registerPage('cart', {
         timePeriod: data,
         items: cart.items,
         shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
       };
       try {
         await this.validateCart(payload);
@@ -227,6 +229,7 @@ parasails.registerPage('cart', {
         timePeriod: cart.timePeriod,
         items: cart.items,
         shipping: data,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
       };
       try {
         await this.validateCart(payload);
@@ -284,6 +287,7 @@ parasails.registerPage('cart', {
         timePeriod: cart.timePeriod,
         items: newItems,
         shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
       };
       try {
         const result = await this.validateCart(payload);
@@ -427,6 +431,7 @@ parasails.registerPage('cart', {
         timePeriod: cart.timePeriod,
         items: newCartItems,
         shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
       };
       console.log(cart.items);
       console.log(newCartItems);

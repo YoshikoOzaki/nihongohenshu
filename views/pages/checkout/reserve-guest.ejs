@@ -8,6 +8,9 @@
           sub-heading="Reserve an order without being logged in"
           />
         </div>
+        <div>
+          Items that are not available will not be added to the reserved stock order
+        </div>
         <ajax-form
           @submitted="submittedForm()"
           :syncing.sync="syncing"
