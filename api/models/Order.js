@@ -59,6 +59,12 @@ module.exports = {
       example: 600000,
     },
 
+    PostcodeRaw: {
+      type: 'string',
+      description: 'Added for reserving orders',
+      example: '600-000',
+    },
+
     User: {
       model: 'User',
       description: 'Links order to a user, not required as some orders are for guests'

@@ -61,6 +61,11 @@ module.exports = {
     Postcode: {
       type: 'number',
       description: 'Postcode assigned to the order for shipping'
+    },
+
+    PostcodeRaw: {
+      type: 'string',
+      description: 'Postcode raw assigned to the order for shipping'
     }
 
   },
@@ -92,6 +97,7 @@ module.exports = {
         CustomerKeyword: inputs.CustomerKeyword,
         Reserved: inputs.Reserved,
         Postcode: inputs.Postcode,
+        PostcodeRaw: inputs.PostcodeRaw,
       }
       var newRecord = await Order.create(orderInputs).fetch();
       return newRecord;
