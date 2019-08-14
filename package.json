@@ -9,6 +9,7 @@
     "@sailshq/lodash": "^3.10.3",
     "@sailshq/socket.io-redis": "^5.2.0",
     "async": "2.0.1",
+    "babel-cli": "^6.26.0",
     "babel-preset-stage-2": "^6.24.1",
     "commander": "^2.20.0",
     "grunt": "1.0.1",
