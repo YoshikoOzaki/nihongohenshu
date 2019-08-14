@@ -9,6 +9,11 @@
  *   https://sailsjs.com/anatomy/tasks/config/babel.js
  *
  */
+
+ // I have changed this file just to use the regular babel from npm as IE was struggling with spread operators
+ // I googled a bunch of stuff to make this work
+
+
 module.exports = function(grunt) {
 
   grunt.config.set('babel', {
