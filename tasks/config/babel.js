@@ -25,6 +25,7 @@ module.exports = function(grunt) {
         }
       ]
     }
+
   });
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,7 +48,7 @@ module.exports = function(grunt) {
   //
   // ```
   // // Load Grunt plugin from the node_modules/ folder.
-  // grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-babel');
   // ```
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
