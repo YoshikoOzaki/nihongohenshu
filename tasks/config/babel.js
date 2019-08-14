@@ -25,15 +25,15 @@ module.exports = function(grunt) {
       // },
       files: [
         {
-          // expand: true,
-          // cwd: '.tmp/public',
-          // src: ['js/**/*.js'],
-          // dest: '.tmp/public'
           expand: true,
-          cwd: 'assets/js/',
-          src: ['**/*.js', '!dependencies/**/*.js'],
-          dest: '.tmp/public/js/',
-          ext: '.js'
+          cwd: '.tmp/public',
+          src: ['js/**/*.js'],
+          dest: '.tmp/public'
+          // expand: true,
+          // cwd: 'assets/js/',
+          // src: ['**/*.js', '!dependencies/**/*.js'],
+          // dest: '.tmp/public/js/',
+          // ext: '.js'
         }
       ]
     },
