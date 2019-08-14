@@ -17,7 +17,8 @@ module.exports = function(grunt) {
         presets: [
           "es2015",
           "stage-0"
-        ]
+        ],
+        babelrc: false
       },
       // options: {
       //   presets: [require('sails-hook-grunt/accessible/babel-preset-env')]
