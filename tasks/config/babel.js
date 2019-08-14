@@ -25,6 +25,31 @@ module.exports = function(grunt) {
       // },
       files: [
         {
+          // expand: true,
+          // cwd: '.tmp/public',
+          // src: ['js/**/*.js'],
+          // dest: '.tmp/public'
+          expand: true,
+          cwd: 'assets/js/',
+          src: ['**/*.js', '!dependencies/**/*.js'],
+          dest: '.tmp/public/js/',
+          ext: '.js'
+        }
+      ]
+    },
+    dev: {
+      options: {
+        presets: [
+          "es2015",
+          "stage-0"
+        ],
+        babelrc: false
+      },
+      // options: {
+      //   presets: [require('sails-hook-grunt/accessible/babel-preset-env')]
+      // },
+      files: [
+        {
           expand: true,
           cwd: '.tmp/public',
           src: ['js/**/*.js'],
@@ -32,7 +57,6 @@ module.exports = function(grunt) {
         }
       ]
     }
-
   });
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
