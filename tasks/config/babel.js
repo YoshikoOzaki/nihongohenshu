@@ -19,6 +19,9 @@ module.exports = function(grunt) {
           "stage-0"
         ]
       },
+      // options: {
+      //   presets: [require('sails-hook-grunt/accessible/babel-preset-env')]
+      // },
       files: [
         {
           expand: true,
