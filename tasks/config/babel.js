@@ -14,7 +14,10 @@ module.exports = function(grunt) {
   grunt.config.set('babel', {
     dist: {
       options: {
-        presets: [require('sails-hook-grunt/accessible/babel-preset-env')]
+        presets: [
+          "es2015",
+          "stage-0"
+        ]
       },
       files: [
         {
