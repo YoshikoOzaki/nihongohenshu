@@ -57,11 +57,6 @@ module.exports = {
       }
     }
 
-    // validate cart -> compare to old cart to check its untampered with
-    // create guest order based on validated cart
-    // use guest order id, order totals, and cc token to make the charge
-    // if it fails, delete the unpaid guest order
-
     const validateCart = async function (cartToValidate) {
       const cart = cartToValidate;
       const payload = {
@@ -72,10 +67,12 @@ module.exports = {
       }
 
       const validatedCart = await sails.helpers.validateCartHelper(..._.values(payload));
+      return validatedCart;
     }
 
     // everything below here is the charge
-    const chargeTheCard = async function () {
+    const chargeTheCard = async function (orderId, amount) {
+
       const fetch = require("node-fetch");
 
       const ccid = "A100000000000001069951cc";
@@ -83,8 +80,8 @@ module.exports = {
       // TODO: remove the math floor number here for prod
       // it's here because the cc people deny you if you pay for the same order number twice
       const req = {
-        "orderId": Math.floor(Math.random() * 100) + inputs.orderId + 10012,
-        "amount": Math.round(inputs.amount),
+        "orderId": Math.floor(Math.random() * 100) + orderId + 10012,
+        "amount": Math.round(amount),
         "jpo":"10",
         "withCapture":"false",
         "payNowIdParam": {
@@ -106,7 +103,6 @@ module.exports = {
         },
         "authHash": hash,
       };
-
 
       const result = await fetch('https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -173,6 +169,73 @@ module.exports = {
       }
       return chargeResultWithOrder;
     }
+
+    const createOrder = async function() {
+      orderInputs = {
+        DateStart: validatedCart.timePeriod.DateStart,
+        DateEnd: validatedCart.timePeriod.DateEnd,
+        DaysOfUse: validatedCart.timePeriod.DaysOfUse,
+        GuestName: inputs.orderDetails.CustomerName,
+        Reserved: false,
+        Postcode: validateCart.shipping.Postcode,
+        PostcodeRaw: validateCart.shipping.Postcode,
+        AddressLine1: inputs.orderDetails.AddressLine1,
+        AddressLine2: inputs.orderDetails.AddressLine2,
+        AddressLine3: inputs.orderDetails.AddressLine3,
+        Telephone1: inputs.orderDetails.Telephone1,
+        Email1: inputs.orderDetails.Email1,
+        Comment: inputs.orderDetails.Comment,
+        Paid: false,
+        TakuhaiTimeSlot: inputs.orderDetails.TakuhaiTimeSlot,
+        SubTotal: validatedCart.cartTotals.subTotal,
+        TaxTotal: validatedCart.cartTotals.taxTotal,
+        GrandTotal: validatedCart.cartTotals.grandTotal,
+      }
+
+      try {
+        var newRecord = await Order.create(orderInputs).fetch();
+        return newRecord;
+      } catch (err) {
+        console.log(err);
+        return exits.invalid(err);
+      }
+    };
+
+    
+    const validatedCart = this.validateCart(inputs.cart);
+    // check cart is the same when validated
+    if (!_.isEqual(validatedCart, cart)) {
+      return exits.invalid('cart is not equal to what it should be when validated on the api side');
+    }
+
+    // create guest order based on validated cart & input order details
+    // we can add all the order lines etc after the credit card has been applied
+    const createdOrder = await this.createOrder();
+
+    // ADD HERE -> create order lines & transaction lines
+
+    // update of order to paid or deletion of order is handled within this function
+    // so we just need to then add in all the required order lines for the order if the payment 
+    // was successful
+    const chargeCardResult = await this.chargeTheCard(
+      createdOrder.id, 
+      validatedCart.cartTotals.grandTotal
+    );
+
+    // TODO: NEXT STEP
+    // if charge card result is good - add all the order lines and transactions required for the order
+    // actually, we should do this first, becuase if it fails after the charge is made we cant reverse the charge
+    // must charge the card very last as the final part of this whole process
+    // 
+
+
+
+
+    // 1 validate cart -> compare to old cart to check its untampered with
+    // 2 create guest order based on validated cart
+    // 3 use guest order id, order totals, and cc token to make the charge
+    // 4 if it fails, delete the unpaid guest order
+
 
     return exits.success(await returnPayload);
 

@@ -1,5 +1,6 @@
 
 parasails.registerUtility('validateCart', async function convertOrderToCartSyntax(cartToValidate) {
+  console.log('validateCart');
   const cart = cartToValidate;
   // TODO: remove un required cart elements
 
@@ -19,8 +20,15 @@ parasails.registerUtility('validateCart', async function convertOrderToCartSynta
     OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
   }
 
-  newCart = await Cloud.validateCart(..._.values(payload));
+  try {
+    newCart = await Cloud.validateCart(..._.values(payload));
+  } catch (err) {
+    console.log(err);
+    return;
+  }
   // localStorage.setItem('cart', JSON.stringify(newCart));
   // this.newCart = newCart;
+  console.log('cart validated...');
+  console.log(newCart);
   return newCart;
 });
