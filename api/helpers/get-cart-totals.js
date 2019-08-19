@@ -47,7 +47,7 @@ module.exports = {
     // Get cart totals.
     var cartTotals;
 
-    const shippingPrice = inputs.Shipping.pice || 0;
+    const shippingPrice = inputs.Shipping.price || 0;
 
     const itemsCost = _.sum(inputs.Items, (o) => { return o.TotalPriceWithDiscountsAndWash });
 

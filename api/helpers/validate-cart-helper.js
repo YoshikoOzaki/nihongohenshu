@@ -192,8 +192,11 @@ module.exports = {
       shipping: validShipping,
       cartTotals,
       quantityDiscountFactorForFullRacks,
-      OrderIdToIgnore: inputs.OrderIdToIgnore,
     };
+
+    if (inputs.OrderIdToIgnore) {
+      returnCart.OrderIdToIgnore = inputs.OrderIdToIgnore;
+    }
 
     return exits.success(returnCart);
 

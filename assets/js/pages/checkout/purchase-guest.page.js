@@ -255,6 +255,7 @@ parasails.registerPage('purchase-guest', {
       }
       console.log('validatedCart');
       console.log(validatedCart);
+      console.log(cart);
       if (!_.isEqual(validatedCart, cart)) {
         this.syncMessage = '';
         toastr.error('Some cart item availabilities have changed, refresh the cart to see the differences');
@@ -278,7 +279,7 @@ parasails.registerPage('purchase-guest', {
       // validate cart -> compare to old cart to check its untampered with
       // create guest order based on validated cart
       // use guest order id, order totals, and cc token to make the charge
-      // if it fails, delete the unpaid guest order 
+      // if it fails, delete the unpaid guest order
 
 
 

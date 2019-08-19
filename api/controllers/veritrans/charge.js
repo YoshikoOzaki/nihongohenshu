@@ -201,44 +201,145 @@ module.exports = {
       }
     };
 
-    
-    const validatedCart = this.validateCart(inputs.cart);
+    const createOrderItemLines = async function (order, validatedCart) {
+      let itemResults = [];
+      await asyncForEach(validatedCart.items, async (item, i) => {
+        const itemInputs = {
+          Quantity: Number(item.Quantity),
+          UnitPrice: Number(item.UnitPrice),
+          WashAndPolish: Number(item.WashAndPolish),
+          QuantityDiscountFactor: Number(item.QuantityDiscountFactor),
+          TotalPriceWithDiscountsAndWash: Number(item.TotalPriceWithDiscountsAndWash),
+          Product: Number(item.id),
+          Order: Number(order.id),
+        }
+
+        itemResults[i] = await OrderLineNumber.create(itemInputs)
+          .fetch();
+      });
+      return itemResults;
+    };
+
+    const createDeliveryOrderLine = async function (order, validatedCart) {
+      const payload = {
+        Quantity: 1,
+        UnitPrice: Number(validatedCart.shipping.TotalCalculatedDeliveryCharge),
+        Order: Number(order.id),
+        Product: 160,
+        TotalPriceWithDiscountsAndWash: Number(validatedCart.shipping.TotalCalculatedDeliveryCharge),
+      }
+      let delivery = await OrderLineNumber.create(payload).fetch();
+      return delivery;
+    };
+
+    const createReserveOrderTransactionLines = async function (orderLines, order, deliveryOrderLine) {
+      let transactionLines = [];
+      await asyncForEach(orderLines, async (orderLine, i) => {
+        const reserveFromPayload = {
+          OrderNumber: order.id,
+          LineNumber: orderLine.id,
+          TransactionType: 40, // rental order
+          Product: orderLine.Product,
+          Quantity: orderLine.Quantity,
+          UnitPrice: orderLine.UnitPrice,
+          Warehouse: 60,
+          Comment: 'Created from web api',
+          Date: order.DateStart,
+        }
+        const returnPlannedOnPayload = {
+          OrderNumber: order.id,
+          LineNumber: orderLine.id,
+          TransactionType: 44, // return planned
+          Product: orderLine.Product,
+          Quantity: orderLine.Quantity,
+          UnitPrice: orderLine.UnitPrice,
+          Warehouse: 60,
+          Comment: 'Created from web api',
+          Date: order.DateEnd,
+        }
+        transactionLines[i] = {};
+        transactionLines[i] = {
+          reservedFrom: await Transaction.create(reserveFromPayload).fetch(),
+          returnOn: await Transaction.create(returnPlannedOnPayload).fetch(),
+        }
+      });
+      const deliveryPurchasePayload = {
+        OrderNumber: order.id,
+        LineNumber: deliveryOrderLine.id,
+        TransactionType: 60, // delivery cost
+        Product: 160,
+        Quantity: deliveryOrderLine.Quantity,
+        UnitPrice: deliveryOrderLine.UnitPrice,
+        Warehouse: 60,
+        Comment: 'Created from web api',
+      }
+      deliveryTransactionLine = await Transaction.create(deliveryPurchasePayload)
+        .fetch();
+      transactionLines.push(deliveryTransactionLine);
+      return transactionLines;
+    }
+
+    const validatedCart = await validateCart(inputs.cart);
     // check cart is the same when validated
-    if (!_.isEqual(validatedCart, cart)) {
+
+    const cartTotalsEqual = !_.isEqual(validatedCart.cartTotals, inputs.cart.cartTotals);
+    const cartItemsEqual = !_.isEqual(validatedCart.items, inputs.cart.items);
+    const cartDiscountEqual = !_.isEqual(validatedCart.quantityDiscountFactorForFullRacks, inputs.cart.quantityDiscountFactorForFullRacks);
+    const cartShippingEqual = !_.isEqual(validatedCart.shipping, inputs.cart.shipping);
+    const cartTimePeroidEqual = !_.isEqual(validatedCart.timePeriod, inputs.cart.timePeriod);
+
+
+
+    if (
+      !cartTotalsEqual ||
+      !cartItemsEqual ||
+      !cartDiscountEqual ||
+      !cartShippingEqual ||
+      !cartTimePeroidEqual
+    ) {
       return exits.invalid('cart is not equal to what it should be when validated on the api side');
     }
+    // if (validatedCart !== inputs.cart) {
+    //   return exits.invalid('cart is not equal to what it should be when validated on the api side');
+    // }
 
     // create guest order based on validated cart & input order details
     // we can add all the order lines etc after the credit card has been applied
-    const createdOrder = await this.createOrder();
+    const createdOrder = await createOrder();
 
     // ADD HERE -> create order lines & transaction lines
 
-    // update of order to paid or deletion of order is handled within this function
-    // so we just need to then add in all the required order lines for the order if the payment 
-    // was successful
-    const chargeCardResult = await this.chargeTheCard(
-      createdOrder.id, 
+    const createdOrderLines = await createOrderItemLines(createdOrder, validatedCart);
+    const createdDeliveryOrderLine = await createDeliveryOrderLine(createdOrder, validatedCart);
+    const createdOrderTransactionLines = await createReserveOrderTransactionLines(createdOrderLines, createdOrder, createdDeliveryOrderLine);
+
+    const chargeCardResult = await chargeTheCard(
+      createdOrder.id,
       validatedCart.cartTotals.grandTotal
     );
+
+    const combinedResults = {
+      cardCharge: chargeCardResult,
+      order: createdOrder,
+      items: createdOrderLines,
+      delivery: createdDeliveryOrderLine,
+      transactions: createdOrderTransactionLines,
+    };
+
+    return exits.success(combinedResults);
+    // update of order to paid or deletion of order is handled within this function
+    // so we just need to then add in all the required order lines for the order if the payment
+    // was successful
 
     // TODO: NEXT STEP
     // if charge card result is good - add all the order lines and transactions required for the order
     // actually, we should do this first, becuase if it fails after the charge is made we cant reverse the charge
     // must charge the card very last as the final part of this whole process
-    // 
-
-
-
 
     // 1 validate cart -> compare to old cart to check its untampered with
     // 2 create guest order based on validated cart
     // 3 use guest order id, order totals, and cc token to make the charge
     // 4 if it fails, delete the unpaid guest order
-
-
-    return exits.success(await returnPayload);
-
 
     // await vt.transaction.charge(transaction, (err, result) => {
     //   if (err) {
@@ -252,6 +353,5 @@ module.exports = {
     // All done.
     // return exits.success();
   }
-
 
 };
