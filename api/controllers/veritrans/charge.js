@@ -136,10 +136,10 @@ module.exports = {
             OrderNumber: reservedOrderId
           })
           await OrderLineNumber.destroy({
-            Order: inputs.reservedOrderId
+            Order: reservedOrderId
           });
           await Order.destroy({
-            id: inputs.reservedOrderId
+            id: reservedOrderId
           });
         }
       }
