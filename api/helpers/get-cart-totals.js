@@ -47,7 +47,7 @@ module.exports = {
     // Get cart totals.
     var cartTotals;
 
-    const shippingPrice = inputs.Shipping.price || 0;
+    const shippingPrice = inputs.Shipping.Price || 0;
 
     const itemsCost = _.sum(inputs.Items, (o) => { return o.TotalPriceWithDiscountsAndWash });
 
@@ -56,6 +56,7 @@ module.exports = {
     const grandTotal = _.sum([subTotal, taxTotal]);
 
     cartTotals = {
+      shippingTotal: shippingPrice,
       subTotal,
       taxTotal,
       grandTotal,

@@ -71,7 +71,7 @@ module.exports = {
     }
 
     // everything below here is the charge
-    const chargeTheCard = async function (orderId, amount) {
+    const chargeTheCard = async function (orderId, amount, reservedOrderId) {
 
       const fetch = require("node-fetch");
 
@@ -125,21 +125,21 @@ module.exports = {
 
       if (resultJson.result.mstatus === 'success') {
         updatedOrder = await Order.update({
-          id: inputs.orderId,
+          id: orderId,
         }).set({
           Paid: true,
         }).fetch();
 
         // delete any old reserve order as the new order replaces it
-        if (inputs.reserveOrderId) {
+        if (reservedOrderId) {
           await Transaction.destroy({
-            OrderNumber: inputs.reserveOrderId
+            OrderNumber: reservedOrderId
           })
           await OrderLineNumber.destroy({
-            Order: inputs.reserveOrderId
+            Order: inputs.reservedOrderId
           });
           await Order.destroy({
-            id: inputs.reserveOrderId
+            id: inputs.reservedOrderId
           });
         }
       }
@@ -147,13 +147,13 @@ module.exports = {
       if (resultJson.result.mstatus === 'failure') {
         // delete the newly unpaid order as it no longer matters
         await Transaction.destroy({
-          OrderNumber: inputs.orderId
+          OrderNumber: orderId
         });
         await OrderLineNumber.destroy({
-          Order: inputs.orderId,
+          Order: orderId,
         });
         await Order.destroy({
-          id: inputs.orderId
+          id: orderId
         });
       }
 
@@ -163,7 +163,7 @@ module.exports = {
         },
         order: {
           ...await Order.findOne({
-            id: inputs.orderId,
+            id: orderId,
           }).populate('TakuhaiTimeSlot'),
         }
       }
@@ -177,8 +177,8 @@ module.exports = {
         DaysOfUse: validatedCart.timePeriod.DaysOfUse,
         GuestName: inputs.orderDetails.CustomerName,
         Reserved: false,
-        Postcode: validateCart.shipping.Postcode,
-        PostcodeRaw: validateCart.shipping.Postcode,
+        Postcode: validatedCart.shipping.Postcode,
+        PostcodeRaw: validatedCart.shipping.Postcode,
         AddressLine1: inputs.orderDetails.AddressLine1,
         AddressLine2: inputs.orderDetails.AddressLine2,
         AddressLine3: inputs.orderDetails.AddressLine3,
@@ -282,13 +282,12 @@ module.exports = {
     const validatedCart = await validateCart(inputs.cart);
     // check cart is the same when validated
 
-    const cartTotalsEqual = !_.isEqual(validatedCart.cartTotals, inputs.cart.cartTotals);
-    const cartItemsEqual = !_.isEqual(validatedCart.items, inputs.cart.items);
-    const cartDiscountEqual = !_.isEqual(validatedCart.quantityDiscountFactorForFullRacks, inputs.cart.quantityDiscountFactorForFullRacks);
-    const cartShippingEqual = !_.isEqual(validatedCart.shipping, inputs.cart.shipping);
-    const cartTimePeroidEqual = !_.isEqual(validatedCart.timePeriod, inputs.cart.timePeriod);
-
-
+    const cartTotalsEqual = _.isEqual(validatedCart.cartTotals, inputs.cart.cartTotals);
+    const cartItemsEqual = _.isEqual(validatedCart.items, inputs.cart.items);
+    const cartDiscountEqual = _.isEqual(validatedCart.quantityDiscountFactorForFullRacks, inputs.cart.quantityDiscountFactorForFullRacks);
+    const cartShippingEqual = _.isEqual(_.without(validatedCart.shipping, 'ShippingFactorRecord'), _.without(inputs.cart.shipping, 'ShippingFactorRecord'));
+    // const cartShippingFactorRecordEqual = _.isEqual(validatedCart.shipping.ShippingFactorRecord, inputs.cart.shipping.ShippingFactorRecord);
+    const cartTimePeroidEqual = _.isEqual(validatedCart.timePeriod, inputs.cart.timePeriod);
 
     if (
       !cartTotalsEqual ||
@@ -315,7 +314,8 @@ module.exports = {
 
     const chargeCardResult = await chargeTheCard(
       createdOrder.id,
-      validatedCart.cartTotals.grandTotal
+      validatedCart.cartTotals.grandTotal,
+      inputs.cart.OrderIdToIgnore
     );
 
     const combinedResults = {

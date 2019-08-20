@@ -174,7 +174,8 @@
                   <div>
                     <div class="text-right">
                       <h5>Shipping</h5>
-                        ¥ {{cart.shipping && cart.shipping.Price && cart.shipping.Price.toLocaleString() || 0}}
+                        <!-- ¥ {{cart.shipping && cart.shipping.Price && cart.shipping.Price.toLocaleString() || 0}} -->
+                        ¥ {{cart.cartTotals && cart.cartTotals.shippingTotal && cart.cartTotals.shippingTotal.toLocaleString() || 0}}
                       <hr />
                       <h5>Sub Total</h5>
                         <!-- ¥ {{subTotal && subTotal.toLocaleString()}} -->
