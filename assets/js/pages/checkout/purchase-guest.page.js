@@ -68,6 +68,7 @@ parasails.registerPage('purchase-guest', {
     },
 
     createGuestOrder: async function() {
+      // move this to api
       this.syncMessage = "Creating Order...";
       const cart = await parasails.util.getCart();
       // need to add address to the order
@@ -155,7 +156,7 @@ parasails.registerPage('purchase-guest', {
       // cant just use the cart details -> they need to be validated
       const cart = await parasails.util.getCart();
 
-      const orderPayload = {
+      const orderDetails = {
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
         DaysOfUse: cart.timePeriod.DaysOfUse,
@@ -178,7 +179,7 @@ parasails.registerPage('purchase-guest', {
       chargePayload = {
         token: token.token,
         cart,
-        orderPayload,
+        orderDetails,
 
         // ** WIP - use these three to process the order
 
@@ -233,7 +234,7 @@ parasails.registerPage('purchase-guest', {
     },
 
     submitReserveOrder: async function() {
-
+      console.log('submit');
       // check cart has some items
       const cart = await parasails.util.getCart();
       const cartAvailableItems = _.filter(cart.items, (o) => {
@@ -245,7 +246,16 @@ parasails.registerPage('purchase-guest', {
       }
 
       // validate the cart on the frontend side
-      const validatedCart = await this.parasails.util.validateCart(cart);
+      console.log('pre validate cart');
+      let validatedCart;
+      try {
+        validatedCart = await parasails.util.validateCart(cart);
+      } catch (err) {
+        console.log(err);
+      }
+      console.log('validatedCart');
+      console.log(validatedCart);
+      console.log(cart);
       if (!_.isEqual(validatedCart, cart)) {
         this.syncMessage = '';
         toastr.error('Some cart item availabilities have changed, refresh the cart to see the differences');
@@ -269,8 +279,13 @@ parasails.registerPage('purchase-guest', {
       // validate cart -> compare to old cart to check its untampered with
       // create guest order based on validated cart
       // use guest order id, order totals, and cc token to make the charge
-      // if it fails, delete the unpaid guest order 
+      // if it fails, delete the unpaid guest order
+
+
+
+
       const chargeCardResult = await this.chargeCard(ccToken);
+      //const chargeCardResult = await this.charge(ccToken, cart, orderDetails);
 
       if (chargeCardResult.charge.result.mstatus === 'failure') {
         toastr.error('Credit Card Error ' + chargeCardResult.charge.result.merrMsg);
@@ -292,6 +307,9 @@ parasails.registerPage('purchase-guest', {
     handleParsingReserveForm: function() {
       // dont make this async or it will fuck up the ajax form
       // Clear out any pre-existing error messages.
+
+      console.log('handleParsingReserveForm');
+
       this.formErrors = {};
 
       var argins = this.formData;

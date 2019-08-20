@@ -28,14 +28,25 @@ module.exports = {
     },
 
     QuantityDiscountFactor: {
-      type: 'string',
+      type: 'number',
+      description: 'The more items entered the bigger the discount, comes from api calculation',
+    },
+
+    TotalPriceRaw: {
+      type: 'number',
       description: 'The more items entered the bigger the discount, comes from api calculation',
     },
 
     TotalPriceWithDiscountsAndWash: {
       type: 'number',
       description: 'The price of the item when the order was made - '
-      + 'non compulsary as some order lines do other things',
+        + 'non compulsary as some order lines do other things',
+    },
+
+    TotalWashingCost: {
+      type: 'number',
+      description: 'The price of the item when the order was made - '
+        + 'non compulsary as some order lines do other things',
     },
 
     Product: {

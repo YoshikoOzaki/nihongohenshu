@@ -57,11 +57,6 @@ module.exports = {
       }
     }
 
-    // validate cart -> compare to old cart to check its untampered with
-    // create guest order based on validated cart
-    // use guest order id, order totals, and cc token to make the charge
-    // if it fails, delete the unpaid guest order
-
     const validateCart = async function (cartToValidate) {
       const cart = cartToValidate;
       const payload = {
@@ -72,10 +67,12 @@ module.exports = {
       }
 
       const validatedCart = await sails.helpers.validateCartHelper(..._.values(payload));
+      return validatedCart;
     }
 
     // everything below here is the charge
-    const chargeTheCard = async function () {
+    const chargeTheCard = async function (orderId, amount, reservedOrderId) {
+
       const fetch = require("node-fetch");
 
       const ccid = "A100000000000001069951cc";
@@ -83,8 +80,8 @@ module.exports = {
       // TODO: remove the math floor number here for prod
       // it's here because the cc people deny you if you pay for the same order number twice
       const req = {
-        "orderId": Math.floor(Math.random() * 100) + inputs.orderId + 10012,
-        "amount": Math.round(inputs.amount),
+        "orderId": Math.floor(Math.random() * 100) + orderId + 10012,
+        "amount": Math.round(amount),
         "jpo":"10",
         "withCapture":"false",
         "payNowIdParam": {
@@ -107,7 +104,6 @@ module.exports = {
         "authHash": hash,
       };
 
-
       const result = await fetch('https://api.veritrans.co.jp:443/test-paynow/v2/Authorize/card', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         // mode: 'no-cors', // no-cors, cors, *same-origin
@@ -129,21 +125,21 @@ module.exports = {
 
       if (resultJson.result.mstatus === 'success') {
         updatedOrder = await Order.update({
-          id: inputs.orderId,
+          id: orderId,
         }).set({
           Paid: true,
         }).fetch();
 
         // delete any old reserve order as the new order replaces it
-        if (inputs.reserveOrderId) {
+        if (reservedOrderId) {
           await Transaction.destroy({
-            OrderNumber: inputs.reserveOrderId
+            OrderNumber: reservedOrderId
           })
           await OrderLineNumber.destroy({
-            Order: inputs.reserveOrderId
+            Order: inputs.reservedOrderId
           });
           await Order.destroy({
-            id: inputs.reserveOrderId
+            id: inputs.reservedOrderId
           });
         }
       }
@@ -151,13 +147,13 @@ module.exports = {
       if (resultJson.result.mstatus === 'failure') {
         // delete the newly unpaid order as it no longer matters
         await Transaction.destroy({
-          OrderNumber: inputs.orderId
+          OrderNumber: orderId
         });
         await OrderLineNumber.destroy({
-          Order: inputs.orderId,
+          Order: orderId,
         });
         await Order.destroy({
-          id: inputs.orderId
+          id: orderId
         });
       }
 
@@ -167,15 +163,183 @@ module.exports = {
         },
         order: {
           ...await Order.findOne({
-            id: inputs.orderId,
+            id: orderId,
           }).populate('TakuhaiTimeSlot'),
         }
       }
       return chargeResultWithOrder;
     }
 
-    return exits.success(await returnPayload);
+    const createOrder = async function() {
+      orderInputs = {
+        DateStart: validatedCart.timePeriod.DateStart,
+        DateEnd: validatedCart.timePeriod.DateEnd,
+        DaysOfUse: validatedCart.timePeriod.DaysOfUse,
+        GuestName: inputs.orderDetails.CustomerName,
+        Reserved: false,
+        Postcode: validatedCart.shipping.Postcode,
+        PostcodeRaw: validatedCart.shipping.Postcode,
+        AddressLine1: inputs.orderDetails.AddressLine1,
+        AddressLine2: inputs.orderDetails.AddressLine2,
+        AddressLine3: inputs.orderDetails.AddressLine3,
+        Telephone1: inputs.orderDetails.Telephone1,
+        Email1: inputs.orderDetails.Email1,
+        Comment: inputs.orderDetails.Comment,
+        Paid: false,
+        TakuhaiTimeSlot: inputs.orderDetails.TakuhaiTimeSlot,
+        SubTotal: validatedCart.cartTotals.subTotal,
+        TaxTotal: validatedCart.cartTotals.taxTotal,
+        GrandTotal: validatedCart.cartTotals.grandTotal,
+      }
 
+      try {
+        var newRecord = await Order.create(orderInputs).fetch();
+        return newRecord;
+      } catch (err) {
+        console.log(err);
+        return exits.invalid(err);
+      }
+    };
+
+    const createOrderItemLines = async function (order, validatedCart) {
+      let itemResults = [];
+      await asyncForEach(validatedCart.items, async (item, i) => {
+        const itemInputs = {
+          Quantity: Number(item.Quantity),
+          UnitPrice: Number(item.UnitPrice),
+          WashAndPolish: Number(item.WashAndPolish),
+          QuantityDiscountFactor: Number(item.QuantityDiscountFactor),
+          TotalPriceWithDiscountsAndWash: Number(item.TotalPriceWithDiscountsAndWash),
+          Product: Number(item.id),
+          Order: Number(order.id),
+        }
+
+        itemResults[i] = await OrderLineNumber.create(itemInputs)
+          .fetch();
+      });
+      return itemResults;
+    };
+
+    const createDeliveryOrderLine = async function (order, validatedCart) {
+      const payload = {
+        Quantity: 1,
+        UnitPrice: Number(validatedCart.shipping.TotalCalculatedDeliveryCharge),
+        Order: Number(order.id),
+        Product: 160,
+        TotalPriceWithDiscountsAndWash: Number(validatedCart.shipping.TotalCalculatedDeliveryCharge),
+      }
+      let delivery = await OrderLineNumber.create(payload).fetch();
+      return delivery;
+    };
+
+    const createReserveOrderTransactionLines = async function (orderLines, order, deliveryOrderLine) {
+      let transactionLines = [];
+      await asyncForEach(orderLines, async (orderLine, i) => {
+        const reserveFromPayload = {
+          OrderNumber: order.id,
+          LineNumber: orderLine.id,
+          TransactionType: 40, // rental order
+          Product: orderLine.Product,
+          Quantity: orderLine.Quantity,
+          UnitPrice: orderLine.UnitPrice,
+          Warehouse: 60,
+          Comment: 'Created from web api',
+          Date: order.DateStart,
+        }
+        const returnPlannedOnPayload = {
+          OrderNumber: order.id,
+          LineNumber: orderLine.id,
+          TransactionType: 44, // return planned
+          Product: orderLine.Product,
+          Quantity: orderLine.Quantity,
+          UnitPrice: orderLine.UnitPrice,
+          Warehouse: 60,
+          Comment: 'Created from web api',
+          Date: order.DateEnd,
+        }
+        transactionLines[i] = {};
+        transactionLines[i] = {
+          reservedFrom: await Transaction.create(reserveFromPayload).fetch(),
+          returnOn: await Transaction.create(returnPlannedOnPayload).fetch(),
+        }
+      });
+      const deliveryPurchasePayload = {
+        OrderNumber: order.id,
+        LineNumber: deliveryOrderLine.id,
+        TransactionType: 60, // delivery cost
+        Product: 160,
+        Quantity: deliveryOrderLine.Quantity,
+        UnitPrice: deliveryOrderLine.UnitPrice,
+        Warehouse: 60,
+        Comment: 'Created from web api',
+      }
+      deliveryTransactionLine = await Transaction.create(deliveryPurchasePayload)
+        .fetch();
+      transactionLines.push(deliveryTransactionLine);
+      return transactionLines;
+    }
+
+    const validatedCart = await validateCart(inputs.cart);
+    // check cart is the same when validated
+
+    const cartTotalsEqual = _.isEqual(validatedCart.cartTotals, inputs.cart.cartTotals);
+    const cartItemsEqual = _.isEqual(validatedCart.items, inputs.cart.items);
+    const cartDiscountEqual = _.isEqual(validatedCart.quantityDiscountFactorForFullRacks, inputs.cart.quantityDiscountFactorForFullRacks);
+    const cartShippingEqual = _.isEqual(_.without(validatedCart.shipping, 'ShippingFactorRecord'), _.without(inputs.cart.shipping, 'ShippingFactorRecord'));
+    // const cartShippingFactorRecordEqual = _.isEqual(validatedCart.shipping.ShippingFactorRecord, inputs.cart.shipping.ShippingFactorRecord);
+    const cartTimePeroidEqual = _.isEqual(validatedCart.timePeriod, inputs.cart.timePeriod);
+
+    if (
+      !cartTotalsEqual ||
+      !cartItemsEqual ||
+      !cartDiscountEqual ||
+      !cartShippingEqual ||
+      !cartTimePeroidEqual
+    ) {
+      return exits.invalid('cart is not equal to what it should be when validated on the api side');
+    }
+    // if (validatedCart !== inputs.cart) {
+    //   return exits.invalid('cart is not equal to what it should be when validated on the api side');
+    // }
+
+    // create guest order based on validated cart & input order details
+    // we can add all the order lines etc after the credit card has been applied
+    const createdOrder = await createOrder();
+
+    // ADD HERE -> create order lines & transaction lines
+
+    const createdOrderLines = await createOrderItemLines(createdOrder, validatedCart);
+    const createdDeliveryOrderLine = await createDeliveryOrderLine(createdOrder, validatedCart);
+    const createdOrderTransactionLines = await createReserveOrderTransactionLines(createdOrderLines, createdOrder, createdDeliveryOrderLine);
+
+    const chargeCardResult = await chargeTheCard(
+      createdOrder.id,
+      validatedCart.cartTotals.grandTotal,
+      inputs.cart.OrderIdToIgnore
+    );
+
+    const combinedResults = {
+      cardCharge: chargeCardResult,
+      order: createdOrder,
+      items: createdOrderLines,
+      delivery: createdDeliveryOrderLine,
+      transactions: createdOrderTransactionLines,
+    };
+
+    return exits.success(combinedResults);
+    // update of order to paid or deletion of order is handled within this function
+    // so we just need to then add in all the required order lines for the order if the payment
+    // was successful
+
+    // TODO: NEXT STEP
+    // if charge card result is good - add all the order lines and transactions required for the order
+    // actually, we should do this first, becuase if it fails after the charge is made we cant reverse the charge
+    // must charge the card very last as the final part of this whole process
+
+    // 1 validate cart -> compare to old cart to check its untampered with
+    // 2 create guest order based on validated cart
+    // 3 use guest order id, order totals, and cc token to make the charge
+    // 4 if it fails, delete the unpaid guest order
 
     // await vt.transaction.charge(transaction, (err, result) => {
     //   if (err) {
@@ -189,6 +353,5 @@ module.exports = {
     // All done.
     // return exits.success();
   }
-
 
 };
