@@ -31,6 +31,8 @@ parasails.registerPage('purchase-guest', {
   },
 
   updated: async function() {
+    console.log('test');
+    console.log('test');
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
@@ -170,7 +172,7 @@ parasails.registerPage('purchase-guest', {
       };
 
       try {
-        const chargeResult = await Cloud.chargeGuest(..._.values(chargePayload));
+        const chargeResult = await Cloud.charge(..._.values(chargePayload));
         return chargeResult;
       } catch (err) {
         toastr.error(err);
@@ -249,21 +251,21 @@ parasails.registerPage('purchase-guest', {
 
       // charge the card -> includes building and managing the created order
       const chargeCardResult = await this.chargeCard(ccToken);
+      console.log(chargeCardResult.cardCharge.charge.result.mstatus);
 
-      if (chargeCardResult.charge.result.mstatus === 'failure') {
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'failure') {
         this.syncMessage = '';
-        toastr.error('Credit Card Error ' + chargeCardResult.charge.result.merrMsg);
+        toastr.error('Credit Card Error ' + chargeCardResult.cardCharge.charge.result.merrMsg);
       }
 
-      if (chargeCardResult.charge.result.mstatus === 'success') {
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'success') {
         this.syncMessage = '';
-        toastr.success('Order Created ' + chargeCardResult.charge.result.merrMsg);
+        toastr.success('Order Created ' + chargeCardResult.cardCharge.charge.result.merrMsg);
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
+
         await parasails.util.clearCart();
         window.location = '/checkout/purchase-confirmation'
       }
-
-      this.syncMessage = '';
     },
 
     handleParsingReserveForm: function() {

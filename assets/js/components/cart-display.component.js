@@ -151,6 +151,9 @@ parasails.registerComponent('cartDisplay', {
           <h6>Totals</h6>
         </div>
         <div class="text-right">
+          <h5>Items</h5>
+            ¥ {{cart.cartTotals && cart.cartTotals.cartItemsTotal && cart.cartTotals.cartItemsTotal.toLocaleString() || 0}}
+          <hr />
           <h5>Shipping</h5>
             ¥ {{cart.cartTotals && cart.cartTotals.shippingTotal && cart.cartTotals.shippingTotal.toLocaleString() || 0}}
           <hr />

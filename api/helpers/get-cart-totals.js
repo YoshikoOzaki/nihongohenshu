@@ -57,6 +57,7 @@ module.exports = {
 
     cartTotals = {
       shippingTotal: shippingPrice,
+      cartItemsTotal: itemsCost,
       subTotal,
       taxTotal,
       grandTotal,
