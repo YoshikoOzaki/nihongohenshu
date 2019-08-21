@@ -44,6 +44,7 @@
     "@vue/test-utils": "^1.0.0-beta.29",
     "expect": "^24.8.0",
     "grunt": "1.0.1",
+    "grunt-sync": "0.8.1",
     "jsdom": "^15.1.1",
     "jsdom-global": "^3.0.2",
     "mocha": "^6.1.4",
