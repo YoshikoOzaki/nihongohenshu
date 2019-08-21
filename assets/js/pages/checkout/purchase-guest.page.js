@@ -31,12 +31,8 @@ parasails.registerPage('purchase-guest', {
   },
 
   updated: async function() {
-    const cart = this.cart;
-    const taxRate = await Cloud.getConsumptionTaxRate();
-
-    this.subTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0);
-    this.taxTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0) * taxRate;
-    this.grandTotal = (this.subTotal + this.taxTotal);
+    console.log('test');
+    console.log('test');
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
@@ -142,18 +138,10 @@ parasails.registerPage('purchase-guest', {
       .then(async function(response) {
         return response.json();
       })
-
-      // console.log('token: ' + JSON.stringify(tokenObj) );
       return tokenObj;
     },
 
     chargeCard: async function(token) {
-      // maybe i create and delete the order in here
-      // pass in the order and the charge that needs to be made
-      // create -> charge -> delete
-      // no this should all be done on the api...
-      this.syncMessage = "Charging Credit Card...";
-      // cant just use the cart details -> they need to be validated
       const cart = await parasails.util.getCart();
 
       const orderDetails = {
@@ -180,12 +168,7 @@ parasails.registerPage('purchase-guest', {
         token: token.token,
         cart,
         orderDetails,
-
-        // ** WIP - use these three to process the order
-
-        // orderId: orderId,
-        // amount: this.grandTotal,
-        // reserveOrderId: cart.orderIdToIgnore,
+        isMemberOrder: false,
       };
 
       try {
@@ -209,8 +192,6 @@ parasails.registerPage('purchase-guest', {
             ...cart.timePeriod,
             OrderIdToIgnore: cart.orderIdToIgnore,
           }
-          // TODO: need to add order to ignore if it exists in the cart
-          // so it doesn't double check items
           result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
           return result;
         };
@@ -220,6 +201,7 @@ parasails.registerPage('purchase-guest', {
           newCartItems.push(result);
         });
       }
+
       // check if any have changed from available status to not available
       const changedAvailabilites = [];
       _.forEach(cart.items, (o, i) => {
@@ -234,8 +216,8 @@ parasails.registerPage('purchase-guest', {
     },
 
     submitReserveOrder: async function() {
-      console.log('submit');
       // check cart has some items
+      this.syncMessage = 'Validating Cart Items';
       const cart = await parasails.util.getCart();
       const cartAvailableItems = _.filter(cart.items, (o) => {
         return o.Available.available === 'Available';
@@ -246,16 +228,12 @@ parasails.registerPage('purchase-guest', {
       }
 
       // validate the cart on the frontend side
-      console.log('pre validate cart');
       let validatedCart;
       try {
         validatedCart = await parasails.util.validateCart(cart);
       } catch (err) {
         console.log(err);
       }
-      console.log('validatedCart');
-      console.log(validatedCart);
-      console.log(cart);
       if (!_.isEqual(validatedCart, cart)) {
         this.syncMessage = '';
         toastr.error('Some cart item availabilities have changed, refresh the cart to see the differences');
@@ -263,53 +241,34 @@ parasails.registerPage('purchase-guest', {
       }
 
       // get cc token
+      this.syncMessage = 'Processing Credit Card Payment';
       const ccToken = await this.getToken();
       if (ccToken.status === 'failure') {
         toastr.error(ccToken.message);
+        this.syncMessage = '';
         return;
       }
 
-      // migrate everything below here to api *****
-
-      // create an unpaid order
-      // const guestOrder = await this.createGuestOrder();
-
-      // charge card and update order to paid
-
-      // validate cart -> compare to old cart to check its untampered with
-      // create guest order based on validated cart
-      // use guest order id, order totals, and cc token to make the charge
-      // if it fails, delete the unpaid guest order
-
-
-
-
+      // charge the card -> includes building and managing the created order
       const chargeCardResult = await this.chargeCard(ccToken);
-      //const chargeCardResult = await this.charge(ccToken, cart, orderDetails);
+      console.log(chargeCardResult.cardCharge.charge.result.mstatus);
 
-      if (chargeCardResult.charge.result.mstatus === 'failure') {
-        toastr.error('Credit Card Error ' + chargeCardResult.charge.result.merrMsg);
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'failure') {
+        this.syncMessage = '';
+        toastr.error('Credit Card Error ' + chargeCardResult.cardCharge.charge.result.merrMsg);
       }
 
-      if (chargeCardResult.charge.result.mstatus === 'success') {
-        toastr.success('Order Created ' + chargeCardResult.charge.result.merrMsg);
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'success') {
+        this.syncMessage = '';
+        toastr.success('Order Created ' + chargeCardResult.cardCharge.charge.result.merrMsg);
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
-        // window.location = order-confirmation
 
-        // turn on for production
-        // await parasails.util.clearCart();
-        //window.location = '/checkout/purchase-confirmation'
+        await parasails.util.clearCart();
+        window.location = '/checkout/purchase-confirmation'
       }
-
-      this.syncMessage = '';
     },
 
     handleParsingReserveForm: function() {
-      // dont make this async or it will fuck up the ajax form
-      // Clear out any pre-existing error messages.
-
-      console.log('handleParsingReserveForm');
-
       this.formErrors = {};
 
       var argins = this.formData;

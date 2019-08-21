@@ -23,6 +23,11 @@ module.exports = {
       type: {},
       required: true,
       description: 'All the details of the order',
+    },
+    isMemberOrder: {
+      type: 'boolean',
+      required: true,
+      description: 'Is the user creating this order a member?'
     }
 
     // generate the below from validating cart and creating a guest order
@@ -171,25 +176,50 @@ module.exports = {
     }
 
     const createOrder = async function() {
-      orderInputs = {
-        DateStart: validatedCart.timePeriod.DateStart,
-        DateEnd: validatedCart.timePeriod.DateEnd,
-        DaysOfUse: validatedCart.timePeriod.DaysOfUse,
-        GuestName: inputs.orderDetails.CustomerName,
-        Reserved: false,
-        Postcode: validatedCart.shipping.Postcode,
-        PostcodeRaw: validatedCart.shipping.Postcode,
-        AddressLine1: inputs.orderDetails.AddressLine1,
-        AddressLine2: inputs.orderDetails.AddressLine2,
-        AddressLine3: inputs.orderDetails.AddressLine3,
-        Telephone1: inputs.orderDetails.Telephone1,
-        Email1: inputs.orderDetails.Email1,
-        Comment: inputs.orderDetails.Comment,
-        Paid: false,
-        TakuhaiTimeSlot: inputs.orderDetails.TakuhaiTimeSlot,
-        SubTotal: validatedCart.cartTotals.subTotal,
-        TaxTotal: validatedCart.cartTotals.taxTotal,
-        GrandTotal: validatedCart.cartTotals.grandTotal,
+      if (!inputs.isMemberOrder) {
+        orderInputs = {
+          DateStart: validatedCart.timePeriod.DateStart,
+          DateEnd: validatedCart.timePeriod.DateEnd,
+          DaysOfUse: validatedCart.timePeriod.DaysOfUse,
+          GuestName: inputs.orderDetails.CustomerName,
+          Reserved: false,
+          Postcode: validatedCart.shipping.Postcode,
+          PostcodeRaw: validatedCart.shipping.Postcode,
+          AddressLine1: inputs.orderDetails.AddressLine1,
+          AddressLine2: inputs.orderDetails.AddressLine2,
+          AddressLine3: inputs.orderDetails.AddressLine3,
+          Telephone1: inputs.orderDetails.Telephone1,
+          Email1: inputs.orderDetails.Email1,
+          Comment: inputs.orderDetails.Comment,
+          Paid: false,
+          TakuhaiTimeSlot: inputs.orderDetails.TakuhaiTimeSlot,
+          SubTotal: validatedCart.cartTotals.subTotal,
+          TaxTotal: validatedCart.cartTotals.taxTotal,
+          GrandTotal: validatedCart.cartTotals.grandTotal,
+        }
+      }
+      if (inputs.isMemberOrder) {
+        orderInputs = {
+          User: inputs.orderDetails.User,
+          DateStart: validatedCart.timePeriod.DateStart,
+          DateEnd: validatedCart.timePeriod.DateEnd,
+          DaysOfUse: validatedCart.timePeriod.DaysOfUse,
+          GuestName: inputs.orderDetails.CustomerName,
+          Reserved: false,
+          Postcode: validatedCart.shipping.Postcode,
+          PostcodeRaw: validatedCart.shipping.Postcode,
+          AddressLine1: inputs.orderDetails.AddressLine1,
+          AddressLine2: inputs.orderDetails.AddressLine2,
+          AddressLine3: inputs.orderDetails.AddressLine3,
+          Telephone1: inputs.orderDetails.Telephone1,
+          Email1: inputs.orderDetails.Email1,
+          Comment: inputs.orderDetails.Comment,
+          Paid: false,
+          TakuhaiTimeSlot: inputs.orderDetails.TakuhaiTimeSlot,
+          SubTotal: validatedCart.cartTotals.subTotal,
+          TaxTotal: validatedCart.cartTotals.taxTotal,
+          GrandTotal: validatedCart.cartTotals.grandTotal,
+        }
       }
 
       try {
@@ -298,15 +328,8 @@ module.exports = {
     ) {
       return exits.invalid('cart is not equal to what it should be when validated on the api side');
     }
-    // if (validatedCart !== inputs.cart) {
-    //   return exits.invalid('cart is not equal to what it should be when validated on the api side');
-    // }
 
-    // create guest order based on validated cart & input order details
-    // we can add all the order lines etc after the credit card has been applied
     const createdOrder = await createOrder();
-
-    // ADD HERE -> create order lines & transaction lines
 
     const createdOrderLines = await createOrderItemLines(createdOrder, validatedCart);
     const createdDeliveryOrderLine = await createDeliveryOrderLine(createdOrder, validatedCart);
@@ -327,31 +350,6 @@ module.exports = {
     };
 
     return exits.success(combinedResults);
-    // update of order to paid or deletion of order is handled within this function
-    // so we just need to then add in all the required order lines for the order if the payment
-    // was successful
-
-    // TODO: NEXT STEP
-    // if charge card result is good - add all the order lines and transactions required for the order
-    // actually, we should do this first, becuase if it fails after the charge is made we cant reverse the charge
-    // must charge the card very last as the final part of this whole process
-
-    // 1 validate cart -> compare to old cart to check its untampered with
-    // 2 create guest order based on validated cart
-    // 3 use guest order id, order totals, and cc token to make the charge
-    // 4 if it fails, delete the unpaid guest order
-
-    // await vt.transaction.charge(transaction, (err, result) => {
-    //   if (err) {
-    //     console.error(err.response.error);
-    //     // return res.redirect('/pay/error');
-    //     return exits.invalid(err);
-    //   }
-    //   return exits.success(result);
-    // });
-
-    // All done.
-    // return exits.success();
   }
 
 };
