@@ -114,11 +114,16 @@ module.exports = {
       description: 'Links order to a time slot, not required for all orders as some use other delivery methods'
     },
 
+    ItemsTotal: {
+      type: 'number',
+      description: 'The total before tax'
+    },
+
     SubTotal : {
       type: 'number',
       description: 'The total before tax'
     },
-    
+
     TaxTotal : {
       type: 'number',
       description: 'The total tax'
