@@ -6,7 +6,7 @@
       </div>
       <div class="col-sm-9"><hr />
         <div class="row">
-          <div class="col-md-12" v-if="cart.quantityDiscountFactorForFullRacks">
+          <div class="col-md-12" v-if="cart.quantityDiscountFactorForFullRacks && cart.quantityDiscountFactorForFullRacks.discountFactor !== 0">
             Current Discount Factor : {{(100 - (cart.quantityDiscountFactorForFullRacks.discountFactor * 100)).toFixed(2)}}%
           </div>
         </div>

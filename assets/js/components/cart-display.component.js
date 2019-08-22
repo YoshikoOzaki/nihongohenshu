@@ -217,42 +217,93 @@ parasails.registerComponent('cartDisplay', {
       }
     },
 
-    checkAllCartAvailability: async function() {
-      const newCartItems = [];
-      const cart = await parasails.util.getCart();
-      this.syncMessage = "Checking Cart Items... " + "0/" + cart.items.length;
-      if (cart.items && cart.items.length > 0) {
-        const checkCartItemAvailable = async function(item) {
-          const dataWithTimePeriod = {
-            Id: item.id,
-            Quantity: item.Quantity,
-            ...cart.timePeriod,
-            OrderIdToIgnore: cart.orderIdToIgnore,
-          }
-          // TODO: need to add order to ignore if it exists so it doesn't double check items
-          result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-          return result;
-        };
-        await this.asyncForEach(cart.items, async (o, i) => {
-          this.syncMessage = "Checking Cart Items... " + (i+1) +"/" + cart.items.length;
-          const result = await checkCartItemAvailable(o);
-          newCartItems.push(result);
-        });
-      }
-      if (_.isEqual(newCartItems, cart.items)) {
-        this.syncMessage = "";
-        toastr.success('Cart remains the same');
-        return
+    validateCart: async function(cartToValidate) {
+      const cart = cartToValidate;
+      // TODO: remove un required cart elements
+
+      if (
+        cart.timePeriod === undefined ||
+        cart.items === undefined ||
+        cart.shipping === undefined
+      ) {
+        toastr.error('Could not validate cart');
+        return;
       }
 
-      const newCart = {
-        ...cart,
-        items: newCartItems,
-      };
-      await localStorage.setItem('cart', JSON.stringify(newCart));
-      this.$emit('cart-updated');
-      toastr.success('Cart has been updated');
-      this.syncMessage = "";
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: cart.items,
+        shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore,
+      }
+
+      try {
+        newCart = await Cloud.validateCart(..._.values(payload));
+        localStorage.setItem('cart', JSON.stringify(newCart));
+      } catch (err) {
+        return err;
+      }
     },
+    
+    checkAllCartAvailability: async function() {
+      this.syncMessage = 'Validating cart';
+
+      const cart = await parasails.util.getCart();
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: cart.items,
+        shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
+      }
+      try {
+        await this.validateCart(payload);
+        toastr.success('Cart has been updated');
+        this.syncing = false;
+        this.syncMessage = '';
+      } catch (err) {
+        console.log(err);
+        toastr.error('Cart could not be updated');
+        this.syncing = false;
+        this.syncMessage = '';
+      }
+    },
+
+    // checkAllCartAvailability: async function() {
+    //   const newCartItems = [];
+    //   const cart = await parasails.util.getCart();
+    //   this.syncMessage = "Checking Cart Items... " + "0/" + cart.items.length;
+    //   if (cart.items && cart.items.length > 0) {
+    //     const checkCartItemAvailable = async function(item) {
+    //       const dataWithTimePeriod = {
+    //         Id: item.id,
+    //         Quantity: item.Quantity,
+    //         ...cart.timePeriod,
+    //         OrderIdToIgnore: cart.orderIdToIgnore,
+    //       }
+    //       // TODO: need to add order to ignore if it exists so it doesn't double check items
+    //       result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
+    //       return result;
+    //     };
+    //     await this.asyncForEach(cart.items, async (o, i) => {
+    //       this.syncMessage = "Checking Cart Items... " + (i+1) +"/" + cart.items.length;
+    //       const result = await checkCartItemAvailable(o);
+    //       newCartItems.push(result);
+    //     });
+    //   }
+    //   if (_.isEqual(newCartItems, cart.items)) {
+    //     this.syncMessage = "";
+    //     toastr.success('Cart remains the same');
+    //     return
+    //   }
+
+    //   const newCart = {
+    //     ...cart,
+    //     items: newCartItems,
+    //   };
+    //   await localStorage.setItem('cart', JSON.stringify(newCart));
+    //   this.$emit('cart-updated');
+    //   toastr.success('Cart has been updated');
+    //   this.syncMessage = "";
+    // },
   }
 });
