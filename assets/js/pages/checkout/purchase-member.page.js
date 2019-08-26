@@ -146,24 +146,35 @@ parasails.registerPage('purchase-member', {
       return tokenObj;
     },
 
-    chargeCard: async function(token, orderId) {
-      if (!token || !orderId) {
-        console.log('No token or order Id');
-        return;
-      }
-      // maybe i create and delete the order in here
-      // pass in the order and the charge that needs to be made
-      // create -> charge -> delete
-      // no this should all be done on the api...
-      this.syncMessage = "Charging Credit Card...";
-      // cant just use the cart details -> they need to be validated
+    chargeCard: async function(token) {
       const cart = await parasails.util.getCart();
 
+      const orderDetails = {
+        DateStart: cart.timePeriod.DateStart,
+        DateEnd: cart.timePeriod.DateEnd,
+        DaysOfUse: cart.timePeriod.DaysOfUse,
+        GuestName: this.formData.CustomerName,
+        Items: _.filter(cart.items, (o) => {
+          return o.Available.available === 'Available';
+        }),
+        Reserved: false,
+        DeliveryCost: cart.shipping.price,
+        Postcode: cart.shipping.postcode,
+        AddressLine1: this.formData.AddressLine1,
+        AddressLine2: this.formData.AddressLine2,
+        AddressLine3: this.formData.AddressLine3,
+        Telephone1: this.formData.Telephone1,
+        Email1: this.formData.Email1,
+        Comment: this.formData.Comment,
+        TakuhaiTimeSlot: this.formData.TakuhaiTimeSlot,
+        User: this.me.id,
+      }
+      
       chargePayload = {
         token: token.token,
-        orderId: orderId,
-        amount: (_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price),
-        reserveOrderId: cart.orderIdToIgnore,
+        cart,
+        orderDetails,
+        isMemberOrder: true,
       };
 
       try {
@@ -223,45 +234,45 @@ parasails.registerPage('purchase-member', {
         return;
       }
 
-      // check cart items are still available
-      const cartAvaiable = await this.checkAllCartAvailability();
-      if (cartAvaiable === false) {
+      // validate the cart on the frontend side
+      let validatedCart;
+      try {
+        validatedCart = await parasails.util.validateCart(cart);
+      } catch (err) {
+        console.log(err);
+      }
+      if (!_.isEqual(validatedCart, cart)) {
         this.syncMessage = '';
         toastr.error('Some cart item availabilities have changed, refresh the cart to see the differences');
         return;
       }
 
       // get cc token
+      this.syncMessage = 'Processing Credit Card Payment';
       const ccToken = await this.getToken();
       if (ccToken.status === 'failure') {
         toastr.error(ccToken.message);
-        return;
-      }
-      // create an unpaid order
-      let order = {};
-      try {
-        order = await this.createMemberOrder();
-      } catch (err) {
-        console.log(err);
+        this.syncMessage = '';
         return;
       }
 
-      // charge card and update order to paid
-      const chargeCardResult = await this.chargeCard(ccToken, order.id);
+      // charge the card -> includes building and managing the created order
+      const chargeCardResult = await this.chargeCard(ccToken);
+      console.log(chargeCardResult.cardCharge.charge.result.mstatus);
 
-      if (chargeCardResult.charge.result.mstatus === 'failure') {
-        toastr.error('Credit Card Error ' + chargeCardResult.charge.result.merrMsg);
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'failure') {
+        this.syncMessage = '';
+        toastr.error('Credit Card Error ' + chargeCardResult.cardCharge.charge.result.merrMsg);
       }
 
-      if (chargeCardResult.charge.result.mstatus === 'success') {
-        toastr.success('Order Created ' + chargeCardResult.charge.result.merrMsg);
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'success') {
+        this.syncMessage = '';
+        toastr.success('Order Created ' + chargeCardResult.cardCharge.charge.result.merrMsg);
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
-        // turn on for prod
-        // window.location = '/checkout/purchase-confirmation'
-        // await parasails.util.clearCart();
-      }
 
-      this.syncMessage = '';
+        await parasails.util.clearCart();
+        window.location = '/checkout/purchase-confirmation'
+      }
     },
 
     handleParsingReserveForm: function() {
