@@ -159,7 +159,7 @@ parasails.registerPage('purchase-guest', {
         AddressLine2: this.formData.AddressLine2,
         AddressLine3: this.formData.AddressLine3,
         Telephone1: this.formData.Telephone1,
-        Email: this.formData.Email1,
+        Email1: this.formData.Email1,
         Comment: this.formData.Comment,
         TakuhaiTimeSlot: this.formData.TakuhaiTimeSlot,
       }

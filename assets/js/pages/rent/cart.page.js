@@ -69,7 +69,7 @@ parasails.registerPage('cart', {
       const newCart = {
         items: [],
         quantityDiscountFactorForFullRacks: {
-          discountFactor: 0,
+          discountFactor: 1,
         },
         shipping: {},
         timePeriod: {},
@@ -157,7 +157,6 @@ parasails.registerPage('cart', {
 
     handleTimeSubmitting: async function(data) {
       const cart = await parasails.util.getCart();
-      console.log(data);
       const payload = {
         timePeriod: data,
         items: cart.items,
