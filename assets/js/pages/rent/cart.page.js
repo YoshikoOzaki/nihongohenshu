@@ -66,16 +66,20 @@ parasails.registerPage('cart', {
       if (this.syncing) {
         return;
       }
-      const newCart = {
-        items: [],
-        quantityDiscountFactorForFullRacks: {
-          discountFactor: 1,
-        },
-        shipping: {},
-        timePeriod: {},
-      };
-      localStorage.setItem('cart', JSON.stringify(newCart));
-      this.cart = newCart;
+
+      if (window.confirm("Are you sure you want to clear the cart?")) {
+        const newCart = {
+          items: [],
+          quantityDiscountFactorForFullRacks: {
+            discountFactor: 1,
+          },
+          shipping: {},
+          timePeriod: {},
+        };
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        this.cart = newCart;
+        toastr.success('The cart has been cleared');
+      }
     },
 
     // More functional methods

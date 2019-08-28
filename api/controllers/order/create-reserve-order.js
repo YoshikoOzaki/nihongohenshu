@@ -66,6 +66,12 @@ module.exports = {
     PostcodeRaw: {
       type: 'string',
       description: 'Postcode raw assigned to the order for shipping'
+    },
+
+    UserEmail: {
+      type: 'string',
+      required: true,
+      description: 'Postcode raw assigned to the order for shipping'
     }
 
   },
@@ -194,6 +200,23 @@ module.exports = {
         delivery: deliveryDetails,
         transactions: transactionLines,
       };
+
+      var newEmailAddress = inputs.UserEmail;
+      if (newEmailAddress !== undefined) {
+        newEmailAddress = newEmailAddress.toLowerCase();
+      }
+
+      // email user details of the created order
+      await sails.helpers.sendTemplateEmail.with({
+        to: newEmailAddress,
+        subject: 'Your reserved rental stock details',
+        template: 'email-guest-reserve-stock-confirmation',
+        templateData: {
+          fullName: newEmailAddress,
+          keyword: inputs.CustomerKeyword,
+          orderId: order.id,
+        }
+      });
       return exits.success(combinedResults);
     } catch (err) {
       return exits.invalid(err);

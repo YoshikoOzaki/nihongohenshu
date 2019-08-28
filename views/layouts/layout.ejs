@@ -35,22 +35,22 @@
         <a class="navbar-brand mr-0" href="/">
           <img class="navbar-brand-image" src="../images/plumm-logo.png" />
           <div>
-            <b>Glass Rental</b>
+            <b>グラスレンタル</b>
           </div>
           <div class="navbar-brand--subheading">
-            <b>in <span class="text-uppercase">Glazmataz<span></b>
+            <b>in <span class="text-uppercase">グラズマターズ<span></b>
           </div>
         </a>
         <div class="navbar-nav flex-row">
-          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">Home</a>
-          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">About</a>
-          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Products</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">ホーム</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">レンタル・サービス内容</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">グラスの種類</a>
           <% if (!me) { %>
             <a
               class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0"
               href="/rent/order-recovery"
             >
-              Orders
+              ご注文
             </a>
           <% } %>
           <% if (me) { %>
@@ -58,7 +58,7 @@
               class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0"
               href="/rent/member-orders"
             >
-              Orders
+              ご注文
             </a>
           <% } %>
 
@@ -70,7 +70,7 @@
               <span class="fa fa-shopping-cart"></span>
               <span id="cartNumber">
               </span>
-              Rental Cart
+              カート
             </a>
             <ajax-button/>
           </div>
@@ -90,7 +90,7 @@
           <a class="nav-item nav-link ml-2 mr-2 d-block d-sm-none" href="/logout">Sign out</a>
           <% } else { %>
           <!-- LOGGED-OUT NAVIGATION -->
-          <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/faq">FAQ</a>
+          <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/faq">よくあるご質問</a>
           <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/login">Log in</a>
           <!-- Only in desktop nav -->
           <div class="form-inline d-none ml-2 d-md-block" >
