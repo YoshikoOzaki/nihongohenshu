@@ -148,7 +148,9 @@ module.exports = {
           UnitPrice: Number(item.UnitPrice),
           WashAndPolish: Number(item.WashAndPolish),
           QuantityDiscountFactor: Number(item.QuantityDiscountFactor),
+          TotalPriceRaw: Number(item.TotalPriceRaw),
           TotalPriceWithDiscountsAndWash: Number(item.TotalPriceWithDiscountsAndWash),
+          TotalWashingCost: Number(item.TotalWashingCost),
           Product: Number(item.id),
           Order: Number(order.id),
         }

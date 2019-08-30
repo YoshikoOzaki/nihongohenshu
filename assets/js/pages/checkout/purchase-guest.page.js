@@ -31,12 +31,8 @@ parasails.registerPage('purchase-guest', {
   },
 
   updated: async function() {
-    const cart = this.cart;
-    const taxRate = await Cloud.getConsumptionTaxRate();
-
-    this.subTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0);
-    this.taxTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0) * taxRate;
-    this.grandTotal = (this.subTotal + this.taxTotal);
+    console.log('test');
+    console.log('test');
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
@@ -68,6 +64,7 @@ parasails.registerPage('purchase-guest', {
     },
 
     createGuestOrder: async function() {
+      // move this to api
       this.syncMessage = "Creating Order...";
       const cart = await parasails.util.getCart();
       // need to add address to the order
@@ -141,25 +138,37 @@ parasails.registerPage('purchase-guest', {
       .then(async function(response) {
         return response.json();
       })
-
-      // console.log('token: ' + JSON.stringify(tokenObj) );
       return tokenObj;
     },
 
-    chargeCard: async function(token, orderId) {
-      // maybe i create and delete the order in here
-      // pass in the order and the charge that needs to be made
-      // create -> charge -> delete
-      // no this should all be done on the api...
-      this.syncMessage = "Charging Credit Card...";
-      // cant just use the cart details -> they need to be validated
+    chargeCard: async function(token) {
       const cart = await parasails.util.getCart();
+
+      const orderDetails = {
+        DateStart: cart.timePeriod.DateStart,
+        DateEnd: cart.timePeriod.DateEnd,
+        DaysOfUse: cart.timePeriod.DaysOfUse,
+        GuestName: this.formData.CustomerName,
+        Items: _.filter(cart.items, (o) => {
+          return o.Available.available === 'Available';
+        }),
+        Reserved: false,
+        DeliveryCost: cart.shipping.price,
+        Postcode: cart.shipping.postcode,
+        AddressLine1: this.formData.AddressLine1,
+        AddressLine2: this.formData.AddressLine2,
+        AddressLine3: this.formData.AddressLine3,
+        Telephone1: this.formData.Telephone1,
+        Email1: this.formData.Email1,
+        Comment: this.formData.Comment,
+        TakuhaiTimeSlot: this.formData.TakuhaiTimeSlot,
+      }
 
       chargePayload = {
         token: token.token,
-        orderId: orderId,
-        amount: this.grandTotal,
-        reserveOrderId: cart.orderIdToIgnore,
+        cart,
+        orderDetails,
+        isMemberOrder: false,
       };
 
       try {
@@ -183,8 +192,6 @@ parasails.registerPage('purchase-guest', {
             ...cart.timePeriod,
             OrderIdToIgnore: cart.orderIdToIgnore,
           }
-          // TODO: need to add order to ignore if it exists in the cart
-          // so it doesn't double check items
           result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
           return result;
         };
@@ -194,6 +201,7 @@ parasails.registerPage('purchase-guest', {
           newCartItems.push(result);
         });
       }
+
       // check if any have changed from available status to not available
       const changedAvailabilites = [];
       _.forEach(cart.items, (o, i) => {
@@ -208,8 +216,8 @@ parasails.registerPage('purchase-guest', {
     },
 
     submitReserveOrder: async function() {
-
       // check cart has some items
+      this.syncMessage = 'Validating Cart Items';
       const cart = await parasails.util.getCart();
       const cartAvailableItems = _.filter(cart.items, (o) => {
         return o.Available.available === 'Available';
@@ -219,47 +227,48 @@ parasails.registerPage('purchase-guest', {
         return;
       }
 
-      // check cart items are still available
-      const cartAvaiable = await this.checkAllCartAvailability();
-      if (cartAvaiable === false) {
+      // validate the cart on the frontend side
+      let validatedCart;
+      try {
+        validatedCart = await parasails.util.validateCart(cart);
+      } catch (err) {
+        console.log(err);
+      }
+      if (!_.isEqual(validatedCart, cart)) {
         this.syncMessage = '';
         toastr.error('Some cart item availabilities have changed, refresh the cart to see the differences');
         return;
       }
 
       // get cc token
+      this.syncMessage = 'Processing Credit Card Payment';
       const ccToken = await this.getToken();
       if (ccToken.status === 'failure') {
         toastr.error(ccToken.message);
+        this.syncMessage = '';
         return;
       }
 
-      // create an unpaid order
-      const guestOrder = await this.createGuestOrder();
+      // charge the card -> includes building and managing the created order
+      const chargeCardResult = await this.chargeCard(ccToken);
+      console.log(chargeCardResult.cardCharge.charge.result.mstatus);
 
-      // charge card and update order to paid
-      const chargeCardResult = await this.chargeCard(ccToken, guestOrder.id);
-
-      if (chargeCardResult.charge.result.mstatus === 'failure') {
-        toastr.error('Credit Card Error ' + chargeCardResult.charge.result.merrMsg);
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'failure') {
+        this.syncMessage = '';
+        toastr.error('Credit Card Error ' + chargeCardResult.cardCharge.charge.result.merrMsg);
       }
 
-      if (chargeCardResult.charge.result.mstatus === 'success') {
-        toastr.success('Order Created ' + chargeCardResult.charge.result.merrMsg);
+      if (chargeCardResult.cardCharge.charge.result.mstatus === 'success') {
+        this.syncMessage = '';
+        toastr.success('Order Created ' + chargeCardResult.cardCharge.charge.result.merrMsg);
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
-        // window.location = order-confirmation
 
-        // turn on for production
-        // await parasails.util.clearCart();
-        //window.location = '/checkout/purchase-confirmation'
+        await parasails.util.clearCart();
+        window.location = '/checkout/purchase-confirmation'
       }
-
-      this.syncMessage = '';
     },
 
     handleParsingReserveForm: function() {
-      // dont make this async or it will fuck up the ajax form
-      // Clear out any pre-existing error messages.
       this.formErrors = {};
 
       var argins = this.formData;

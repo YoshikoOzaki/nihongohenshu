@@ -35,7 +35,7 @@ module.exports = {
 
     Items: {
       type: [{
-        Id: "number",
+        id: "number",
         Quantity: "number",
         UnitPrice: "number"
       }]
@@ -55,6 +55,11 @@ module.exports = {
     Postcode: {
       type: 'number',
       description: 'Postcode assigned to the order for shipping'
+    },
+
+    PostcodeRaw: {
+      type: 'string',
+      description: 'Postcode raw assigned to the order for shipping'
     },
 
     User: {
@@ -91,6 +96,7 @@ module.exports = {
         CustomerKeyword: inputs.CustomerKeyword,
         Reserved: inputs.Reserved,
         Postcode: inputs.Postcode,
+        PostcodeRaw: inputs.PostcodeRaw,
         User: inputs.User,
       }
       var newRecord = await Order.create(orderInputs).fetch();
@@ -118,6 +124,7 @@ module.exports = {
         Quantity: 1,
         UnitPrice: inputs.DeliveryCost,
         Order: Number(order.id),
+        Product: 160,
       }
       let delivery = await OrderLineNumber.create(payload).fetch();
       return delivery;
@@ -187,6 +194,20 @@ module.exports = {
         delivery: deliveryDetails,
         transactions: transactionLines,
       };
+
+      // get user details for email
+      const user = User.findOne({ id: inputs.User });
+
+      // email user details of the created order
+      await sails.helpers.sendTemplateEmail.with({
+        to: user.emailAddress,
+        subject: 'Your reserved rental stock details',
+        template: 'email-member-reserve-stock-confirmation',
+        templateData: {
+          fullName: user.fullName,
+        }
+      });
+
       return exits.success(combinedResults);
     } catch (err) {
       return exits.invalid(err);

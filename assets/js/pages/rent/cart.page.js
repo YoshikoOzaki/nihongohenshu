@@ -13,15 +13,18 @@ parasails.registerPage('cart', {
     formErrorsItems: { /* … */ },
     formErrorsShipping: { /* … */ },
     checkoutEnabled: false,
-    taxRate: '',
-    subTotal: '',
-    taxTotal: '',
-    grandTotal: '',
     cart: {
       items: [],
+      quantityDiscountFactorForFullRacks: {
+        discountFactor: 0,
+      },
+      shipping: {},
+      timePeriod: {},
     },
     glasses: [],
     moment: moment,
+    minDate: '',
+    maxDate: '',
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -39,22 +42,19 @@ parasails.registerPage('cart', {
 
   mounted: async function() {
     //…
+    this.minDate = moment().add(7,'d').format('YYYY-MM-DD');
+    this.maxDate = moment().add(2,'y').format('YYYY-MM-DD');
   },
 
   updated: async function() {
     await this.checkIfCheckoutEnabled();
-
-    const cart = this.cart;
-    const taxRate = await Cloud.getConsumptionTaxRate();
-
-    this.subTotal = ((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0);
-    this.taxTotal = Math.round(((_.sum(cart.items, (o) => { return o.TotalPriceWithDiscountsAndWash }) + cart.shipping.price) || 0) * taxRate);
-    this.grandTotal = (this.subTotal + this.taxTotal);
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
+
+    // Helper methods
 
     submittedForm: async function() {
       // Redirect to the account page on success.
@@ -70,39 +70,45 @@ parasails.registerPage('cart', {
       if (this.syncing) {
         return;
       }
-      this.cart = {};
-      this.subTotal = '';
-      this.grandTotal = '';
-      localStorage.removeItem('cart');
+
+      if (window.confirm("Are you sure you want to clear the cart?")) {
+        const newCart = {
+          items: [],
+          quantityDiscountFactorForFullRacks: {
+            discountFactor: 1,
+          },
+          shipping: {},
+          timePeriod: {},
+        };
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        this.cart = newCart;
+        toastr.success('The cart has been cleared');
+      }
     },
 
-    calculateNewCart: async function(newCart){
-      const getPostcode = () => {
-        if (newCart.shipping && newCart.shipping.postcode) {
-          return newCart.shipping.postcode;
-        }
-        return 0;
+    validateCart: async function(cartToValidate) {
+      const cart = cartToValidate;
+      // TODO: remove un required cart elements
+
+      if (
+        cart.timePeriod === undefined ||
+        cart.items === undefined ||
+        cart.shipping === undefined
+      ) {
+        toastr.error('Could not validate cart');
+        return;
       }
-      const getPostcodeRaw = () => {
-        if (newCart.shipping && newCart.shipping.postcodeRaw) {
-          return newCart.shipping.postcodeRaw;
-        }
-        return 0;
+
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: cart.items,
+        shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore,
       }
-      const result = await Cloud.checkShippingPrice(
-        getPostcode(),
-        getPostcodeRaw(),
-        newCart
-      );
-      const newCart2 = {
-        ...newCart,
-        shipping: {
-          ...result
-        },
-      };
-      if (result) {
-        return newCart2;
-      }
+
+      newCart = await Cloud.validateCart(..._.values(payload));
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      this.cart = newCart;
     },
 
     checkIfCheckoutEnabled: async function() {
@@ -118,13 +124,15 @@ parasails.registerPage('cart', {
       };
 
       parametersRequired.cartHasItems = cart.items && cart.items.length > 0;
-      parametersRequired.cartItemsAreValid = cart.items && _.each(cart.items, (o) => {
+      parametersRequired.cartItemsAreValid = cart.items && (cart.items.length > 0) && _.each(cart.items, (o) => {
         return o.Available.available === 'Available';
       }).length === cart.items.length;
-      parametersRequired.shippingCodeEntered = cart.shipping && cart.shipping.Postcode;
+      parametersRequired.shippingCodeEntered = cart.shipping && (cart.shipping.Postcode !== undefined);
       parametersRequired.shippingCodeValid = cart.shipping && cart.shipping.shippingPossible !== false;
       parametersRequired.datesEntered = cart.timePeriod && !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
       parametersRequired.daysOfUseEntered = cart.timePeriod && cart.timePeriod.DaysOfUse > 0;
+
+      console.log(parametersRequired);
       if (_.includes(parametersRequired, false)) {
         this.checkoutEnabled = false;
         return;
@@ -132,148 +140,34 @@ parasails.registerPage('cart', {
       this.checkoutEnabled = true;
     },
 
-    createOrderFromCart: async function() {
-      // this whole function should move to the backend except token
-      // const cart = await parasails.util.getCart();
-      const tokenPayload = {
-        "card_number":"4111111111111111",
-        "card_expire":"01/20",
-        "security_code":"123",
-        "token_api_key":"cd76ca65-7f54-4dec-8ba3-11c12e36a548",
-        "lang":"en",
-      }
-
-      const tokenObj = await fetch('https://api.veritrans.co.jp/4gtoken', {
-          method: 'POST', // *GET, POST, PUT, DELETE, etc.
-          mode: 'cors', // no-cors, cors, *same-origin
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
-          headers: {
-              'Content-Type': 'application/json',
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          redirect: 'follow', // manual, *follow, error
-          referrer: 'no-referrer', // no-referrer, *client
-          body: JSON.stringify(tokenPayload),
-        }
-      )
-      .then(async function(response) {
-        return response.json();
-      })
-
-      const ccid = "A100000000000001069951cc";
-      const password = "ca7174bea6c9a07102fa990cfba330d0dad579a7c13a974fa7c3ec0ff66c1d6f";
-      const req = {
-        "orderId":"dummy1503015213",
-        "amount":"5",
-        "jpo":"10",
-        "withCapture":"false",
-        "payNowIdParam": {
-          "token": tokenObj.token,
-        },
-        "txnVersion":"2.0.0",
-        "dummyRequest":"1",
-        "merchantCcid": ccid,
-      }
-      const reqString = JSON.stringify(req);
-
-      async function sha256(message) {
-        console.log(message);
-        // encode as UTF-8
-        const msgBuffer = new TextEncoder('utf-8').encode(message);
-
-        // hash the message
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-
-        // convert ArrayBuffer to Array
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-        // convert bytes to hex string
-        const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
-        return hashHex;
-      }
-      const getAuthHash = await sha256(ccid + reqString + password);
-
-      const payload =
-      {
-        "params": {
-          ...req,
-        },
-        "authHash": getAuthHash,
-      };
-      console.log(JSON.stringify(payload));
-    },
-
     handleTimeSubmitting: async function(data) {
-      async function asyncForEach(array, callback) {
-        for (let index = 0; index < array.length; index++) {
-          await callback(array[index], index, array);
-        }
-      }
-
+      const cart = await parasails.util.getCart();
+      const payload = {
+        timePeriod: data,
+        items: cart.items,
+        shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
+      };
       try {
-      // check all the logic for order time & update cart
-      cart = await parasails.util.getCart();
-      timeValidResult = await Cloud.checkCartTimeValid(..._.values(data));
+        await this.validateCart(payload);
+        toastr.success('Days of use added to the cart');
       } catch (err) {
-        console.log(err.responseInfo.body);
-        toastr.error(err.responseInfo.body);
-        return;
-      }
-
-      // check each item
-      try {
-        const newCartItems = [];
-        if (cart.items && cart.items.length > 0) {
-          const checkCartItemAvailable = async function(item) {
-            const itemPayload = {
-              Id: item.id,
-              Quantity: item.Quantity,
-              ...timeValidResult,
-              OrderIdToIgnore: cart.orderIdToIgnore,
-            }
-            itemResult = await Cloud.checkCartItemValid(..._.values(itemPayload));
-            return itemResult;
-          };
-          await asyncForEach(cart.items, async (o) => {
-            const result = await checkCartItemAvailable(o);
-            newCartItems.push(result);
-          });
-        }
-        const newCart = {
-          ...cart,
-          items: newCartItems,
-          timePeriod: {...timeValidResult},
-        };
-        localStorage.setItem('cart', JSON.stringify(newCart));
-        toastr.success('Time range added to the cart');
-        } catch (err) {
         console.log(err);
-        toastr.error('Time range could not be added to the cart');
+        toastr.error('Days of use could not be added to the cart');
       }
     },
 
-    handleShippingSubmitting: async function(data) {
-      // check all the logic for order time & update cart
-      oldCart = await parasails.util.getCart();
-      console.log(data);
-      // push in shipping code and current cart to check shipping function
+    handleShippingSubmitting: async function (data) {
+      const cart = await parasails.util.getCart();
+
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: cart.items,
+        shipping: data,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
+      };
       try {
-        result = await Cloud.checkShippingPrice(
-          data.Postcode,
-          data.PostcodeRaw,
-          oldCart,
-        );
-
-        const newCart = {
-          ...oldCart,
-          shipping: {
-            ...result,
-          },
-        };
-
-        await localStorage.setItem('cart', JSON.stringify(newCart));
-        this.formDataShipping.Postcode = '';
+        await this.validateCart(payload);
         toastr.success('Shipping added to the cart');
       } catch (err) {
         console.log(err);
@@ -282,59 +176,42 @@ parasails.registerPage('cart', {
     },
 
     handleItemSubmitting: async function(data) {
-      // check if it's already in the cart
+      console.log(data);
       const cart = await parasails.util.getCart();
-
-      // this is a hack, it should be validated in one large function
-      // probably with the rest of the cart logic
-      const existingCartItemIndex = _.findIndex(cart.items, { id: data.Id });
-      if (existingCartItemIndex >= 0) {
+      const existingCartItem = _.find(cart.items, { id: data.Id });
+      if (existingCartItem) {
         toastr.warning('Item is already in the cart, please update it there');
         return;
       }
-
-      const getCartWithNewItem = async function(itemData) {
-        // this is a decent example of sending I think
-        const itemPayload = {
-          Id: data.Id,
+      const newItems = [
+        ..._.without(cart.items, existingCartItem),
+        {
+          id: data.Id,
           Quantity: data.Quantity,
-          DateStart: cart.timePeriod.DateStart,
-          DateEnd: cart.timePeriod.DateEnd,
-          DaysOfUse: cart.timePeriod.DaysOfUse,
-          OrderIdToIgnore: cart.OrderIdToIgnore,
         }
-        const itemCheckResult = await Cloud.checkCartItemValid(..._.values(itemPayload));
-
-        const newCart = {
-          ...cart,
-          items: [
-            ...cart.items,
-            itemCheckResult
-          ],
-        };
-        if (itemCheckResult) {
-          return newCart;
-        }
-      }
-
+      ];
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: newItems,
+        shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
+      };
       try {
-        const result = await getCartWithNewItem(data);
-        const result2 = await this.calculateNewCart(result);
-        await localStorage.setItem('cart', JSON.stringify(result2));
+        const result = await this.validateCart(payload);
+        console.log(result);
         toastr.success('Item added to the cart');
       } catch (err) {
         console.log(err);
-        toastr.error('Item could not be added to the cart' + err);
+        toastr.error('Item could not added to the cart');
       }
     },
 
-    removeItemFromCart: async function(data) {
+    removeItemFromCart: async function (data) {
       if (this.syncing) {
         return false;
       }
-      // this might not be updating the whole cart total price
       this.syncing = true;
-      const removeItemFromCart = async function(itemToRemove) {
+      const removeItemFromCart = async function () {
         oldCart = await parasails.util.getCart();
         oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
           return i !== data.index;
@@ -345,12 +222,15 @@ parasails.registerPage('cart', {
         };
         return newCart;
       }
+      const cartWithoutItemToRemove = await removeItemFromCart();
 
+      const payload = {
+        timePeriod: cartWithoutItemToRemove.timePeriod,
+        items: cartWithoutItemToRemove.items,
+        shipping: cartWithoutItemToRemove.shipping,
+      };
       try {
-        const result = await removeItemFromCart(data);
-        const result2 = await this.calculateNewCart(result);
-        localStorage.setItem('cart', JSON.stringify(result2));
-        this.cart = result2;
+        await this.validateCart(payload);
         toastr.success('Item removed from the cart');
         this.syncing = false;
       } catch (err) {
@@ -360,38 +240,37 @@ parasails.registerPage('cart', {
       }
     },
 
-    updateItemRowQuantity: async function(index, quantity) {
+    updateItemRowQuantity: async function (index, quantity) {
       if (this.syncing) {
         return false;
       }
       this.syncing = true;
-      try {
       const cart = await parasails.util.getCart();
-      const dataWithTimePeriod = {
-        Id: cart.items[index].id,
-        Quantity: quantity,
-        DateStart: cart.timePeriod.DateStart,
-        DateEnd: cart.timePeriod.DateEnd,
-        DaysOfUse: cart.timePeriod.DaysOfUse,
-        OrderIdToIgnore: cart.OrderIdToIgnore,
-      }
+      const newCartItems = [
+        ...cart.items,
+      ];
+      newCartItems.splice(index, 1, {
+        ...cart.items[index],
+        Quantity: quantity
+      });
 
-      const result = await Cloud.checkCartItemValid(..._.values(dataWithTimePeriod));
-
-      const newCart = {
-        ...cart,
-      }
-      newCart.items[index] = result;
-
-      const newCartWithShippingAndTotals = await this.calculateNewCart(newCart);
-      localStorage.setItem('cart', JSON.stringify(newCartWithShippingAndTotals));
-      this.cart = newCartWithShippingAndTotals;
-      toastr.success('Item quantity changed');
+      const payload = {
+        timePeriod: cart.timePeriod,
+        items: newCartItems,
+        shipping: cart.shipping,
+        OrderIdToIgnore: cart.OrderIdToIgnore || undefined,
+      };
+      console.log(cart.items);
+      console.log(newCartItems);
+      try {
+        await this.validateCart(payload);
+        toastr.success('Item quantity changed');
+        this.syncing = false;
       } catch (err) {
         console.log(err);
         toastr.error('Item quantity could not be changed');
+        this.syncing = false;
       }
-      this.syncing = false;
     },
 
     handleParsingShippingForm: function() {

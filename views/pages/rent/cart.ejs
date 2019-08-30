@@ -4,7 +4,18 @@
       <div class="col-md-12">
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
-      <div class="col-sm-9">
+      <div class="col-sm-9"><hr />
+        <div class="row">
+          <div class="col-md-12" v-if="cart.quantityDiscountFactorForFullRacks && cart.quantityDiscountFactorForFullRacks.discountFactor !== 0">
+            <p>Quantitiy Discount Factor</p>
+            <span class="text-primary">
+              <h4>{{(100 - (cart.quantityDiscountFactorForFullRacks.discountFactor * 100)).toFixed(2)}}%</h4>
+            </span>
+          </div>
+          <div class="col-md-12 text-info">
+            <small>Add more items to increase discount</small>
+          </div>
+        </div>
         <hr />
         <div class="row" v-for="(item, index) in cart.items" :key="item.Id">
           <div class="col-md-2 mb-3">
@@ -25,38 +36,9 @@
               </div>
             </div>
           </div>
-          <div class="col-md-2 mb-3">
-            <div v-if="false">
-              <div>
-                ¥{{item.WashAndPolish}}
-              </div>
-              <div>
-                ¥{{item.DiscountedUnitPrice}}
-              </div>
-              <div>
-                ¥{{item.DiscountedUnitCostWithWash}}
-              </div>
-            </div>
-            <div>
-              <small>Unit Price</small>
-              <div>¥{{item.DiscountedUnitCostWithDaysFactorForDisplay}}</div>
-            </div>
-          </div>
-          <div class="col-md-2 mb-3">
-            <div>
-              <small>Quantity Discount</small>
-              <div>{{(100 - (item.QuantityDiscountFactor * 100)).toFixed(2)}}%</div>
-            </div>
-            <div>
-              <small>Total</small>
-              <div>
-                <b>¥{{item.TotalPriceWithDiscountsAndWash.toLocaleString()}}</b>
-              </div>
-            </div>
-          </div>
           <div class="col-md-3 mb-3">
             <div class="input-group">
-              <input class="form-control form-control-sm" type="number" v-model.trim="item.Quantity" />
+              <input class="form-control form-control-sm" type="number" v-model.trim="item.Quantity"/>
               <div class="input-group-append">
                 <button @click="updateItemRowQuantity(index, item.Quantity)" type="submit"
                   class="btn btn-sm btn-block ajax-button btn-outline-primary" :class="[syncing ? 'syncing' : '']">
@@ -76,11 +58,29 @@
               </div>
             </div>
           </div>
+          <div class="col-md-2 mb-3">
+            <div>
+              <small>Unit Price</small>
+              <div>¥{{(_.sum([item.Extras.roundedDiscountedUnitPriceWithDaysOfUseIncreaseFactor + item.WashAndPolish])).toLocaleString()}}</div>
+            </div>
+          </div>
           <div class="col-md-1 mb-3">
+            <!-- <div>
+              <small>Quantity Discount</small>
+              <div>{{(100 - (item.QuantityDiscountFactor * 100)).toFixed(2)}}%</div>
+            </div> -->
+            <div>
+              <small>Total</small>
+              <div>
+                <b>¥{{item && item.TotalPriceWithDiscountsAndWash && item.TotalPriceWithDiscountsAndWash.toLocaleString()}}</b>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 mb-3 text-right">
             <button @click="removeItemFromCart({ index: index })" type="submit"
               class="btn btn-sm btn-outline-secondary ajax-button" :class="[syncing ? 'syncing' : '']">
               <span class="button-text" v-if="!syncing">
-                <i class="fa fa-trash"></i>
+                <i class="fa fa-trash mr-1"></i> Remove
               </span>
               <span class="button-loader clearfix" v-if="syncing">
                 <slot name="syncing-state">
@@ -89,6 +89,11 @@
                 </slot>
               </span>
             </button>
+          </div>
+          <div class="col-md-12">
+            <div style="background: rgba(0, 0, 0, 0.1); height: 1px" class="col-md-12 mb-3">
+              <!-- divider -->
+            </div>
           </div>
         </div>
         <div class="">
@@ -125,19 +130,19 @@
                   <table class="table table-borderless table-sm">
                     <tr>
                       <th>
-                        Delivery Date
+                        Delivery
                       </th>
                       <th>
-                        Return Date
+                        Return
                       </th>
                       <th>
-                        Days Used
+                        Days
                       </th>
                       <th>
                         Postcode
                       </th>
                       <th>
-                        Shipping Method
+                        Method
                       </th>
                       <th>
                         Area
@@ -154,15 +159,15 @@
                         {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
                       </td>
                       <td>
-                        {{cart.shipping && cart.shipping.postcodeRaw || "Add a Postcode"}}<br />
+                        {{cart.shipping && cart.shipping.PostcodeRaw || "Add a Postcode"}}<br />
                         <small
-                          class="text-info">{{ (cart.shipping && cart.shipping.shippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                          class="text-info">{{ (cart.shipping && cart.shipping.ShippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
                       </td>
                       <td>
-                        {{cart.shipping && _.capitalize(cart.shipping.shippingType)}}<br />
+                        {{cart.shipping && _.capitalize(cart.shipping.ShippingType)}}<br />
                       </td>
                       <td>
-                        {{cart.shipping && cart.shipping.shippingFactorRecord && _.capitalize(cart.shipping.shippingFactorRecord.Place)}}<br />
+                        {{cart.shipping && cart.shipping.ShippingFactorRecord && _.capitalize(cart.shipping.ShippingFactorRecord.Place)}}<br />
                       </td>
                     </tr>
                   </table>
@@ -174,17 +179,28 @@
                 <div class="col-md-12">
                   <div>
                     <div class="text-right">
+                      <h5>Items</h5>
+                        ¥ {{cart.cartTotals && cart.cartTotals.itemsTotal && cart.cartTotals.itemsTotal.toLocaleString() || 0}}
+                      <hr />
                       <h5>Shipping</h5>
-                        ¥ {{cart.shipping && cart.shipping.price && cart.shipping.price.toLocaleString()}}
+                        <!-- ¥ {{cart.shipping && cart.shipping.Price && cart.shipping.Price.toLocaleString() || 0}} -->
+                        ¥ {{cart.cartTotals && cart.cartTotals.shippingTotal && cart.cartTotals.shippingTotal.toLocaleString() || 0}}
                       <hr />
                       <h5>Sub Total</h5>
-                        ¥ {{subTotal && subTotal.toLocaleString()}}
+                        <!-- ¥ {{subTotal && subTotal.toLocaleString()}} -->
+                        ¥ {{cart.cartTotals && cart.cartTotals.subTotal && cart.cartTotals.subTotal.toLocaleString() || 0}}
                       <hr />
                       <h5>Tax</h5>
-                        ¥ {{taxTotal && taxTotal.toLocaleString()}}
+                        <!-- ¥ {{taxTotal && taxTotal.toLocaleString()}} -->
+                        ¥ {{cart.cartTotals && cart.cartTotals.taxTotal && cart.cartTotals.taxTotal.toLocaleString() || 0}}
                       <hr />
                       <h4>Grand Total</h4>
-                      <h5><b>¥ {{grandTotal && grandTotal.toLocaleString()}}</b></h5>
+                      <h5>
+                        <b>
+                          <!-- ¥ {{grandTotal && grandTotal.toLocaleString()}} -->
+                          ¥ {{cart.cartTotals && cart.cartTotals.grandTotal && cart.cartTotals.grandTotal.toLocaleString() || 0}}
+                        </b>
+                      </h5>
                       <hr />
                     </div>
                   </div>
@@ -201,7 +217,7 @@
                     Clear Cart
                   </button>
                 </div>
-                <div class="col-md-6 text-lg-right">
+                <div class="col-md-6 text-sm-right">
                   <span class="mr-2">
                     <a href="../checkout/reserve-prompt">
                       <button class="btn btn-outline-primary btn-sm" :disabled="!checkoutEnabled">
@@ -211,7 +227,7 @@
                     </a>
                   </span>
                   <a href="../checkout/order-prompt">
-                    <button class="btn btn-primary btn-sm" @click="createOrderFromCart" :disabled="!checkoutEnabled">
+                    <button class="btn btn-primary btn-sm" :disabled="!checkoutEnabled">
                       <i class="fa fa-credit-card-alt"></i>
                       Proceed to Checkout
                     </button>
@@ -291,7 +307,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Start Date</label>
-                    <input class="form-control" id="date-start" name="date-start" type="date"
+                    <input class="form-control" id="date-start" name="date-start" type="date" :min="minDate"
                       :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart"
                       placeholder="0" autocomplete="date-end">
                     <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
@@ -300,7 +316,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">End Date</label>
-                    <input class="form-control" id="date-end" name="date-end" type="date"
+                    <input class="form-control" id="date-end" name="date-end" type="date" :max="maxDate"
                       :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd"
                       placeholder="0" autocomplete="date-end">
                     <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
@@ -371,12 +387,13 @@
                       Update
                     </ajax-button>
                   </div>
+
                 </div>
               </div>
             </ajax-form>
+            <!-- <button @click="validateCartTest()"> Validation Test</button> -->
           </div>
         </div>
-
       </div>
     </div>
   </div>

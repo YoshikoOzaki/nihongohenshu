@@ -43,18 +43,24 @@ parasails.registerPage('reserve-guest', {
 
     submitReserveOrder: async function() {
       const cart = await parasails.util.getCart();
+      const availableOnlyItems = _.filter(cart.items, (o) => {
+        return o.Available.available === "Available";
+      });
       const payload = {
         DateStart: cart.timePeriod.DateStart,
         DateEnd: cart.timePeriod.DateEnd,
         DaysOfUse: cart.timePeriod.DaysOfUse,
         CustomerKeyword: this.formData.Keyword,
-        Items: cart.items,
+        Items: [
+          ...availableOnlyItems
+        ],
         Reserved: true,
-        DeliveryCost: cart.shipping.price,
-        Postcode: cart.shipping.postcode,
+        DeliveryCost: cart.shipping.Price,
+        Postcode: cart.shipping.Postcode,
+        PostcodeRaw: cart.shipping.PostcodeRaw,
+        UserEmail: this.formData.Email,
       }
 
-      console.log(payload);
       const order = await Cloud.createReserveOrder(..._.values(payload));
       await localStorage.setItem('completedOrder', JSON.stringify(order));
     },
@@ -68,6 +74,10 @@ parasails.registerPage('reserve-guest', {
 
       if(!argins.Keyword) {
         this.formErrors.Keyword = true;
+      }
+
+      if(!argins.Email) {
+        this.formErrors.Email = true;
       }
       // If there were any issues, they've already now been communicated to the user,
       // so simply return undefined.  (This signifies that the submission should be
