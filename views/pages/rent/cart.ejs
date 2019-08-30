@@ -307,7 +307,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Start Date</label>
-                    <input class="form-control" id="date-start" name="date-start" type="date"
+                    <input class="form-control" id="date-start" name="date-start" type="date" :min="minDate"
                       :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart"
                       placeholder="0" autocomplete="date-end">
                     <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
@@ -316,7 +316,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">End Date</label>
-                    <input class="form-control" id="date-end" name="date-end" type="date"
+                    <input class="form-control" id="date-end" name="date-end" type="date" :max="maxDate"
                       :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd"
                       placeholder="0" autocomplete="date-end">
                     <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>

@@ -3,27 +3,42 @@
     <div class="row">
       <div class="col-md-12">
         <page-header
-          heading="Product Selection"
+          heading="グラスの種類"
           sub-heading="ご希望のグラスと数量を選んで下さい"
         />
       </div>
-      <div v-if="_.isEmpty(glasses)" class="col-md-12 mb-3">
-        <spinner />
+    </div>
+    <div class="row">
+      <div class="col-lg-8 order-2 order-lg-1">
+        <div class="row">
+        <div v-if="_.isEmpty(glasses)" class="col-md-12 mb-3">
+          <spinner />
+        </div>
+        <div
+          v-for="(glass, index) in glasses"
+          :key="index"
+          class="col-md-3 mb-4"
+        >
+          <item-adder
+            :product="glass"
+            :index="index"
+            :handle-submitting="handleItemSubmitting"
+            :handleParsing="handleParsingItemForm"
+            :cloud-error.sync="cloudError"
+            :syncing="syncing"
+          />
+        </div>
+        </div>
       </div>
       <div
-        v-for="(glass, index) in glasses"
-        :key="index"
-        class="col-lg-2 col-md-3 mb-5"
-        v-cloak
+        class="col-lg-4 order-1 order-lg-2 mb-4"
       >
-        <item-adder
-          :product="glass"
-          :index="index"
-          :handle-submitting="handleItemSubmitting"
-          :handleParsing="handleParsingItemForm"
-          :cloud-error.sync="cloudError"
-          :syncing="syncing"
+        <div class="row sticky-top">
+          <cart-display-small
+            :cart="cart"
+            :validate-cart="validateCart"
           />
+        </div>
       </div>
     </div>
   </div>
