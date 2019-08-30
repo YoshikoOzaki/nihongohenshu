@@ -1,0 +1,72 @@
+<div id="reserve-guest" v-cloak>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div>
+          <page-header
+          heading="Guest Reserve Order"
+          sub-heading="Reserve an order without being logged in"
+          />
+        </div>
+        <div class="text-info">
+          <p>Items that are not available will not be added to the reserved stock order.</p>
+          <p>Please enter a keyword and email to reserve your order.</p>
+          <p>Your order ID and keyword will be emailed to you. Using a combination of these 2 items you can retreieve your reserved stock.</p>
+        </div>
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitReserveOrder"
+          :handle-parsing="handleParsingReserveForm"
+        >
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="keyword"
+              name="keyword"
+              type="string"
+              :class="[formErrors.Keyword ? 'is-invalid' : '']"
+              v-model.trim="formData.Keyword"
+              placeholder="Enter a Keyword"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Keyword"
+            >
+              Please enter a keyword.
+            </div>
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="email"
+              name="email"
+              type="string"
+              :class="[formErrors.Email ? 'is-invalid' : '']"
+              v-model.trim="formData.Email"
+              placeholder="Enter an Email"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Email"
+            >
+              Please enter an Email.
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group text-right">
+                <ajax-button type="submit" :syncing="syncing" class="btn btn-primary">
+                  Reserve Order
+                </ajax-button>
+              </div>
+            </div>
+          </div>
+        </ajax-form>
+        <cart-display :cart="cart"/>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

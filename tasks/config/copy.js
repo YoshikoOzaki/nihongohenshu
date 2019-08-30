@@ -13,12 +13,38 @@ module.exports = function(grunt) {
 
   grunt.config.set('copy', {
     dev: {
-      files: [{
-        expand: true,
-        cwd: './assets',
-        src: ['**/*.!(coffee|less)'],
-        dest: '.tmp/public'
-      }]
+      files: [
+        {
+          expand: true,
+          cwd: './assets',
+          src: ['**/*.!(coffee|less)'],
+          dest: '.tmp/public'
+        },
+        {
+          expand: true,
+          cwd: './node_modules/moment/min/',
+          src: ['moment-with-locales.min.js'],
+          dest: '.tmp/public/dependencies'
+        },
+        {
+          expand: true,
+          cwd: './node_modules/toastr/build/',
+          src: ['toastr.min.js'],
+          dest: '.tmp/public/dependencies'
+        },
+        {
+          expand: true,
+          cwd: './node_modules/toastr/build/',
+          src: ['toastr.min.css'],
+          dest: '.tmp/public/styles'
+        },
+        {
+          expand: true,
+          cwd: './assets/dependencies/font-awesome-4/fonts/',
+          src: ['*'],
+          dest: '.tmp/public/fonts',
+        }
+      ]
     },
     build: {
       files: [{
@@ -26,7 +52,8 @@ module.exports = function(grunt) {
         cwd: '.tmp/public',
         src: ['**/*'],
         dest: 'www'
-      }]
+      }
+      ]
     },
     beforeLinkBuildProd: {
       files: [{

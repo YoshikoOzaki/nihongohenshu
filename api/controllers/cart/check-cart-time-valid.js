@@ -25,12 +25,12 @@ module.exports = {
       example: '2018-08-08T14:00:00.000Z'
     },
 
-    DaysOfUse: {
-      type: 'string',
-      required: true,
-      description: 'Total number of days the glasses will be used',
-      example: "555"
-    }
+    // DaysOfUse: {
+    //   type: 'string',
+    //   required: true,
+    //   description: 'Total number of days the glasses will be used',
+    //   example: "555"
+    // }
     // should be able to change this to a date range picker with startdate enddate
   },
 
@@ -53,11 +53,32 @@ module.exports = {
     //   throw 'dateTaken';
     // }
 
+    var moment = require("moment");
+    var a = moment(inputs.DateEnd);
+    var b = moment(inputs.DateStart);
+
+    if (a.isBefore(b)) {
+      return exits.invalid('End date is before Start date');
+    }
+
+    var daysSelected = a.diff(b, 'days');
+    if (daysSelected < Number(inputs.DaysOfUse)) {
+      return exits.invalid('Days used is larger than the span of dates selected');
+    }
+
+    const DaysOfUse = await sails.helpers.getDaysOfUse(inputs.DateStart, inputs.DateEnd);
+
     // if all the validation passes - check the dates and item ids/skus
     // then just send back the validated item/order to add to the cart
 
     // Since everything went ok, send our 200 response.
-    return exits.success(inputs);
+
+    var response = {
+      ...inputs,
+      DaysOfUse,
+    }
+
+    return exits.success(response);
   }
 
 };

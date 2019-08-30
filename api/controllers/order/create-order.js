@@ -33,9 +33,28 @@ module.exports = {
       example: "555"
     },
 
+    CustomerName: {
+      type: 'string',
+      required: true,
+      description: 'Customer name or customer order keyword'
+    },
+
     Items: {
-      type: [{Id: "string", Quantity: "string"}]
-    }
+      type: [{
+        id: "string",
+        Quantity: "string"
+      }]
+    },
+
+    ReserveOnly: {
+      type: 'boolean',
+      description: 'Is this a reserved order',
+    },
+
+    Postcode: {
+      type: 'number',
+      description: 'Postcode assigned to the order for shipping'
+    },
 
   },
 
@@ -51,27 +70,31 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
+    var uniqid = require('uniqid');
     // var newEmailAddress = inputs.emailAddress.toLowerCase();
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    orderInputs = {
+    payload = {
       DateStart: inputs.DateStart,
       DateEnd: inputs.DateEnd,
       DaysOfUse: inputs.DaysOfUse,
-    }
+      CustomerName: inputs.CustomerName,
+      ReserveOnly: inputs.ReserveOnly,
+      Postcode: inputs.Postcode,
+      TakuhaiTimeSlot: inputs.TakuhaiTimeSlot,
+    };
 
-    var newRecord = await Order.create(orderInputs).fetch();
+    var newRecord = await Order.create(payload).fetch();
 
     let itemResults = [];
 
     _.forEach(inputs.Items, async (item, i) => {
       const itemInputs = {
         Quantity: item.Quantity,
-        Glass: Number(item.Id),
+        Product: Number(item.id),
         Order: Number(newRecord.id),
       }
-      console.log(itemInputs);
 
       itemResults[i] = await OrderLineNumber.create(itemInputs).fetch();
     });

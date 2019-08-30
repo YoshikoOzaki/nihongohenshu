@@ -69,6 +69,8 @@ var jsFilesToInject = [
   // > Be sure to list dependencies that depend on each other in the right order!
   'dependencies/lodash.js',
   'dependencies/jquery.min.js',
+  'dependencies/moment-with-locales.min.js',
+  'dependencies/toastr.min.js',
   'dependencies/bowser.js',
   'dependencies/vue.js',
   'dependencies/**/*.js',
@@ -83,7 +85,7 @@ var jsFilesToInject = [
   // All of the rest of your custom client-side js files will be injected here,
   // in no particular order.  To customize the ordering, add additional items
   // here, _above_ this one.
-  'js/**/*.js'
+  'js/**/*.js',
 ];
 
 

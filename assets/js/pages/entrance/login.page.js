@@ -33,6 +33,7 @@ parasails.registerPage('login', {
   },
   mounted: async function() {
     //…
+    console.log(_.contains(window.location.pathname, 'checkout-member') > 0);
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -45,6 +46,8 @@ parasails.registerPage('login', {
       // > (Note that we re-enable the syncing state here.  This is on purpose--
       // > to make sure the spinner stays there until the page navigation finishes.)
       this.syncing = true;
+      // console.log(this.$route);
+      // if the cart has some items in it, take the logged in user to the checkout page?
       window.location = '/';
     },
 

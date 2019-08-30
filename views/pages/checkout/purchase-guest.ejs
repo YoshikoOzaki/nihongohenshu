@@ -1,0 +1,277 @@
+<div id="purchase-guest" v-cloak>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <page-header
+        heading="Guest Purchase Order"
+        sub-heading="Purchase an order without being logged in"
+        />
+      </div>
+      <div class="mb-3 col-md-7">
+        <h6>Cart</h6>
+        <cart-display :cart="cart" @cart-updated="reloadCart"/>
+      </div>
+      <div class="col-md-5">
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitReserveOrder"
+          :handle-parsing="handleParsingReserveForm"
+        >
+          <h6>Delivery Details</h6>
+          <div>Delivery Type: <b>Takuhai</b></div>
+          <div class="form-group">
+            <label for="full-name">Choose a Takuhai Delivery Window</label>
+            <select class="form-control" v-model.trim="formData.TakuhaiTimeSlot" id="takuhaiTimeSlot" name="takuhaiTimeSlot"
+              :class="[formErrors.TakuhaiTimeSlot ? 'is-invalid' : '']">
+              <option disabled value="">1つを選択してください</option>
+              <option v-for="timeSlot in takuhaiTimeSlots" :value="timeSlot.id">{{timeSlot.Name}}</option>
+            </select>
+            <div class="invalid-feedback" v-if="formErrors.TakuhaiTimeSlot">Please enter a Takuhai Time Slot.</div>
+          </div>
+          <hr />
+          <h6>Personal Details</h6>
+          <div class="form-group">
+            <div>Name *</div>
+            <input
+              class="form-control"
+              id="customerName"
+              name="customerName"
+              type="string"
+              :class="[formErrors.CustomerName ? 'is-invalid' : '']"
+              v-model.trim="formData.CustomerName"
+              placeholder="Enter a Customer Name"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.CustomerName"
+            >
+              Please enter a customer name.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Address Line 1 *</div>
+            <input
+              class="form-control"
+              id="addressLine1"
+              name="addressLine1"
+              type="string"
+              :class="[formErrors.AddressLine1 ? 'is-invalid' : '']"
+              v-model.trim="formData.AddressLine1"
+              placeholder="Address Line 1"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.AddressLine1"
+            >
+              Enter Address Line 1.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Address Line 2</div>
+            <input
+              class="form-control"
+              id="addressLine2"
+              name="addressLine2"
+              type="string"
+              :class="[formErrors.AddressLine2 ? 'is-invalid' : '']"
+              v-model.trim="formData.AddressLine2"
+              placeholder="Address Line 2"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.AddressLine2"
+            >
+              Enter Address Line 2.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Address Line 3</div>
+            <input
+              class="form-control"
+              id="addressLine3"
+              name="addressLine3"
+              type="string"
+              :class="[formErrors.AddressLine3 ? 'is-invalid' : '']"
+              v-model.trim="formData.AddressLine3"
+              placeholder="Address Line 3"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.AddressLine3"
+            >
+              Enter Address Line 3.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Postcode</div>
+            <input
+              disabled
+              class="form-control disabled"
+              id="postcode"
+              name="postcode"
+              type="string"
+              :class="[formErrors.Postcode ? 'is-invalid' : '']"
+              :placeholder="cart.shipping.postcode"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Postcode"
+            >
+              Postcode
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Telephone *</div>
+            <input
+              class="form-control"
+              id="telephone1"
+              name="telephone1"
+              type="string"
+              :class="[formErrors.Telephone1 ? 'is-invalid' : '']"
+              v-model.trim="formData.Telephone1"
+              placeholder="Telephone"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Telephone1"
+            >
+              Telephone 1.
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Email *</div>
+            <input
+              class="form-control"
+              id="email1"
+              name="email1"
+              type="string"
+              :class="[formErrors.Email1 ? 'is-invalid' : '']"
+              v-model.trim="formData.Email1"
+              placeholder="Email 1"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Email1"
+            >
+              Email
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Any Additional Comments</div>
+            <textarea
+              class="form-control"
+              id="comment"
+              name="comment"
+              type="text-area"
+              :class="[formErrors.Comment ? 'is-invalid' : '']"
+              v-model.trim="formData.Comment"
+              placeholder="Comment"
+            >
+            </textarea>
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Comment"
+            >
+              Comments
+            </div>
+          </div>
+          <hr />
+          <h6>Card Details *</h6>
+          <small><i>Testing = 4111111111111111</i></small>
+          <div class="form-group">
+            <div>Card Number</div>
+            <input
+              class="form-control"
+              id="cardNumber"
+              name="cardNumber"
+              type="string"
+              :class="[formErrors.CardNumber ? 'is-invalid' : '']"
+              v-model.trim="formData.CardNumber"
+              placeholder="Card Number"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.CardNumber"
+            >
+              Card Number
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Card Expiry *</div>
+            <small><i>Testing = 01/20</i></small>
+            <div class="input-group">
+            <input
+              class="form-control col-md-4"
+              id="cardExpireMonth"
+              name="cardExpireMonth"
+              type="number"
+              :class="[formErrors.CardExpireMonth ? 'is-invalid' : '']"
+              v-model.trim="formData.CardExpireMonth"
+              placeholder="Month"
+              maxLength="2"
+              oninput="this.value=this.value.slice(0,this.maxLength)"
+            >
+            <input
+              class="form-control col-md-4"
+              id="cardExpireYear"
+              name="cardExpireYear"
+              type="number"
+              :class="[formErrors.CardExpireYear ? 'is-invalid' : '']"
+              v-model.trim="formData.CardExpireYear"
+              placeholder="Year"
+              oninput="this.value=this.value.slice(0,this.maxLength)"
+              maxlength="2"
+            >
+            </div>
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.CardExpire"
+            >
+              Card Expire
+            </div>
+          </div>
+          <div class="form-group">
+            <div>Security Code *</div>
+            <small><i>Testing = 123</i></small>
+            <input
+              class="form-control"
+              id="securityCode"
+              name="securityCode"
+              type="number"
+              :class="[formErrors.SecurityCode ? 'is-invalid' : '']"
+              v-model.trim="formData.SecurityCode"
+              placeholder="Security Code"
+              maxLength="4"
+              oninput="this.value=this.value.slice(0,this.maxLength)"
+            >
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.SecurityCode"
+            >
+              Security Code
+            </div>
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.SecurityCodeLength"
+            >
+              Security Code must be 3 or 4 digits
+            </div>
+          </div>
+          <div class="col-sm-12 px-0 mx-0">
+            <div class="form-group text-right">
+              <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+                Purchase Order
+              </ajax-button>
+              <div class="mt-2" v-if="syncMessage !== ''">
+                {{syncMessage}}
+              </div>
+            </div>
+          </div>
+        </ajax-form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

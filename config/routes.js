@@ -35,6 +35,18 @@ module.exports.routes = {
   'GET /account/profile':    { action: 'account/view-edit-profile' },
 
   'GET /rent/selection':     { action: 'rent/view-selection' },
+  'GET /rent/cart':          { action: 'rent/view-cart' },
+  'GET /rent/order-recovery':          { action: 'rent/view-order-recovery' },
+  'GET /rent/member-orders':          { action: 'rent/view-member-orders' },
+
+  'GET /checkout/reserve-prompt':   { action: 'checkout/view-reserve-prompt' },
+  'GET /checkout/reserve-member':   { action: 'checkout/view-reserve-member' },
+  'GET /checkout/reserve-guest':   { action: 'checkout/view-reserve-guest' },
+  'GET /checkout/order-prompt':   { action: 'checkout/view-order-prompt' },
+  'GET /checkout/purchase-guest':   { action: 'checkout/view-purchase-guest' },
+  'GET /checkout/purchase-member':   { action: 'checkout/view-purchase-member' },
+  'GET /checkout/order-confirmation':   { action: 'checkout/view-order-confirmation' },
+  'GET /checkout/purchase-confirmation':   { action: 'checkout/view-purchase-confirmation' },
 
 
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
@@ -52,11 +64,30 @@ module.exports.routes = {
   'POST  /api/v1/entrance/update-password-and-login':    { action: 'entrance/update-password-and-login' },
   'POST  /api/v1/deliver-contact-form-message':          { action: 'deliver-contact-form-message' },
   'POST  /api/v1/glass/create-glass':          { action: 'glass/create-glass' },
-  'GET  /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
+  'GET   /api/v1/glass/get-glasses':          { action: 'glass/get-glasses' },
+  'GET   /api/v1/glass/get-glass':          { action: 'glass/get-glass' },
+
   'POST  /api/v1/order/create-order':          { action: 'order/create-order' },
+  'POST  /api/v1/order/create-guest-order':          { action: 'order/create-guest-order' },
+  'GET   /api/v1/order/get-order':          { action: 'order/get-order' },
+  'GET  /api/v1/order/get-orders':          { action: 'order/get-orders' },
+  'GET  /api/v1/order/delete-order':          { action: 'order/delete-order' },
+  'GET  /api/v1/order/update-order':          { action: 'order/update-order' },
+  'GET   /api/v1/order/recover-reserved-order':          { action: 'order/recover-reserved-order' },
+  'POST  /api/v1/order/create-reserve-order':          { action: 'order/create-reserve-order' },
+  'POST  /api/v1/order/create-guest-order':          { action: 'order/create-guest-order' },
+  'POST  /api/v1/order/create-member-reserve-order':          { action: 'order/create-member-reserve-order' },
+  'POST  /api/v1/order/create-member-order':          { action: 'order/create-member-order' },
+  'POST  /api/v1/order/get-consumption-tax-rate':          { action: 'order/get-consumption-tax-rate' },
+
+  'POST  /api/v1/cart/validate-cart':          { action: 'cart/validate-cart' },
   'POST  /api/v1/cart/check-cart-item-valid':          { action: 'cart/check-cart-item-valid' },
   'POST  /api/v1/cart/check-cart-time-valid':          { action: 'cart/check-cart-time-valid' },
   'POST  /api/v1/cart/check-shipping-price':          { action: 'cart/check-shipping-price' },
+  'POST  /api/v1/veritrans/charge':          { action: 'veritrans/charge' },
+
+  'GET /api/v1/delivery/get-takuhai-time-slots':   { action: 'delivery/get-takuhai-time-slots' },
+  'GET /api/v1/delivery/get-truck-distance-factor-costing':   { action: 'delivery/get-truck-distance-factor-costing' },
 
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗

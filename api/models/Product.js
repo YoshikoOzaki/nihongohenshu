@@ -1,5 +1,5 @@
 /**
- * Glass.js
+ * Product.js
  *
  * A glass that can be purchased or rented.
  */
@@ -11,7 +11,7 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    NameEng: {
+    NameE1: {
       type: 'string',
       required: true,
       description: 'Full representation of the glass\'es name in english',
@@ -19,34 +19,40 @@ module.exports = {
       example: 'Plumm Glass Flute (Handmade)'
     },
 
-    NameJap: {
+    NameE2: {
       type: 'string',
-      required: true,
+      description: 'Full representation of the glass\'es name in english',
+      maxLength: 120,
+      example: 'Plumm Glass Flute (Handmade)'
+    },
+
+    NameJ1: {
+      type: 'string',
       description: 'Full representation of the glass\'es name in japanese',
       maxLength: 120,
       example: 'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ'
     },
 
-    TotalQuantityInSystem: {
-      type: 'number',
-      required: true,
-      description: 'Total count of glasses of this type in the system',
-      example: 555
+    NameJ2: {
+      type: 'string',
+      description: 'Full representation of the glass\'es name in japanese',
+      maxLength: 120,
+      example: 'ﾚﾝﾀﾙ用ﾌﾟﾗﾑ･ｸﾞﾗｽ ﾌﾙｰﾄ'
     },
 
     ImgSrc: {
       type: 'string',
-      required: true,
       description: 'Glass image src',
       example: 'http://plumm-glasses.jp/media/catalog/product/cache/5/image/600x450/9df78eab33525d08d6e5fb8d27136e95/f/l/flute-handmade.jpg'
     },
 
-    Sku: {
-      type: 'number',
-      required: true,
-      description: 'Glass sku code',
-      example: '167'
-    },
+    // change the sku to be the id... maybe
+    // Sku: {
+    //   type: 'number',
+    //   required: true,
+    //   description: 'Glass sku code',
+    //   example: '167'
+    // },
 
     UnitPrice: {
       type: 'number',
@@ -57,14 +63,23 @@ module.exports = {
 
     RackCapacity: {
       type: 'number',
-      required: true,
       description: 'How many of this item can fit into their rack',
       example: '36'
     },
 
+    RackHeight: {
+      type: 'number',
+      description: 'in mm',
+    },
+
+    Type: {
+      type: 'string',
+      description: 'Glassware Delivery Addon...',
+    },
+
     OrderLineNumbers: {
       collection: 'OrderLineNumber',
-      via: 'Glass',
+      via: 'Product',
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

@@ -11,15 +11,23 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
+    // OrderNumber: {
+    //   collection: 'Order',
+    //   via: 'OrderTransactions',
+    // },
+
     OrderNumber: {
-      collection: 'Order',
-      via: 'OrderTransactions',
+      model: 'Order',
     },
 
-    LineNumber: {
-      collection: 'OrderLineNumber',
-      via: 'Transaction',
+    LineNumber : {
+      model: 'OrderLineNumber',
     },
+
+    // LineNumber: {
+    //   collection: 'OrderLineNumber',
+    //   via: 'Transaction',
+    // },
 
     TransactionType: {
       model: 'TransactionType',
@@ -27,8 +35,7 @@ module.exports = {
     },
 
     Product: {
-      model: 'Glass',
-      required: true,
+      model: 'Product',
     },
 
     Quantity: {
@@ -57,11 +64,12 @@ module.exports = {
     },
 
     Date: {
+      // type: 'ref',
+      // columnType: 'datetime',
       type: 'ref',
-      columnType: 'datetime',
-      description: 'Time the order was made',
-      example: '2018-08-08',
-      required: true,
+      columnType: 'timestamp',
+      description: 'Date the transaction has/will happen(ed)',
+      // example: '2018-08-08',
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

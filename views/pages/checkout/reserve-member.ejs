@@ -1,0 +1,37 @@
+<div id="reserve-member" v-cloak>
+  <div class="container">
+    <div class="row pt-3">
+      <div class="col-md-6 offset-md-3">
+        <div class="text-muted">
+        <i>Show cart orders details here</i>
+        </div>
+        <p>
+          Would you like to reserve this order?
+          </br>
+          Reserved orders will expire in 3 days
+        </p>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <ajax-form
+          @submitted="submittedForm()"
+          :syncing.sync="syncing"
+          :cloud-error.sync="cloudError"
+          :handle-submitting="submitReserveOrder"
+          :handle-parsing="handleParsingReserveForm"
+        >
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <ajax-button type="submit" :syncing="syncing" class="btn btn-dark">
+                  Reserve Order
+                </ajax-button>
+              </div>
+            </div>
+          </div>
+        </ajax-form>
+        <cart-display :cart="cart"/>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

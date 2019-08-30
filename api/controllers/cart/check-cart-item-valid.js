@@ -41,7 +41,13 @@ module.exports = {
       type: 'string',
       description: 'Total number of days the glasses will be used',
       example: "555"
-    }
+    },
+
+    OrderIdToIgnore: {
+      type: 'number',
+      description: 'If we are adding a recovered order, we dont want to calculate transactions from that order',
+      example: 12,
+    },
 
     // should be able to change this to a date range picker with startdate enddate
   },
@@ -61,190 +67,192 @@ module.exports = {
       'parameters should have been validated/coerced _before_ they were sent.'
     },
 
+    duplicateItem: {
+      responseType: 'badRequest',
+      description: 'This item is already in the cart',
+      extendedDescription: 'This item is already in the cart, please update the' +
+      ' cart quantitiy rather than adding the same item again'
+    },
+
   },
 
 
   fn: async function (inputs, exits) {
     // check availability and add available to each item that is checked
-    console.log(inputs.DateEnd);
-    console.log(inputs.DateStart);
+    // const result = _.findIndex(inputs.Cart.items, { 'id': Number(inputs.Id) });
+    // console.log(result);
+    // if (_.findIndex(inputs.Cart.items, { 'id': Number(inputs.Id) }) >= 0) {
+    //   return exits.duplicateItem('This item is already in the cart, please update the' +
+    //   ' cart quantitiy rather than adding the same item again');
+    // }
+
     async function getAvailability () {
       if (!inputs.DateEnd || !inputs.DateStart) {
         return 'No date set to evaluate';
       }
 
-      // will need to add every possible code
-      [
-        stockIn,
-        orderOut,
-        returnPlanned,
-        orderReturned,
-        returnAndWashCompleted,
-      ] = await Promise.all([
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { '<=': inputs.DateStart },
-            TransactionType: 10,
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
-            TransactionType: 40,
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
-            TransactionType: 44,
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
-            TransactionType: 55,
-          },
-          select: ['Quantity'],
-        }),
-        await Transaction.find({
-          where: {
-            Product: inputs.Id,
-            Date: { '<=': inputs.DateEnd },
-            TransactionType: 57,
-          },
-          select: ['Quantity'],
-        })
-      ]);
+      const getTransactionNumbersToIgnore = async function() {
+        if (inputs.OrderIdToIgnore) {
+          const order = await Order.findOne(
+            { id: inputs.OrderIdToIgnore }
+          ).populate('OrderTransactions');
+          const transactionIds = _.map(_.filter(order.OrderTransactions, { 'Product': Number(inputs.Id) }), 'id');
+          return transactionIds;
+        }
+        return [];
+      }
 
-      // collect totals
-      const stockInTotal = _.sum(stockIn, (o) => { return o.Quantity });
-      const orderOutTotal = _.sum(orderOut, (o) => { return o.Quantity });
-      const returnPlanedTotal = _.sum(returnPlanned, (o) => { return o.Quantity });
-      const orderReturnedTotal = _.sum(orderReturned, (o) => { return o.Quantity });
-      const returnAndWashedTotal = _.sum(returnAndWashCompleted, (o) => { return o.Quantity });
+      const transactionNumbersToIgnore = await getTransactionNumbersToIgnore();
+      const transactionTypes = await TransactionType.find();
+      const transactionTypesByRecordingHandlingGuide = _.groupBy(transactionTypes, 'RecordHandlingGuide');
 
-      // calculate available or not
-      const totalAvailableForOrder =
-      stockInTotal -
-      orderOutTotal +
-      returnPlanedTotal +
-      orderReturnedTotal +
-      returnAndWashedTotal;
+      // this is for the specific item
+      const transactionsInArray = _.map(transactionTypesByRecordingHandlingGuide.In, 'id');
+      const transactionsInObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsInArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateStart },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsIn = _.sum(transactionsInObject, (o) => { return o.Quantity });
 
-      const availability = totalAvailableForOrder - inputs.Quantity > 0 ? 'Available' : 'Not Available'
+      const transactionsOutArray = _.map(transactionTypesByRecordingHandlingGuide.Out, 'id');
+      const transactionsOutObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsOutArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateEnd },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsOut = _.sum(transactionsOutObject, (o) => { return o.Quantity });
+
+      const transactionsAwayArray = _.map(transactionTypesByRecordingHandlingGuide.Away, 'id');
+      const transactionsAwayObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsAwayArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateEnd },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsAway = _.sum(transactionsAwayObject, (o) => { return o.Quantity });
+
+      const transactionsReturnedArray = _.map(transactionTypesByRecordingHandlingGuide.Returned, 'id');
+      const transactionsReturnedObject = await Transaction.find({
+        where: {
+          Product: inputs.Id,
+          TransactionType: transactionsReturnedArray,
+          id: { '!=': transactionNumbersToIgnore},
+          Date: { "<=": inputs.DateStart },
+        },
+        select: ['Quantity'],
+      });
+      const transactionsReturned = _.sum(transactionsReturnedObject, (o) => { return o.Quantity });
+
+      const totalAvailableForOrder = transactionsIn - transactionsOut - transactionsAway + transactionsReturned;
+
+      const inventory = totalAvailableForOrder;
+      const remaining = totalAvailableForOrder - inputs.Quantity;
+
+      const availability = {
+        available: remaining >= 0 ? 'Available' : 'Not Available',
+        remaining: inventory >= 0 ? inventory : 0,
+        totalAvailable: inventory,
+      };
 
       return availability;
-    };
+    }
 
     // find price of items
-    var item =  await Glass.findOne({ id: inputs.Id });
-    // get the days of use from the cart value
+    var item =  await Product.findOne({ id: inputs.Id });
 
     // Collect variables
-    const { Quantity } = inputs;
+    const { Quantity, DaysOfUse } = inputs;
     const { RackCapacity, UnitPrice } = item;
-    const washAndPolishConstant = 32;
-    const daysOfUseDiscountFactor = 1;
 
-    const basePrice = UnitPrice;
+    const washAndPolishConstant = await sails.helpers.getWashAndPolishCost();
+    const daysOfUseIncreaseFactor = await sails.helpers.getDaysOfUseIncreaseFactor(DaysOfUse);
+
+    const UnitPriceWithoutWashing = UnitPrice - washAndPolishConstant;
     const fullRacks = Quantity / RackCapacity;
     const fullRacksRoundedDown = Math.floor(fullRacks);
     const quantityInFullRacks = RackCapacity * fullRacksRoundedDown;
-    const quantityInPartiallyFullRack = Quantity - quantityInFullRacks;
+    const quantityInPartiallyFullRack = Number(Quantity) - quantityInFullRacks;
+    const partiallyFullRacks = quantityInPartiallyFullRack > 0 ? 1 : 0;
 
-    const quantityFactorForFullRack = 0.9;
-    const quantityFactorForPartialRack = 0.9;
+    const racksToThePowerOf = _.max([0, fullRacksRoundedDown + partiallyFullRacks - 3]);
+    const quantityFactorForFullRackRaw = 0.46 + 0.551 / Math.pow(1.04, racksToThePowerOf);
+    const quantityFactorForFullRack = quantityFactorForFullRackRaw > 1 ? 1 : quantityFactorForFullRackRaw;
+
+    const quantityFactorForPartialRack = quantityFactorForFullRack;
 
     // Create Prices
     // ------
 
-    const totalPrice = Quantity * UnitPrice;
+    const totalPrice = Number(Quantity) * UnitPriceWithoutWashing;
 
-    // Remove washing cost, calculate for full and partial racks the discount as a lump sum
-    // const DiscountedBasePrice =
-    //   ((
-    //     basePrice *
-    //     daysOfUseDiscountFactor *
-    //     quantityFactorForFullRack *
-    //     quantityInFullRacks
-    //   )
-    //   +
-    //   (
-    //     basePrice *
-    //     daysOfUseDiscountFactor *
-    //     quantityFactorForPartialRack *
-    //     quantityInPartiallyFullRack
-    //   ));
-
-    async function getDiscountedBasePrice (
-      basePrice,
-      daysOfUseDiscountFactor,
+    // seperate the full and non full racks because
+    // they might have different quantity discount factors
+    async function getDiscountedBasicTotalWithDiscounts (
+      UnitPriceWithoutWashing,
       quantityFactorForFullRack,
       quantityInFullRacks,
       quantityFactorForPartialRack,
       quantityInPartiallyFullRack,
     ) {
-      return (
-        basePrice *
-        daysOfUseDiscountFactor *
+      const discountPriceOfFullRacks = (
+        UnitPriceWithoutWashing *
         quantityFactorForFullRack *
         quantityInFullRacks
-      )
-      +
-      (
-        basePrice *
-        daysOfUseDiscountFactor *
+      );
+      const discountedPriceOfPartialRacks = (
+        UnitPriceWithoutWashing *
         quantityFactorForPartialRack *
         quantityInPartiallyFullRack
       );
+      return _.sum([discountPriceOfFullRacks, discountedPriceOfPartialRacks]);
     }
 
-    // Divide it by the total quantity and add was cost back on to get discounted unit price
-    discountedBasePrice = await getDiscountedBasePrice(
-      basePrice,
-      daysOfUseDiscountFactor,
+    const discountedBasicTotal = await getDiscountedBasicTotalWithDiscounts(
+      UnitPriceWithoutWashing,
       quantityFactorForFullRack,
       quantityInFullRacks,
       quantityFactorForPartialRack,
       quantityInPartiallyFullRack,
     );
 
-    console.log(
-      basePrice,
-      daysOfUseDiscountFactor,
-      quantityFactorForFullRack,
-      quantityInFullRacks,
-      quantityFactorForPartialRack,
-      quantityInPartiallyFullRack
-    );
+    const discountedUnitPrice = discountedBasicTotal / Quantity;
+    const discountedUnitPriceWithDaysOfUseIncreaseFactor = discountedUnitPrice * daysOfUseIncreaseFactor;
+    const totalDiscountedUnitCostWithEverything = discountedUnitPriceWithDaysOfUseIncreaseFactor * Quantity;
 
-    const discountedUnitPrice = discountedBasePrice / Quantity;
-    const discountedUnitPriceWithWash = discountedUnitPrice + washAndPolishConstant;
+    const totalWashingCost = Quantity * washAndPolishConstant;
 
-    // Use the new discounted unit price to calculate the discounted total cost
-    const discountedTotalPrice = discountedUnitPriceWithWash * Quantity;
-    const totalPriceWithWash = (basePrice +  washAndPolishConstant) * Quantity;
+    const discountedTotalWithWashAndDaysOfUse = _.sum([totalWashingCost, totalDiscountedUnitCostWithEverything]);
 
     discountedInputs = {
-      Id: inputs.Id,
-      NameEng: item.NameEng,
+      ...item,
       Quantity: inputs.Quantity,
-      UnitPrice: item.UnitPrice,
+      ImgSrc: item.ImgSrc,
       WashAndPolish: washAndPolishConstant,
-      TotalPrice: totalPrice,
-      TotalPriceWithWash: totalPriceWithWash,
-      DiscountedBasePrice: discountedBasePrice,
-      DiscountedUnitPrice: discountedUnitPrice,
-      DiscountedUnitPriceWithWash: discountedUnitPriceWithWash,
-      DiscountedTotalPrice: discountedTotalPrice,
+      TotalPriceRaw: totalPrice,
+      TotalPriceWithDiscountsAndWash: Math.round(discountedTotalWithWashAndDaysOfUse),
+      TotalWashingCost: totalWashingCost,
+      DiscountedUnitCostWithDaysFactorForDisplay: Math.round(_.sum([discountedUnitPriceWithDaysOfUseIncreaseFactor])),
+      QuantityDiscountFactor: quantityFactorForFullRack,
       Available: await getAvailability(),
+      Extras: {
+        discountedUnitPrice,
+        discountedUnitPriceWithDaysOfUseIncreaseFactor,
+        totalDiscountedUnitCostWithEverything,
+        totalWashingCost,
+        daysOfUseIncreaseFactor,
+      }
     }
 
     return exits.success(discountedInputs);

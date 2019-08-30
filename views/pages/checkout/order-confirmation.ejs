@@ -1,0 +1,167 @@
+<div id="order-confirmation" v-cloak>
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div>
+          <page-header
+            heading="Reserved Confirmation"
+            sub-heading="Your order has been reserved"
+          />
+        </div>
+        <div class="mb-3">
+          <div>
+            <h6>User Details</h6>
+            <hr />
+          </div>
+          <div v-if="orderWithAllData && _.isEmpty(orderWithAllData)">
+            <span><spinner /></span>
+            <span class="ml-1">Fetching Order Details...</span>
+          </div>
+          <div v-if="orderWithAllData && !_.isEmpty(orderWithAllData)">
+            <div class="mb-2">
+              <div><small>User Name</small></div>
+              <div v-if="orderWithAllData.User">{{orderWithAllData.User.fullName}}</div>
+              <div>{{orderWithAllData.GuestName || 'Guest'}}</div>
+            </div>
+            <div v-if="loadedOrder.CustomerKeyword">
+              <div><small>Order Recovery Keyword</small></div>
+              <div>{{loadedOrder.CustomerKeyword}}</div>
+            </div>
+            <div class="mb-2">
+              <div><small>Address</small></div>
+              <div>{{orderWithAllData.AddressLine1}}</div>
+              <div>{{orderWithAllData.AddressLine2}}</div>
+              <div>{{orderWithAllData.AddressLine3}}</div>
+              <div>{{orderWithAllData.Postcode}}</div>
+            </div>
+            <div class="mb-2">
+              <div><small>Telephone</small></div>
+              <div>{{orderWithAllData.Telephone1}}</div>
+            </div>
+            <div class="mb-2">
+              <div><small>Email</small></div>
+              <div>{{orderWithAllData.Email1}}</div>
+            </div>
+            <div class="mb-2">
+              <div><small>Comment</small></div>
+              <div>{{orderWithAllData.Comment}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <div class="mb-3">
+          <div>
+            <h6>Order</h6>
+          </div>
+          <div>
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <tr>
+                  <th>
+                    Order Number
+                  </th>
+                  <th>
+                    Starting Date
+                  </th>
+                  <th>
+                    Ending Date
+                  </th>
+                  <th>
+                    Days of Use
+                  </th>
+                  <th>
+                    Time Created
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    {{loadedOrder.id}}
+                  </td>
+                  <td>
+                    {{moment(loadedOrder.DateStart).format("LL")}}
+                  </td>
+                  <td>
+                    {{moment(loadedOrder.DateEnd).format("LL")}}
+                  </td>
+                  <td>
+                    {{loadedOrder.DaysOfUse}}
+                  </td>
+                  <td>
+                    {{moment(loadedOrder.createdAt).format("LLL")}}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="mb-3">
+          <div>
+            <h6>Order Items</h6>
+          </div>
+          <div class="" v-if="orderWithAllData && _.isEmpty(orderWithAllData)">
+            <span><spinner /></span>
+            <span class="ml-1">Fetching Order Rows...</span>
+          </div>
+          <div class="" v-if="orderWithAllData && !_.isEmpty(orderWithAllData)">
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <tr>
+                  <th>
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Unit Price
+                  </th>
+                  <th>
+                    Quantity In Order
+                  </th>
+                </tr>
+                <tr v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Product !== 160">
+                  <td>
+                    <img height="100px" :src="orderLine.glassDetails.ImgSrc" />
+                  </td>
+                  <td>
+                    <div>
+                      {{ orderLine.glassDetails.NameJ1 }}
+                    </div>
+                    <div>
+                      {{ orderLine.glassDetails.NameJ2 }}
+                    </div>
+                  </td>
+                  <td>
+                    ¥{{ orderLine.UnitPrice }}
+                  </td>
+                  <td>
+                    {{ orderLine.Quantity }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div v-if="false">
+            <h6>Shipping</h6>
+          </div>
+          <div  v-if="false" v-for="orderLine in orderWithAllData.OrderLineNumbers" v-if="orderLine.Product === 160">
+            <div>
+              {{ orderLine.glassDetails.NameJ1 }}
+            </div>
+            <div>
+              {{ orderLine.glassDetails.NameJ2 }}
+            </div>
+            <div>
+              Postcode: {{ orderWithAllData.Postcode }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- /* Expose server-rendered data as window.SAILS_LOCALS :: */ exposeLocalsToBrowser() %>

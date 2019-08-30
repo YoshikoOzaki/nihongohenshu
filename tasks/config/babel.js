@@ -9,13 +9,50 @@
  *   https://sailsjs.com/anatomy/tasks/config/babel.js
  *
  */
+
+ // I have changed this file just to use the regular babel from npm as IE was struggling with spread operators
+ // I googled a bunch of stuff to make this work
+
+
 module.exports = function(grunt) {
 
   grunt.config.set('babel', {
     dist: {
       options: {
-        presets: [require('sails-hook-grunt/accessible/babel-preset-env')]
+        presets: [
+          "es2015",
+          "stage-0"
+        ],
+        babelrc: false
       },
+      // options: {
+      //   presets: [require('sails-hook-grunt/accessible/babel-preset-env')]
+      // },
+      files: [
+        {
+          expand: true,
+          cwd: '.tmp/public',
+          src: ['js/**/*.js'],
+          dest: '.tmp/public'
+          // expand: true,
+          // cwd: 'assets/js/',
+          // src: ['**/*.js', '!dependencies/**/*.js'],
+          // dest: '.tmp/public/js/',
+          // ext: '.js'
+        }
+      ]
+    },
+    dev: {
+      options: {
+        presets: [
+          "es2015",
+          "stage-0"
+        ],
+        babelrc: false
+      },
+      // options: {
+      //   presets: [require('sails-hook-grunt/accessible/babel-preset-env')]
+      // },
       files: [
         {
           expand: true,
@@ -47,7 +84,7 @@ module.exports = function(grunt) {
   //
   // ```
   // // Load Grunt plugin from the node_modules/ folder.
-  // grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-babel');
   // ```
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
