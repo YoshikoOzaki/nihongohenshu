@@ -211,7 +211,6 @@ parasails.registerPage('cart', {
         return false;
       }
       this.syncing = true;
-      const cart = await parasails.util.getCart();
       const removeItemFromCart = async function () {
         oldCart = await parasails.util.getCart();
         oldCartItemsWithItemRemoved = _.filter(oldCart.items, (item, i) => {
