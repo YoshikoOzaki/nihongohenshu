@@ -36,9 +36,8 @@ parasails.registerComponent('itemAdder', {
     <div>
       <div>
         <img
-          width="100%"
           :src="product.ImgSrc"
-          style="cursor: pointer"
+          style="max-height: 114px; cursor: pointer; margin: 0 auto;"
           @click="clickProductImage"
         />
       </div>
