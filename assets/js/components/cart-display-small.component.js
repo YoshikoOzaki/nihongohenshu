@@ -34,7 +34,7 @@ parasails.registerComponent('cartDisplaySmall', {
         <div class="mt-2">
           <h5>
             <span class="fa fa-shopping-cart mr-2 ml-2"></span>
-            カート
+            カートの中身
           </h5>
         </div>
         <div class="table-responsive">
