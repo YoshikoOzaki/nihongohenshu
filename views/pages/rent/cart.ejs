@@ -4,8 +4,165 @@
       <div class="col-md-12">
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
+       <div class="col-sm-3">
+        <div class="mb-3 bg-dark p-2 text-white" style="border: 5px solid green">
+          <div class="">
+            <h4>Step 1</h4>
+            <h5>Add dates for the rental</h5>
+          </div>
+          <div class="">
+            <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()"
+              :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Start Date</label>
+                    <input class="form-control" id="date-start" name="date-start" type="date" :min="minDate"
+                      :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart"
+                      placeholder="0" autocomplete="date-end">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">End Date</label>
+                    <input class="form-control" id="date-end" name="date-end" type="date" :max="maxDate"
+                      :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd"
+                      placeholder="0" autocomplete="date-end">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12" v-if="false">
+                  <div class="form-group">
+                    <label for="full-name">Days of Usage</label>
+                    <input class="form-control" id="days-of-use" name="days-of-use" type="number"
+                      :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse"
+                      placeholder="0" autocomplete="days-of-use">
+                    <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for
+                    that date</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
+                    check your information and try again, or <a href="/contact">contact support</a> if the error
+                    persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-primary">
+                      <i class="fa fa-pencil mr-1"></i>
+                      Add Dates
+                    </ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
+          </div>
+        </div>
+        <div class="mb-3 bg-dark p-2 text-white">
+          <div class="">
+            <h4>Step 2</h4>
+            <h5>Add a postcode for order delivery</h5>
+          </div>
+          <div class="">
+            <ajax-form style="width: 100%" :syncing.sync="syncing" :cloud-error.sync="cloudError"
+              @submitted="submittedForm()" :handle-submitting="handleShippingSubmitting"
+              :handle-parsing="handleParsingShippingForm">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Postcode</label>
+                    <input class="form-control" id="postcode" name="postcode"
+                      :class="[formErrorsShipping.PostcodeRaw ? 'is-invalid' : '']"
+                      v-model.trim="formDataShipping.PostcodeRaw" autocomplete="postcode">
+                    <div class="invalid-feedback" v-if="formErrorsShipping.PostcodeRaw">Please enter a postcode in the
+                      format of 111-1111.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
+                    check your information and try again, or <a href="/contact">contact support</a> if the error
+                    persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-primary">
+                      <i class="fa fa-pencil mr-1"></i>
+                      Add Postcode
+                    </ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
+            <!-- <button @click="validateCartTest()"> Validation Test</button> -->
+          </div>
+        </div>
+        <div class="mb-3 bg-light p-2 card">
+          <div class="">
+            <h4>Additional</h4>
+            <h5>Add any extra products you might require</h5>
+          </div>
+          <div class="">
+            <div v-if="glasses.length === 0">
+              <div style="height: 178px;">
+                <span class="fa fa-spinner fa-spin"> </span>
+              </div>
+            </div>
+            <ajax-form @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError"
+              :handle-submitting="handleItemSubmitting" :handle-parsing="handleParsingItemForm"
+              v-if="glasses.length > 0">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Choose a glass type</label>
+                    <select class="form-control form-control-sm" v-model.trim="formDataItem.Id" id="id" name="id"
+                      :class="[formErrorsItems.Id ? 'is-invalid' : '']">
+                      <option disabled value="">1つを選択してください</option>
+                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameJ1}} {{glass.NameJ2}}</option>
+                    </select>
+                    <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="full-name">Quantity</label>
+                    <input class="form-control form-control-sm" id="quantity" name="quantity" type="number"
+                      :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity"
+                      placeholder="0" autocomplete="quantity">
+                    <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
+                  </div>
+                </div>
+                <div class="text-danger " v-if="formErrorsItems.Duplicate">Item is already in cart, edit in cart</div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for
+                    that date</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
+                    check your information and try again, or <a href="/contact">contact support</a> if the error
+                    persists.</p>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group text-right">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-primary">
+                      <i class="fa fa-cart-plus mr-1"></i>
+                      Add New Product
+                    </ajax-button>
+                  </div>
+                </div>
+              </div>
+            </ajax-form>
+          </div>
+        </div>
+      </div>
       <div class="col-sm-9"><hr />
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-md-12" v-if="cart.quantityDiscountFactorForFullRacks && cart.quantityDiscountFactorForFullRacks.discountFactor !== 0">
             <p>Quantitiy Discount Factor</p>
             <span class="text-primary">
@@ -16,7 +173,7 @@
             <small>Add more items to increase discount</small>
           </div>
         </div>
-        <hr />
+        <hr /> -->
         <div class="row" v-for="(item, index) in cart.items" :key="item.Id">
           <div class="col-md-2 mb-3">
             <img style="width: 100%;":src="item.ImgSrc" />
@@ -37,6 +194,7 @@
             </div>
           </div>
           <div class="col-md-3 mb-3">
+            <small>Quantitiy</small>
             <div class="input-group">
               <input class="form-control form-control-sm" type="number" v-model.trim="item.Quantity"/>
               <div class="input-group-append">
@@ -235,163 +393,6 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-3">
-        <div class="mb-3">
-          <div class="">
-            <h6>Add More Products</h6>
-          </div>
-          <div class="">
-            <div v-if="glasses.length === 0">
-              <div style="height: 178px;">
-                <span class="fa fa-spinner fa-spin"> </span>
-              </div>
-            </div>
-            <ajax-form @submitted="submittedForm()" :syncing.sync="syncing" :cloud-error.sync="cloudError"
-              :handle-submitting="handleItemSubmitting" :handle-parsing="handleParsingItemForm"
-              v-if="glasses.length > 0">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">Choose a glass type</label>
-                    <select class="form-control" v-model.trim="formDataItem.Id" id="id" name="id"
-                      :class="[formErrorsItems.Id ? 'is-invalid' : '']">
-                      <option disabled value="">1つを選択してください</option>
-                      <option v-for="glass in glasses" :value="glass.id">{{glass.NameJ1}} {{glass.NameJ2}}</option>
-                    </select>
-                    <div class="invalid-feedback" v-if="formErrorsItems.Id">Please enter an id.</div>
-                  </div>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">Quantity</label>
-                    <input class="form-control" id="quantity" name="quantity" type="number"
-                      :class="[formErrorsItems.Quantity ? 'is-invalid' : '']" v-model.trim="formDataItem.Quantity"
-                      placeholder="0" autocomplete="quantity">
-                    <div class="invalid-feedback" v-if="formErrorsItems.Quantity">Please enter a quantity.</div>
-                  </div>
-                </div>
-                <div class="text-danger " v-if="formErrorsItems.Duplicate">Item is already in cart, edit in cart</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for
-                    that date</p>
-                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
-                    check your information and try again, or <a href="/contact">contact support</a> if the error
-                    persists.</p>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">
-                      <i class="fa fa-cart-plus mr-1"></i>
-                      Add
-                    </ajax-button>
-                  </div>
-                </div>
-              </div>
-            </ajax-form>
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="">
-            <hr />
-            <h6>Dates Required</h6>
-          </div>
-          <div class="">
-            <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()"
-              :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">Start Date</label>
-                    <input class="form-control" id="date-start" name="date-start" type="date" :min="minDate"
-                      :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart"
-                      placeholder="0" autocomplete="date-end">
-                    <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
-                  </div>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">End Date</label>
-                    <input class="form-control" id="date-end" name="date-end" type="date" :max="maxDate"
-                      :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd"
-                      placeholder="0" autocomplete="date-end">
-                    <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
-                  </div>
-                </div>
-                <div class="col-sm-12" v-if="false">
-                  <div class="form-group">
-                    <label for="full-name">Days of Usage</label>
-                    <input class="form-control" id="days-of-use" name="days-of-use" type="number"
-                      :class="[formErrorsTime.DaysOfUse ? 'is-invalid' : '']" v-model.trim="formDataTime.DaysOfUse"
-                      placeholder="0" autocomplete="days-of-use">
-                    <div class="invalid-feedback" v-if="formErrorsTime.DaysOfUse">Please enter days of use.</div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <p class="text-danger" v-if="cloudError === 'dateTaken'">There are not enough of that glass type for
-                    that date</p>
-                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
-                    check your information and try again, or <a href="/contact">contact support</a> if the error
-                    persists.</p>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-outline-primary">
-                      <i class="fa fa-pencil mr-1"></i>
-                      Update
-                    </ajax-button>
-                  </div>
-                </div>
-              </div>
-            </ajax-form>
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="">
-            <hr />
-            <h6>Shipping Estimation</h6>
-          </div>
-          <div class="">
-            <ajax-form style="width: 100%" :syncing.sync="syncing" :cloud-error.sync="cloudError"
-              @submitted="submittedForm()" :handle-submitting="handleShippingSubmitting"
-              :handle-parsing="handleParsingShippingForm">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <label for="full-name">Postcode</label>
-                    <input class="form-control" id="postcode" name="postcode"
-                      :class="[formErrorsShipping.PostcodeRaw ? 'is-invalid' : '']"
-                      v-model.trim="formDataShipping.PostcodeRaw" autocomplete="postcode">
-                    <div class="invalid-feedback" v-if="formErrorsShipping.PostcodeRaw">Please enter a postcode in the
-                      format of 111-1111.</div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <p class="text-danger" v-if="cloudError === 'invalid postcode'">That postcode isn't valid</p>
-                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please
-                    check your information and try again, or <a href="/contact">contact support</a> if the error
-                    persists.</p>
-                </div>
-                <div class="col-sm-12">
-                  <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-outline-primary">
-                      <i class="fa fa-pencil mr-1"></i>
-                      Update
-                    </ajax-button>
-                  </div>
-
-                </div>
-              </div>
-            </ajax-form>
-            <!-- <button @click="validateCartTest()"> Validation Test</button> -->
           </div>
         </div>
       </div>
