@@ -25,6 +25,8 @@ parasails.registerPage('cart', {
     moment: moment,
     minDate: '',
     maxDate: '',
+    postcodeOverlayOn: false,
+    timePeriodOverlayOn: false,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -44,6 +46,19 @@ parasails.registerPage('cart', {
     //…
     this.minDate = moment().add(7,'d').format('YYYY-MM-DD');
     this.maxDate = moment().add(2,'y').format('YYYY-MM-DD');
+    const cart = await parasails.util.getCart();
+
+    if (!cart.timePeriod.DateStart && !cart.timePeriod.DateEnd) {
+      this.timePeriodOverlayOn = true;
+    }
+
+    if (!cart.shipping.Postcode) {
+      if (this.timePeriodOverlayOn) {
+        return;
+      }
+      this.postcodeOverlayOn = true;
+    }
+
   },
 
   updated: async function() {
@@ -53,6 +68,11 @@ parasails.registerPage('cart', {
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
+
+    turnOffOverlay: function () {
+      this.timePeriodOverlayOn = false;
+      this.postcodeOverlayOn = false;
+    },
 
     // Helper methods
 
@@ -132,7 +152,6 @@ parasails.registerPage('cart', {
       parametersRequired.datesEntered = cart.timePeriod && !!cart.timePeriod.DateEnd && !!cart.timePeriod.DateStart;
       parametersRequired.daysOfUseEntered = cart.timePeriod && cart.timePeriod.DaysOfUse > 0;
 
-      console.log(parametersRequired);
       if (_.includes(parametersRequired, false)) {
         this.checkoutEnabled = false;
         return;
