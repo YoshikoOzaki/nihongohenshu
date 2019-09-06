@@ -5,8 +5,8 @@
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
        <div class="col-sm-3">
-        <div class="mb-3 bg-dark p-2 text-white" style="border: 5px solid green">
-          <div class="">
+        <div class="bg-dark p-2 text-white overlay">
+          <div class="pt-2">
             <h4>Step 1</h4>
             <h5>Add dates for the rental</h5>
           </div>
@@ -64,6 +64,7 @@
         </div>
         <div class="mb-3 bg-dark p-2 text-white">
           <div class="">
+            <div class=""></div>
             <h4>Step 2</h4>
             <h5>Add a postcode for order delivery</h5>
           </div>
@@ -105,7 +106,6 @@
         </div>
         <div class="mb-3 bg-light p-2 card">
           <div class="">
-            <h4>Additional</h4>
             <h5>Add any extra products you might require</h5>
           </div>
           <div class="">
@@ -161,7 +161,11 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-9"><hr />
+      <div class="col-sm-9">
+        <div class="card p-3">
+          <div class="mb-2">
+            <h5>Rental Cart Items</h5>
+          </div>
         <!-- <div class="row">
           <div class="col-md-12" v-if="cart.quantityDiscountFactorForFullRacks && cart.quantityDiscountFactorForFullRacks.discountFactor !== 0">
             <p>Quantitiy Discount Factor</p>
@@ -176,7 +180,7 @@
         <hr /> -->
         <div class="row" v-for="(item, index) in cart.items" :key="item.Id">
           <div class="col-md-2 mb-3">
-            <img style="width: 100%;":src="item.ImgSrc" />
+            <img style="max-height: 120px; max-width: 100%; margin: 0 auto" :src="item.ImgSrc" />
           </div>
           <div class="col-md-2 mb-3">
             <h5>{{item.NameJ1}}</h5>
@@ -273,16 +277,13 @@
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0">
-            <div class="mb-3" v-if="!cart.items || cart.items.length === 0">
-              <div class="row">
-                <div class="col-md-12">
-                  <span class="text-info">
-                    <small><i>No items in the rental cart</i></small>
-                  </span>
-                </div>
-              </div>
+            <div class="text-muted p-1" v-if="!cart.items || cart.items.length === 0">
+              <small class="text-info">No items in the rental cart</small>
             </div>
-            <div class="row">
+            <div class="text-muted p-1" v-if="!cart.shipping.Postcode || !cart.timePeriod.DateStart || !cart.timePeriod.DateEnd">
+              <small class="text-info">Add postcode and time period to see shipping infomation</small>
+            </div>
+            <div class="row" v-if="cart.shipping.Postcode && !cart.timePeriod.DateStart && cart.timePeriod.DateEnd">
               <div class="col-md-12 mb-3">
                 <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
                   <table class="table table-borderless table-sm">
@@ -332,7 +333,10 @@
                 </div>
               </div>
             </div>
-            <div class="text-muted p-1">
+            <div class="text-muted p-1" v-if="!cart.shipping.Postcode || !cart.timePeriod.DateStart || !cart.timePeriod.DateEnd">
+              <small class="text-info">Add postcode and time period to see totals</small>
+            </div>
+            <div class="text-muted p-1" v-if="cart.shipping.Postcode && cart.timePeriod.DateStart && cart.timePeriod.DateEnd">
               <div class="row">
                 <div class="col-md-12">
                   <div>
@@ -395,6 +399,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
