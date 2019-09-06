@@ -1,23 +1,32 @@
-<div id="cart" v-cloak>
+<div id="cart" v-cloak @click="turnOffOverlay()">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
         <page-header heading="Rental Cart" sub-heading="Add glassware to the cart, check shipping costs" />
       </div>
        <div class="col-sm-3">
-        <div class="bg-dark p-2 text-white overlay">
-          <div class="pt-2">
+        <div
+          v-if="timePeriodOverlayOn"
+          style="z-index: 99999; color: white; position: absolute; top: 10rem; left: 30rem; width: 30rem;"
+        >
+          <h4>
+            <span class="fa fa-arrow-left pr-2"></span>
+            Add a rental time period
+          </h4>
+        </div>
+        <div class="bg-dark p-2 text-white card mb-3" v-bind:class="{ overlay: timePeriodOverlayOn }">
+          <div class="card-header">
             <h4>Step 1</h4>
             <h5>Add dates for the rental</h5>
           </div>
-          <div class="">
+          <div class="card-body">
             <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()"
               :handle-submitting="handleTimeSubmitting" :handle-parsing="handleParsingTimeForm">
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">Start Date</label>
-                    <input class="form-control" id="date-start" name="date-start" type="date" :min="minDate"
+                    <input class="form-control" id="date-start" name="date-start" type="date" :min="minDate" :max="maxDate"
                       :class="[formErrorsTime.DateStart ? 'is-invalid' : '']" v-model.trim="formDataTime.DateStart"
                       placeholder="0" autocomplete="date-end">
                     <div class="invalid-feedback" v-if="formErrorsTime.DateStart">Please enter a start date.</div>
@@ -26,7 +35,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="full-name">End Date</label>
-                    <input class="form-control" id="date-end" name="date-end" type="date" :max="maxDate"
+                    <input class="form-control" id="date-end" name="date-end" type="date" :min="minDate" :max="maxDate"
                       :class="[formErrorsTime.DateEnd ? 'is-invalid' : '']" v-model.trim="formDataTime.DateEnd"
                       placeholder="0" autocomplete="date-end">
                     <div class="invalid-feedback" v-if="formErrorsTime.DateEnd">Please enter a end date.</div>
@@ -52,7 +61,7 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-primary">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-outline-light">
                       <i class="fa fa-pencil mr-1"></i>
                       Add Dates
                     </ajax-button>
@@ -62,14 +71,23 @@
             </ajax-form>
           </div>
         </div>
-        <div class="mb-3 bg-dark p-2 text-white">
-          <div class="">
+        <div
+          v-if="postcodeOverlayOn"
+          style="z-index: 99999; color: white; position: absolute; top: 30rem; left: 30rem; width: 30rem;"
+        >
+          <h4>
+            <span class="fa fa-arrow-left pr-2"></span>
+            Add the delivery postcode
+          </h4>
+        </div>
+        <div class="bg-dark p-2 text-white card mb-3" v-bind:class="{ overlay: postcodeOverlayOn }">
+          <div class="card-header">
             <div class=""></div>
             <h4>Step 2</h4>
             <h5>Add a postcode for order delivery</h5>
           </div>
-          <div class="">
-            <ajax-form style="width: 100%" :syncing.sync="syncing" :cloud-error.sync="cloudError"
+          <div class="card-body">
+            <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError"
               @submitted="submittedForm()" :handle-submitting="handleShippingSubmitting"
               :handle-parsing="handleParsingShippingForm">
               <div class="row">
@@ -93,7 +111,7 @@
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group text-right">
-                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm  btn-primary">
+                    <ajax-button type="submit" :syncing="syncing" class="btn btn-sm btn-outline-light">
                       <i class="fa fa-pencil mr-1"></i>
                       Add Postcode
                     </ajax-button>
@@ -104,11 +122,11 @@
             <!-- <button @click="validateCartTest()"> Validation Test</button> -->
           </div>
         </div>
-        <div class="mb-3 bg-light p-2 card">
-          <div class="">
-            <h5>Add any extra products you might require</h5>
+        <div class="mb-3 bg-light card">
+          <div class="card-header">
+            <h5>Additional Items</h5>
           </div>
-          <div class="">
+          <div class="card-body">
             <div v-if="glasses.length === 0">
               <div style="height: 178px;">
                 <span class="fa fa-spinner fa-spin"> </span>
@@ -277,66 +295,68 @@
             </div>
           </div>
           <div class="col-sm-12 m-0 p-0">
-            <div class="text-muted p-1" v-if="!cart.items || cart.items.length === 0">
-              <small class="text-info">No items in the rental cart</small>
-            </div>
-            <div class="text-muted p-1" v-if="!cart.shipping.Postcode || !cart.timePeriod.DateStart || !cart.timePeriod.DateEnd">
-              <small class="text-info">Add postcode and time period to see shipping infomation</small>
-            </div>
-            <div class="row" v-if="cart.shipping.Postcode && !cart.timePeriod.DateStart && cart.timePeriod.DateEnd">
-              <div class="col-md-12 mb-3">
-                <div class="table-responsive" v-if="cart.shipping || cart.timePeriod">
-                  <table class="table table-borderless table-sm">
-                    <tr>
-                      <th>
-                        Delivery
-                      </th>
-                      <th>
-                        Return
-                      </th>
-                      <th>
-                        Days
-                      </th>
-                      <th>
-                        Postcode
-                      </th>
-                      <th>
-                        Method
-                      </th>
-                      <th>
-                        Area
-                      </th>
-                    </tr>
-                    <tr>
-                      <td>
-                        {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
-                      </td>
-                      <td>
-                        {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
-                      </td>
-                      <td>
-                        {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
-                      </td>
-                      <td>
-                        {{cart.shipping && cart.shipping.PostcodeRaw || "Add a Postcode"}}<br />
-                        <small
-                          class="text-info">{{ (cart.shipping && cart.shipping.ShippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
-                      </td>
-                      <td>
-                        {{cart.shipping && _.capitalize(cart.shipping.ShippingType)}}<br />
-                      </td>
-                      <td>
-                        {{cart.shipping && cart.shipping.ShippingFactorRecord && _.capitalize(cart.shipping.ShippingFactorRecord.Place)}}<br />
-                      </td>
-                    </tr>
-                  </table>
+            <div class="row">
+              <div class="col-md-6 mb-3" v-if="cart.timePeriod.DateStart && cart.timePeriod.DateEnd">
+                <div class="mb-2">
+                  <h5>Time Period</h5>
+                  <hr />
+                </div>
+                <div>
+                  <div>
+                    <h6>Delivery Day</h6>
+                    <div>
+                      {{cart.timePeriod && moment(cart.timePeriod.DateStart).format('LL') || "None"}}
+                    </div>
+                  </div>
+                  <div>
+                    <h6>Return Day</h6>
+                    <div>
+                      {{cart.timePeriod && moment(cart.timePeriod.DateEnd).format('LL') || "None"}}
+                    </div>
+                  </div>
+                  <div>
+                    <h6>Days of Use</h6>
+                    <div>
+                      {{cart.timePeriod && cart.timePeriod.DaysOfUse || "None"}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3" v-if="cart.shipping.Postcode">
+                <div class="mb-2">
+                  <h5>Delivery</h5>
+                  <hr />
+                </div>
+                <div>
+                  <div>
+                    <h6>Postcode</h6>
+                    <div>
+                      {{cart.shipping && cart.shipping.PostcodeRaw || "Add a Postcode"}}<br />
+                      <small
+                        class="text-info">{{ (cart.shipping && cart.shipping.ShippingPossible === false) ? "Shipping Not Possible" : ""}}</small>
+                    </div>
+                  </div>
+                  <div>
+                    <h6>Devliery Method</h6>
+                    <div>
+                      {{cart.shipping && _.capitalize(cart.shipping.ShippingType)}}<br />
+                    </div>
+                  </div>
+                  <div>
+                    <h6>Area</h6>
+                    <div>
+                      {{cart.shipping && cart.shipping.ShippingFactorRecord && _.capitalize(cart.shipping.ShippingFactorRecord.Place)}}<br />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="text-muted p-1" v-if="!cart.shipping.Postcode || !cart.timePeriod.DateStart || !cart.timePeriod.DateEnd">
-              <small class="text-info">Add postcode and time period to see totals</small>
-            </div>
             <div class="text-muted p-1" v-if="cart.shipping.Postcode && cart.timePeriod.DateStart && cart.timePeriod.DateEnd">
+              <div class="mb-2 text-right">
+                <hr />
+                <h3>Totals</h3>
+                <hr />
+              </div>
               <div class="row">
                 <div class="col-md-12">
                   <div>
