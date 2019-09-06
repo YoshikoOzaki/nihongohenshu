@@ -18,6 +18,11 @@
           <div class="card-header">
             <h4>Step 1</h4>
             <h5>Add dates for the rental</h5>
+            <span
+              class="fa fa-asterisk"
+              style="position: absolute; top: 1rem; right: 1rem"
+              v-bind:class="{ 'text-warning': !cart.timePeriod.DateStart, 'text-success': cart.timePeriod.DateStart && cart.timePeriod.DateEnd }">&nbsp;
+            <span>
           </div>
           <div class="card-body">
             <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()"
@@ -85,6 +90,11 @@
             <div class=""></div>
             <h4>Step 2</h4>
             <h5>Add a postcode for order delivery</h5>
+            <span
+              class="fa fa-asterisk"
+              style="position: absolute; top: 1rem; right: 1rem"
+              v-bind:class="{ 'text-warning': !cart.shipping.Postcode, 'text-success': cart.shipping.Postcode }">&nbsp;
+            <span>
           </div>
           <div class="card-body">
             <ajax-form :syncing.sync="syncing" :cloud-error.sync="cloudError"
