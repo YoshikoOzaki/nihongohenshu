@@ -52,7 +52,7 @@ module.exports = {
     const itemsCost = _.sum(inputs.Items, (o) => { return o.TotalPriceWithDiscountsAndWash });
 
     const subTotal = (_.sum([itemsCost, shippingPrice]));
-    const taxTotal = (_.sum([itemsCost, shippingPrice])) * inputs.TaxRate;
+    const taxTotal = Math.round((_.sum([itemsCost, shippingPrice])) * inputs.TaxRate);
     const grandTotal = _.sum([subTotal, taxTotal]);
 
     cartTotals = {

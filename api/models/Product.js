@@ -46,14 +46,6 @@ module.exports = {
       example: 'http://plumm-glasses.jp/media/catalog/product/cache/5/image/600x450/9df78eab33525d08d6e5fb8d27136e95/f/l/flute-handmade.jpg'
     },
 
-    // change the sku to be the id... maybe
-    // Sku: {
-    //   type: 'number',
-    //   required: true,
-    //   description: 'Glass sku code',
-    //   example: '167'
-    // },
-
     UnitPrice: {
       type: 'number',
       required: true,
@@ -80,7 +72,50 @@ module.exports = {
     OrderLineNumbers: {
       collection: 'OrderLineNumber',
       via: 'Product',
-    }
+    },
+
+    Volume: {
+      type: 'number',
+      description: '',
+      example: '99'
+    },
+
+    Height: {
+      type: 'number',
+      description: '',
+      example: '99'
+    },
+
+    RimDiameter: {
+      type: 'number',
+      description: '',
+      example: '99'
+    },
+
+    MaxBowlDiameter: {
+      type: 'number',
+      description: '',
+      example: '99'
+    },
+
+    BaseDiameter: {
+      type: 'number',
+      description: '',
+      example: '99'
+
+    },
+
+    Weight: {
+      type: 'number',
+      description: '',
+      example: '99'
+    },
+
+    Description: {
+      type: 'string',
+      description: '',
+      example: 'ワインをカジュアルに楽しむとき、ビール、ソフトドリンクにも'
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
