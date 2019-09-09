@@ -122,7 +122,7 @@ module.exports.bootstrap = async function (done) {
         "NameE1": "Rental Delivery and Pickup",
         "NameE2": "",
         "UnitPrice": 3000,
-        "Type": "Delivery"
+        "Type": "Delivery",
       },
       {
         "id": 161,
@@ -133,8 +133,15 @@ module.exports.bootstrap = async function (done) {
         "UnitPrice": 120,
         "RackCapacity": 36,
         "RackHeight": 280,
-        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405611/Glassware/pluh3310a_4_plumm-large_aejbsa.jpg",
-        "Type": "Glassware"
+        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
+        "Type": "Glassware",
+        "Volume": 100,
+        "Height": 99,
+        "RimDiameter": 98,
+        "MaxBowlDiameter": 97,
+        "BaseDiameter": 96,
+        "Weight": 95,
+        "Description": "ワインをカジュアルに楽しむとき、ビール、ソフトドリンクにも",
       },
       {
         "id": 162,
@@ -157,7 +164,7 @@ module.exports.bootstrap = async function (done) {
         "UnitPrice": 230,
         "RackCapacity": 16,
         "RackHeight": 280,
-        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405700/Glassware/pluh3320a_4_plumm-large_a6si3y.jpg",
+        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
         "Type": "Glassware"
       },
       {
@@ -169,7 +176,7 @@ module.exports.bootstrap = async function (done) {
         "UnitPrice": 170,
         "RackCapacity": 25,
         "RackHeight": 280,
-        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405700/Glassware/pluh3320a_4_plumm-large_a6si3y.jpg",
+        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
         "Type": "Glassware"
       },
       {
@@ -181,7 +188,7 @@ module.exports.bootstrap = async function (done) {
         "UnitPrice": 230,
         "RackCapacity": 16,
         "RackHeight": 280,
-        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405700/Glassware/pluh3320a_4_plumm-large_a6si3y.jpg",
+        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
         "Type": "Glassware"
       },
       {
@@ -193,7 +200,7 @@ module.exports.bootstrap = async function (done) {
         "UnitPrice": 230,
         "RackCapacity": 16,
         "RackHeight": 280,
-        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405700/Glassware/pluh3320a_4_plumm-large_a6si3y.jpg",
+        "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
         "Type": "Glassware"
       },
       {
