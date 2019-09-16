@@ -24,11 +24,11 @@ module.exports = {
 
     var moment = require('moment');
 
-    const dateForRiseOfTax = moment("2019-10-10");
+    // const dateForRiseOfTax = moment("2019-10-10");
     const getConsumptionTaxRate = () => {
-      if (moment() >= dateForRiseOfTax ) {
-        return 0.10;
-      }
+      // if (moment() >= dateForRiseOfTax ) {
+      //   return 0.10;
+      // }
       return 0.08;
     }
 

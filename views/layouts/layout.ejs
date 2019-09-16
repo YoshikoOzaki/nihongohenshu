@@ -45,22 +45,7 @@
           <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">ホーム</a>
           <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">レンタル・サービス内容</a>
           <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">グラスの種類</a>
-          <% if (!me) { %>
-            <a
-              class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0"
-              href="/rent/order-recovery"
-            >
-              ご注文
-            </a>
-          <% } %>
-          <% if (me) { %>
-            <a
-              class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0"
-              href="/rent/member-orders"
-            >
-              ご注文
-            </a>
-          <% } %>
+          <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/faq">よくあるご質問</a>
 
           <!-- <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">Try Renting</a> -->
         </div>
@@ -76,6 +61,14 @@
           </div>
           <!-- LOGGED-IN NAVIGATION -->
           <% if(me) { %>
+          <div class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" style="margin-top: -3px">
+            <a
+              class="btn btn-sm btn-outline-secondary"
+              href="/rent/member-orders"
+            >
+              ご注文
+            </a>
+          </div>
           <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/contact">Help</a>
           <!-- Only in desktop nav -->
           <div class="nav-item dropdown d-none d-sm-block">
@@ -90,15 +83,27 @@
           <a class="nav-item nav-link ml-2 mr-2 d-block d-sm-none" href="/logout">Sign out</a>
           <% } else { %>
           <!-- LOGGED-OUT NAVIGATION -->
-          <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/faq">よくあるご質問</a>
-          <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/login">ログイン</a>
-          <!-- Only in desktop nav -->
-          <div class="form-inline d-none ml-2 d-md-block" >
-            <a class="btn btn-outline-secondary" href="/signup">Sign up</a>
+          <div class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" style="margin-top: -3px">
+            <a
+              class="btn btn-sm btn-outline-secondary"
+              href="/rent/order-recovery"
+            >
+              ご注文
+            </a>
           </div>
+          <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/login">Log in</a>
+          <!-- Only in desktop nav -->
+          <!-- <div class="form-inline d-none ml-2 d-md-block" >
+            <a class="btn btn-outline-secondary" href="/signup">Sign up</a>
+          </div> -->
           <!-- Only in mobile nav -->
-          <a class="nav-item nav-link text-info ml-2 d-block d-md-none" href="/signup">Sign up</a>
+          <!-- <a class="nav-item nav-link text-info ml-2 d-block d-md-none" href="/signup">Sign up</a> -->
           <% } %>
+          <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/contact">Contact
+            <span class="d-none d-sm-inline">
+              us
+            </span>
+          </a>
         </div>
       </header>
 
@@ -121,7 +126,6 @@
 
       <footer id="page-footer" class="navbar navbar-light justify-content-between flex-row-reverse">
         <div class="nav">
-          <small class="nav-item"><a class="nav-link text-primary" href="/contact">Contact<span class="d-none d-sm-inline"> us</span></a></small>
           <small class="nav-item"><a class="nav-link text-primary" href="/legal/terms">Terms<span class="d-none d-sm-inline"> of Use</span></a></small>
           <small class="nav-item"><a class="nav-link text-primary" href="/legal/privacy">Privacy<span class="d-none d-sm-inline"> policy</span></a></small>
           <% if(me) { %>
@@ -172,6 +176,7 @@
     <script src="/js/components/modal.component.js"></script>
     <script src="/js/components/page-header.component.js"></script>
     <script src="/js/components/spinner.component.js"></script>
+    <script src="/js/components/wine-scale.component.js"></script>
     <script src="/js/utilities/async-for-each.js"></script>
     <script src="/js/utilities/clear-cart.js"></script>
     <script src="/js/utilities/convert-order-to-cart-syntax.js"></script>

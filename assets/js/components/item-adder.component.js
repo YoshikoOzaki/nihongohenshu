@@ -33,52 +33,70 @@ parasails.registerComponent('itemAdder', {
   },
 
   template: `
-    <div>
-      <div>
+    <div class="card p-3">
+      <div class="mb-3">
         <img
-          width="100%"
           :src="product.ImgSrc"
-          style="cursor: pointer"
+          style="max-height: 218px; max-width: 100%; cursor: pointer; margin: 0 auto; border: 1px #4C3778 solid; cursor: pointer"
           @click="clickProductImage"
         />
       </div>
-      <div class="text-center">
-        <div class="mb-1">
-          <h6 class="text-center">{{ product.NameE1 }}</h6>
-          <h6 class="text-center">{{ product.NameJ1 }}</h6>
-          <div>{{ product.NameE2 }}</div>
+      <div>
+        <div class="mb-1 text-center">
+          <h5>{{ product.NameJ1 }}</h5>
           <div>{{ product.NameJ2 }}</div>
-          <small>¥{{ product.UnitPrice }}</small>
         </div>
-        <input
-          class="form-control mb-1"
-          id="quantity"
-          name="quantity"
-          type="number"
-          placeholder="0"
-          autocomplete="quantity"
-          v-model="quantity"
-          :class="[formErrors.Quantity ? 'is-invalid' : '']"
-        />
-        <div
-          class="invalid-feedback"
-          v-if="formErrors.Quantity"
-          style="margin-top: -15px; margin-bottom: 5px;"
-        >
-          Please enter a valid quantity.
+        <div class="row mb-3">
+          <div class="col-md-7">
+            <wine-scale />
+          </div>
+          <div class="col-md-5 pr-4" style="padding-top: 20px;">
+            <div>
+              1日最大使用料
+            </div>
+            <div class="text-center">
+              <h5>￥{{ product.UnitPrice }}/ 脚</h5>
+            </div>
+          </div>
         </div>
-        <button @click="submit" type="submit" class="btn btn-block btn-outline-primary ajax-button" :class="[syncing ? 'syncing' : '']">
-          <span class="button-text" v-if="!syncing"><slot name="default">Add to Cart</slot></span>
-          <span class="button-loader clearfix" v-if="syncing">
-            <slot name="syncing-state">
-              <div class="loading-dot dot1"></div>
-              <div class="loading-dot dot2"></div>
-              <div class="loading-dot dot3"></div>
-              <div class="loading-dot dot4"></div>
-            </slot>
-          </span>
-        </button>
+        <div class="row">
+          <div class="col-md-5 offset-md-1">
+            <input
+              class="form-control form-control-sm mb-1"
+              id="quantity"
+              name="quantity"
+              type="number"
+              placeholder="0"
+              autocomplete="quantity"
+              v-model="quantity"
+              :class="[formErrors.Quantity ? 'is-invalid' : '']"
+            />
+            <div
+              class="invalid-feedback"
+              v-if="formErrors.Quantity"
+              style="margin-top: -15px; margin-bottom: 5px;"
+            >
+              Please enter a valid quantity.
+            </div>
+          </div>
+          <div class="col-md-5">
+            <button @click="submit" type="submit" class="btn btn-sm btn-block btn-primary ajax-button" :class="[syncing ? 'syncing' : '']">
+              <span class="button-text" v-if="!syncing"><slot name="default">カートに入れる</slot></span>
+              <span class="button-loader clearfix" v-if="syncing">
+                <slot name="syncing-state">
+                  <div class="loading-dot dot1"></div>
+                  <div class="loading-dot dot2"></div>
+                  <div class="loading-dot dot3"></div>
+                  <div class="loading-dot dot4"></div>
+                </slot>
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
+
+
+
       <modal
         v-if="productModalVisable"
         @close="closeProductModal()"
@@ -89,25 +107,89 @@ parasails.registerComponent('itemAdder', {
             <span>&times;</span>
           </button>
           <h5 class="modal-title">
-            {{ product.NameE1 }}
             {{ product.NameJ1 }}
+          </h5>
+          <h5 class="modal-title">
+            {{ product.NameJ2 }}
           </h5>
         </div>
         <div class="modal-body">
-          <div class="">
-            <img
-              width="100%"
-              :src="product.ImgSrc"
-              @click="clickProductImage"
-            />
-            <h6>{{ product.NameE1 }}</h6>
-            <h6>{{ product.NameJ1 }}</h6>
-            <div>{{ product.NameE2 }}</div>
-            <div>{{ product.NameJ2 }}</div>
-            <br />
-            <small>Sku: {{ product.id }}</small>
-            <br />
-            <small>¥{{ product.UnitPrice }}</small>
+          <div class="container">
+            <div class="row">
+              <img
+                style="max-height: 30rem; max-width: 100%; margin: 0px auto;"
+                :src="product.ImgSrc"
+                @click="clickProductImage"
+              />
+            </div>
+            <div class="row">
+              <div class="col-md-4 offset-md-2">
+                <h5>{{ product.NameJ1 }}</h5>
+                <h5>{{ product.NameJ2 }}</h5>
+              </div>
+              <div class="col-md-6">
+                <h5>{{ product.Description }}</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 offset-md-2">
+                <div class="my-3">
+                <wine-scale />
+                </div>
+                <small>Sku: {{ product.id }}</small>
+                <div>1日最大使用料 ￥{{ product.UnitPrice }}/ 脚</div>
+              </div>
+              <div class="col-md-4 offset-md-2">
+                <div class="row">
+                  <div class="col-md-6">
+                    容量
+                  </div>
+                  <div class="col-md-6">
+                    {{product.Volume}}cc
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    高さ
+                  </div>
+                  <div class="col-md-6">
+                    {{product.Height}}mm
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    口径
+                  </div>
+                  <div class="col-md-6">
+                    {{product.RimDiameter}}mm
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    ボウル最大径
+                  </div>
+                  <div class="col-md-6">
+                    {{product.MaxBowlDiameter}}mm
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    ベース径
+                  </div>
+                  <div class="col-md-6">
+                    {{product.BaseDiameter}}mm
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    重量
+                  </div>
+                  <div class="col-md-6">
+                    {{product.Weight}}g
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </modal>

@@ -11,23 +11,23 @@
     <div class="row">
       <div class="col-lg-8 order-2 order-lg-1">
         <div class="row">
-        <div v-if="_.isEmpty(glasses)" class="col-md-12 mb-3">
-          <spinner />
-        </div>
-        <div
-          v-for="(glass, index) in glasses"
-          :key="index"
-          class="col-md-3 mb-4"
-        >
-          <item-adder
-            :product="glass"
-            :index="index"
-            :handle-submitting="handleItemSubmitting"
-            :handleParsing="handleParsingItemForm"
-            :cloud-error.sync="cloudError"
-            :syncing="syncing"
-          />
-        </div>
+          <div v-if="_.isEmpty(glasses)" class="col-md-12 mb-3">
+            <spinner />
+          </div>
+          <div
+            v-for="(glass, index) in glasses"
+            :key="index"
+            class="col-md-4 mb-5"
+          >
+            <item-adder
+              :product="glass"
+              :index="index"
+              :handle-submitting="handleItemSubmitting"
+              :handleParsing="handleParsingItemForm"
+              :cloud-error.sync="cloudError"
+              :syncing="syncing"
+            />
+          </div>
         </div>
       </div>
       <div
@@ -36,6 +36,7 @@
         <div class="row sticky-top">
           <cart-display-small
             :cart="cart"
+            :validate-cart="validateCart"
           />
         </div>
       </div>
