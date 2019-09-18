@@ -97,48 +97,48 @@ module.exports.bootstrap = async function (done) {
     },
   ]);
 
-  await WineScaleOption.createEach([
-    {
-      Color: 'red',
-      Value: '1',
-    },
-    {
-      Color: 'red',
-      Value: '2',
-    },
-    {
-      Color: 'red',
-      Value: '3',
-    },
-    {
-      Color: 'red',
-      Value: '4',
-    },
-    {
-      Color: 'red',
-      Value: '5',
-    },
-    {
-      Color: 'white',
-      Value: '1',
-    },
-    {
-      Color: 'white',
-      Value: '2',
-    },
-    {
-      Color: 'white',
-      Value: '3',
-    },
-    {
-      Color: 'white',
-      Value: '4',
-    },
-    {
-      Color: 'white',
-      Value: '5',
-    },
-  ]);
+  // await WineScaleOption.createEach([
+  //   {
+  //     Color: 'red',
+  //     Value: '1',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '2',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '3',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '4',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '5',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '1',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '2',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '3',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '4',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '5',
+  //   },
+  // ]);
 
   await User.createEach([
     {
@@ -185,7 +185,10 @@ module.exports.bootstrap = async function (done) {
         "BaseDiameter": 96,
         "Weight": 95,
         "Description": "ワインをカジュアルに楽しむとき、ビール、ソフトドリンクにも",
-        "WineScaleOptions": [1,2,6,9],
+        "Red3": true,
+        "Red4": true,
+        "White1": true,
+        "White2": true,
       },
       {
         "id": 162,
@@ -197,7 +200,9 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "Red1": true,
+        "White5": true,
       },
       {
         "id": 163,
