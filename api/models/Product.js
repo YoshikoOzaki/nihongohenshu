@@ -117,6 +117,11 @@ module.exports = {
       example: 'ワインをカジュアルに楽しむとき、ビール、ソフトドリンクにも'
     },
 
+    WineScaleOptions: {
+      collection: 'WineScaleOption',
+      via: 'Products',
+    },
+
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝

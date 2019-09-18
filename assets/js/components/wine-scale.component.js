@@ -13,7 +13,7 @@ parasails.registerComponent('wineScale', {
   //  ╠═╝╠╦╝║ ║╠═╝╚═╗
   //  ╩  ╩╚═╚═╝╩  ╚═╝
   props: [
-    ''
+    'scaleData'
   ],
 
   //  ╦╔╗╔╦╔╦╗╦╔═╗╦    ╔═╗╔╦╗╔═╗╔╦╗╔═╗
@@ -22,10 +22,6 @@ parasails.registerComponent('wineScale', {
   data: function (){
     return {
       //…
-      scaleData: {
-        white: [4, 5],
-        red: [3, 4],
-      }
     };
   },
 

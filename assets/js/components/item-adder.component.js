@@ -48,7 +48,9 @@ parasails.registerComponent('itemAdder', {
         </div>
         <div class="row mb-3">
           <div class="col-md-7">
-            <wine-scale />
+            <wine-scale
+              scaleData="product.scaleData"
+            />
           </div>
           <div class="col-md-5 pr-4" style="padding-top: 20px;">
             <div>
