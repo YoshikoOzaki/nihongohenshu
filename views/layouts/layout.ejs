@@ -32,19 +32,10 @@
         style="border-bottom: 1px solid rgba(0, 0, 0, 0.1)"
         class="navbar navbar-expand-sm navbar flex-column flex-md-row justify-content-between"
       >
-        <a class="navbar-brand mr-0" href="/">
-          <img class="navbar-brand-image" src="../images/plumm-logo.png" />
-          <div>
-            <b>グラスレンタル</b>
-          </div>
-          <div class="navbar-brand--subheading">
-            <b>in <span class="text-uppercase">グラズマターズ<span></b>
-          </div>
-        </a>
         <div class="navbar-nav flex-row">
           <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/">ホーム</a>
           <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/about">レンタル・サービス内容</a>
-          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">グラスの種類</a>
+          <a class="nav-item nav-item__center nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/rent/selection">商品一覧</a>
           <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/faq">よくあるご質問</a>
         </div>
         <div class="navbar-nav flex-row">
@@ -86,7 +77,7 @@
               class="btn btn-sm btn-outline-secondary"
               href="/rent/order-recovery"
             >
-              ご注文
+              ご予約
             </a>
           </div>
           <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/login">Log in</a>
@@ -104,6 +95,9 @@
           </a>
         </div>
       </header>
+      <div class="text-center" style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+          プラムレンタルクリスタルグラスイングラズマターズ
+      </div>
 
       <!-- Alert if email has not been confirmed -->
       <% if(me&&me.emailChangeCandidate) { %>
