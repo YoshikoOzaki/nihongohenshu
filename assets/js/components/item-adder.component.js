@@ -48,7 +48,9 @@ parasails.registerComponent('itemAdder', {
         </div>
         <div class="row mb-3">
           <div class="col-md-7">
-            <wine-scale />
+            <wine-scale
+              :product="product"
+            />
           </div>
           <div class="col-md-5 pr-4" style="padding-top: 20px;">
             <div>
@@ -134,7 +136,9 @@ parasails.registerComponent('itemAdder', {
             <div class="row">
               <div class="col-md-4 offset-md-2">
                 <div class="my-3">
-                <wine-scale />
+                <wine-scale 
+                  :product="product"
+                />
                 </div>
                 <small>Sku: {{ product.id }}</small>
                 <div>1日最大使用料 ￥{{ product.UnitPrice }}/ 脚</div>

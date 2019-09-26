@@ -60,7 +60,7 @@ parasails.registerComponent('cartDisplaySmall', {
             </tr>
             <tr v-for="(item, index) in cart.items" :key="item.id">
               <td>
-                <img style="height: 50px" :src="item.ImgSrc" />
+                <img style="height: 50px; max-width: 100%; margin: 0 auto; border: 1px gray solid;" :src="item.ImgSrc" />
               </td>
               <td>
                 <div>
