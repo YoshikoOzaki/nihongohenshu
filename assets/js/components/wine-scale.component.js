@@ -41,7 +41,7 @@ parasails.registerComponent('wineScale', {
         </div>
         <div v-bind:class="{ 'bg-dark': product.White3 }" style="border-left: white 1px solid; background-color: lightgrey; width: 20%">
         </div>
-        <div v-bind:style="{ 'bg-dark': product.White4 }" style="border-left: white 1px solid; background-color: lightgrey; width: 20%">
+        <div v-bind:class="{ 'bg-dark': product.White4 }" style="border-left: white 1px solid; background-color: lightgrey; width: 20%">
         </div>
         <div v-bind:class="{ 'bg-dark': product.White5 }" style="border-left: white 1px solid; background-color: lightgrey; width: 20%">
         </div>
