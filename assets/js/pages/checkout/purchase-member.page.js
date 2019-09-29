@@ -169,7 +169,7 @@ parasails.registerPage('purchase-member', {
         TakuhaiTimeSlot: this.formData.TakuhaiTimeSlot,
         User: this.me.id,
       }
-      
+
       chargePayload = {
         token: token.token,
         cart,
