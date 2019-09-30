@@ -343,6 +343,19 @@ module.exports = {
       inputs.cart.OrderIdToIgnore
     );
 
+    // email user details of the created order
+    // cant send any undefined
+    if (chargeCardResult.charge.result.mstatus === 'success') {
+      await sails.helpers.sendTemplateEmail.with({
+        to: inputs.orderDetails.Email1,
+        subject: 'Your Plumm Rental Confirmed Order Details',
+        template: 'email-guest-purchase-confirmation',
+        templateData: {
+          guestName: inputs.orderDetails.GuestName,
+        }
+      });
+    }
+
     const combinedResults = {
       cardCharge: chargeCardResult,
       order: createdOrder,
