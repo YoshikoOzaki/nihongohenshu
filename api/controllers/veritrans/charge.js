@@ -352,6 +352,19 @@ module.exports = {
         template: 'email-guest-purchase-confirmation',
         templateData: {
           guestName: inputs.orderDetails.GuestName,
+          items: validatedCart.items,
+          dateStart: validatedCart.timePeriod.DateStart,
+          dateEnd: validatedCart.timePeriod.DateEnd,
+          takuhaiTimeSlot: inputs.orderDetails.TakuhaiTimeSlot,
+          postcodeRaw: validatedCart.shipping.Postcode,
+          addressLine1: inputs.orderDetails.AddressLine1,
+          addressLine2: inputs.orderDetails.AddressLine2,
+          addressLine3: inputs.orderDetails.AddressLine3,
+          comment: inputs.orderDetails.Comment || 'No comment entered',
+          itemsTotal: validatedCart.cartTotals.itemsTotal,
+          subTotal: validatedCart.cartTotals.subTotal,
+          taxTotal: validatedCart.cartTotals.taxTotal,
+          grandTotal: validatedCart.cartTotals.grandTotal,
         }
       });
     }

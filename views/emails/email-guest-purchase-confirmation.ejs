@@ -4,6 +4,28 @@
   Congratulations on ordering from Plumm Wine Glass Rentals.
   Your order details are below:
 </p>
+<table>
+<% for(var i=0; i < items.length; i++) { %>
+   <tr>
+     <td><%= items[i].Quantity %></td>
+     <td><%= items[i].NameJ1 %></td>
+   </tr>
+<% } %>
+</table>
+<hr />
+<p style="margin-bottom: 25px;">Delivery Date: <%= dateStart %> </p>
+<p style="margin-bottom: 25px;">Return Pick Up Date: <%= dateEnd %> </p>
+<hr />
+<p style="margin-bottom: 25px;">Postcode: <%= postcodeRaw %> </p>
+<p style="margin-bottom: 25px;">Address Line 1: <%= addressLine1 %> </p>
+<p style="margin-bottom: 25px;">Address Line 2: <%= addressLine2 %> </p>
+<p style="margin-bottom: 25px;">Address Line 3: <%= addressLine3 %> </p>
+<p style="margin-bottom: 25px;">Comment: <%= comment %> </p>
+<hr />
+<p style="margin-bottom: 25px;">Item Total: ¥<%= itemsTotal %> </p>
+<p style="margin-bottom: 25px;">Sub Total: ¥<%= subTotal %> </p>
+<p style="margin-bottom: 25px;">Shipping Cost: ¥<%= taxTotal %> </p>
+<p style="margin-bottom: 25px;">Total Price: ¥<%= grandTotal %> </p>
 
 <p style="margin-bottom: 5px;">Sincerely,</p>
 <p style="margin-top: 0px;">The Plumm Glass Rental Team</p>
