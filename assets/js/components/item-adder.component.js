@@ -83,7 +83,7 @@ parasails.registerComponent('itemAdder', {
           </div>
           <div class="col-md-5">
             <button @click="submit" type="submit" class="btn btn-sm btn-block btn-primary ajax-button" :class="[syncing ? 'syncing' : '']">
-              <span class="button-text" v-if="!syncing"><slot name="default">カートに入れる</slot></span>
+              <span class="button-text" v-if="!syncing"><span name="default" style="font-size: 10px">カートに入れる</span></span>
               <span class="button-loader clearfix" v-if="syncing">
                 <slot name="syncing-state">
                   <div class="loading-dot dot1"></div>
@@ -136,7 +136,7 @@ parasails.registerComponent('itemAdder', {
             <div class="row">
               <div class="col-md-4 offset-md-2">
                 <div class="my-3">
-                <wine-scale 
+                <wine-scale
                   :product="product"
                 />
                 </div>

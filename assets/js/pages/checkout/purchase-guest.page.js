@@ -15,6 +15,7 @@ parasails.registerPage('purchase-guest', {
       },
     },
     takuhaiTimeSlots: [],
+    shippingTypeIsTruck: false,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -24,10 +25,12 @@ parasails.registerPage('purchase-guest', {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
   },
+
   mounted: async function() {
     //…
     this.cart = await parasails.util.getCart();
     this.takuhaiTimeSlots = await Cloud.getTakuhaiTimeSlots();
+    this.shippingTypeIsTruck = this.cart.shipping.ShippingFactorRecord.Truck_OK === 1 ;
   },
 
   updated: async function() {
