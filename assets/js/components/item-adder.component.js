@@ -48,7 +48,9 @@ parasails.registerComponent('itemAdder', {
         </div>
         <div class="row mb-3">
           <div class="col-md-7">
-            <wine-scale />
+            <wine-scale
+              :product="product"
+            />
           </div>
           <div class="col-md-5 pr-4" style="padding-top: 20px;">
             <div>
@@ -81,7 +83,7 @@ parasails.registerComponent('itemAdder', {
           </div>
           <div class="col-md-5">
             <button @click="submit" type="submit" class="btn btn-sm btn-block btn-primary ajax-button" :class="[syncing ? 'syncing' : '']">
-              <span class="button-text" v-if="!syncing"><slot name="default">カートに入れる</slot></span>
+              <span class="button-text" v-if="!syncing"><span name="default" style="font-size: 10px">カートに入れる</span></span>
               <span class="button-loader clearfix" v-if="syncing">
                 <slot name="syncing-state">
                   <div class="loading-dot dot1"></div>
@@ -134,7 +136,9 @@ parasails.registerComponent('itemAdder', {
             <div class="row">
               <div class="col-md-4 offset-md-2">
                 <div class="my-3">
-                <wine-scale />
+                <wine-scale
+                  :product="product"
+                />
                 </div>
                 <small>Sku: {{ product.id }}</small>
                 <div>1日最大使用料 ￥{{ product.UnitPrice }}/ 脚</div>

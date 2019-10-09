@@ -15,6 +15,7 @@ parasails.registerPage('purchase-guest', {
       },
     },
     takuhaiTimeSlots: [],
+    shippingTypeIsTruck: false,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -24,15 +25,15 @@ parasails.registerPage('purchase-guest', {
     // Attach any initial data from the server.
     _.extend(this, SAILS_LOCALS);
   },
+
   mounted: async function() {
     //…
     this.cart = await parasails.util.getCart();
     this.takuhaiTimeSlots = await Cloud.getTakuhaiTimeSlots();
+    this.shippingTypeIsTruck = this.cart.shipping.ShippingFactorRecord.Truck_OK === 1 ;
   },
 
   updated: async function() {
-    console.log('test');
-    console.log('test');
   },
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
@@ -251,7 +252,6 @@ parasails.registerPage('purchase-guest', {
 
       // charge the card -> includes building and managing the created order
       const chargeCardResult = await this.chargeCard(ccToken);
-      console.log(chargeCardResult.cardCharge.charge.result.mstatus);
 
       if (chargeCardResult.cardCharge.charge.result.mstatus === 'failure') {
         this.syncMessage = '';
@@ -263,8 +263,9 @@ parasails.registerPage('purchase-guest', {
         toastr.success('Order Created ' + chargeCardResult.cardCharge.charge.result.merrMsg);
         await localStorage.setItem('completedOrder', JSON.stringify(chargeCardResult.order));
 
-        await parasails.util.clearCart();
-        window.location = '/checkout/purchase-confirmation'
+        // comment out for testing
+        // await parasails.util.clearCart();
+        // window.location = '/checkout/purchase-confirmation'
       }
     },
 

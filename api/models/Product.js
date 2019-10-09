@@ -117,6 +117,47 @@ module.exports = {
       example: 'ワインをカジュアルに楽しむとき、ビール、ソフトドリンクにも'
     },
 
+    Red1: {
+      type: 'boolean',
+    },
+
+    Red2: {
+      type: 'boolean',
+    },
+
+    Red3: {
+      type: 'boolean',
+    },
+
+    Red4: {
+      type: 'boolean',
+    },
+
+    Red5: {
+      type: 'boolean',
+    },
+    
+    White1: {
+      type: 'boolean',
+    },
+
+    White2: {
+      type: 'boolean',
+    },
+
+    White3: {
+      type: 'boolean',
+    },
+
+    White4: {
+      type: 'boolean',
+    },
+
+    White5: {
+      type: 'boolean',
+    }
+
+
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝

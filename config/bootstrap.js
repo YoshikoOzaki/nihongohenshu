@@ -97,6 +97,49 @@ module.exports.bootstrap = async function (done) {
     },
   ]);
 
+  // await WineScaleOption.createEach([
+  //   {
+  //     Color: 'red',
+  //     Value: '1',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '2',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '3',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '4',
+  //   },
+  //   {
+  //     Color: 'red',
+  //     Value: '5',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '1',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '2',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '3',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '4',
+  //   },
+  //   {
+  //     Color: 'white',
+  //     Value: '5',
+  //   },
+  // ]);
+
   await User.createEach([
     {
       emailAddress: 'jarodccrowe@gmail.com',
@@ -142,6 +185,16 @@ module.exports.bootstrap = async function (done) {
         "BaseDiameter": 96,
         "Weight": 95,
         "Description": "ワインをカジュアルに楽しむとき、ビール、ソフトドリンクにも",
+        "White1" :true,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 162,
@@ -153,7 +206,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :false,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 163,
@@ -165,7 +228,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 164,
@@ -177,7 +250,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 165,
@@ -189,7 +272,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 166,
@@ -201,7 +294,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://res.cloudinary.com/hh4gzxpel/image/upload/v1567405628/Glassware/pluh3330s_2_plumm-large_coz5nv.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :false
       },
       {
         "id": 167,
@@ -213,7 +316,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 168,
@@ -225,7 +338,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :false,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 169,
@@ -237,7 +360,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 170,
@@ -249,7 +382,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 171,
@@ -261,7 +404,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 9,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 172,
@@ -273,7 +426,18 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "Id":172,
+        "White1" :true,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :false,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 173,
@@ -285,7 +449,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 174,
@@ -297,7 +471,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 36,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 175,
@@ -309,7 +493,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :false,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 176,
@@ -321,7 +515,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 177,
@@ -333,7 +537,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 178,
@@ -345,7 +559,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 220,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :true,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :false,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 179,
@@ -357,7 +581,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 220,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 180,
@@ -369,7 +603,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 2,
         "RackHeight": 300,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 181,
@@ -381,7 +625,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 2,
         "RackHeight": 300,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 182,
@@ -393,7 +647,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 2,
         "RackHeight": 300,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 183,
@@ -405,7 +669,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 2,
         "RackHeight": 300,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 184,
@@ -417,7 +691,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 2,
         "RackHeight": 300,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 187,
@@ -429,7 +713,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 220,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :false,
+        "Red3" :false,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 188,
@@ -441,7 +735,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 220,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :false,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :false
       },
       {
         "id": 189,
@@ -453,7 +757,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 25,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :false,
+        "White3" :false,
+        "White4" :false,
+        "White5" :false,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :true,
+        "Red5" :true
       },
       {
         "id": 204,
@@ -465,7 +779,17 @@ module.exports.bootstrap = async function (done) {
         "RackCapacity": 16,
         "RackHeight": 280,
         "ImgSrc": "https://www.plumm.com/globalassets/productassets/pluh3310a/plumm-large/pluh3310a_4_plumm-large.jpg",
-        "Type": "Glassware"
+        "Type": "Glassware",
+        "White1" :false,
+        "White2" :true,
+        "White3" :true,
+        "White4" :true,
+        "White5" :true,
+        "Red1" :true,
+        "Red2" :true,
+        "Red3" :true,
+        "Red4" :false,
+        "Red5" :false
       },
       {
         "id": 210,

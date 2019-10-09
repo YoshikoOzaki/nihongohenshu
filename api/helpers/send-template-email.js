@@ -70,7 +70,6 @@ Instead, just log it to the console.`,
 
 
   exits: {
-
     success: {
       outputFriendlyName: 'Email delivery report',
       outputDescription: 'A dictionary of information about what went down.',
@@ -78,7 +77,6 @@ Instead, just log it to the console.`,
         loggedInsteadOfSending: 'boolean'
       }
     }
-
   },
 
 
