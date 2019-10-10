@@ -16,6 +16,7 @@ parasails.registerPage('purchase-member', {
     },
     takuhaiTimeSlots: [],
     user: {},
+    shippingTypeIsTruck: false,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -36,6 +37,7 @@ parasails.registerPage('purchase-member', {
     console.log(this.me);
     this.cart = await parasails.util.getCart();
     this.takuhaiTimeSlots = await Cloud.getTakuhaiTimeSlots();
+    this.shippingTypeIsTruck = this.cart.shipping.ShippingFactorRecord.Truck_OK === 1 ;
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -169,7 +171,7 @@ parasails.registerPage('purchase-member', {
         TakuhaiTimeSlot: this.formData.TakuhaiTimeSlot,
         User: this.me.id,
       }
-      
+
       chargePayload = {
         token: token.token,
         cart,
