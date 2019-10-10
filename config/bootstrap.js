@@ -97,49 +97,6 @@ module.exports.bootstrap = async function (done) {
     },
   ]);
 
-  // await WineScaleOption.createEach([
-  //   {
-  //     Color: 'red',
-  //     Value: '1',
-  //   },
-  //   {
-  //     Color: 'red',
-  //     Value: '2',
-  //   },
-  //   {
-  //     Color: 'red',
-  //     Value: '3',
-  //   },
-  //   {
-  //     Color: 'red',
-  //     Value: '4',
-  //   },
-  //   {
-  //     Color: 'red',
-  //     Value: '5',
-  //   },
-  //   {
-  //     Color: 'white',
-  //     Value: '1',
-  //   },
-  //   {
-  //     Color: 'white',
-  //     Value: '2',
-  //   },
-  //   {
-  //     Color: 'white',
-  //     Value: '3',
-  //   },
-  //   {
-  //     Color: 'white',
-  //     Value: '4',
-  //   },
-  //   {
-  //     Color: 'white',
-  //     Value: '5',
-  //   },
-  // ]);
-
   await User.createEach([
     {
       emailAddress: 'jarodccrowe@gmail.com',

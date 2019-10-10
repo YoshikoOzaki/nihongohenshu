@@ -80,7 +80,7 @@ parasails.registerComponent('wineScale', {
   },
   mounted: async function(){
     //…
-    console.log(_.indexOf(this.scaleData.white, 4));
+    // console.log(_.indexOf(this.scaleData.white, 4));
     // console.log(this.scaleData.white);
   },
   beforeDestroy: function() {
